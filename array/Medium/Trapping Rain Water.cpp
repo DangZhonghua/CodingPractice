@@ -80,10 +80,35 @@ int TrapRainWater(int*a, int N)
     }
     
     cout<<maxWater<<endl;
-    
-
-    
-    
     return 0;
+}
+
+int fastTrapRainWater(int*a, int N)
+{
+    int r[10][102];
+
+    for(int i = 0; i <10; ++i)
+    {
+        r[i][0] = 1;
+        r[i][1] = 1;
+    }
+
+    for(int i = 0; i<N; ++i)
+    {
+        int pos = (++(r[a[i]][0]));
+        r[a[i]][pos] = i;
+    }
+
+    int i = 0;
     
+    while(i < N)
+    {
+        int pos = -1;
+        if(int j = a[i]; j<10; ++j)
+        {
+            
+        }
+    }
+
+    return 0;
 }
