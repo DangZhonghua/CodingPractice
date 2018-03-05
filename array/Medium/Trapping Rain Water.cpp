@@ -1,6 +1,7 @@
 //https://practice.geeksforgeeks.org/problems/trapping-rain-water/0/?ref=self
 
 #include<iostream>
+#include <climits>
 using namespace std;
 
 
@@ -24,7 +25,7 @@ int main()
             cin>>a[i++];
         }
         
-        TrapRainWater(a,N);
+        fastTrapRainWater(a,N);
     }
 
 
@@ -85,30 +86,78 @@ int TrapRainWater(int*a, int N)
 
 int fastTrapRainWater(int*a, int N)
 {
-    int r[10][102];
+	int r[10][102];
+	int c[10] = { 0 };  //is the count of every specific value.
+	int p[10] = { 0 };  //is the specific index. 
+	int maxWater = 0;
 
-    for(int i = 0; i <10; ++i)
-    {
-        r[i][0] = 1;
-        r[i][1] = 1;
-    }
 
-    for(int i = 0; i<N; ++i)
-    {
-        int pos = (++(r[a[i]][0]));
-        r[a[i]][pos] = i;
-    }
+	for (int k = 0; k < 10; ++k)
+	{
+		c[k] = 0;
+		p[k] = 0;
+	}
 
-    int i = 0;
-    
-    while(i < N)
-    {
-        int pos = -1;
-        if(int j = a[i]; j<10; ++j)
-        {
-            
-        }
-    }
+	for (int k = 0; k < N; ++k)
+	{
+		r[a[k]][c[a[k]]] = k;
+		c[a[k]] += 1;
+	}
 
-    return 0;
+	int i = 0;
+	while (i+1 < N)
+	{
+		int pos = INT_MAX;
+		int j = a[i];
+		p[j] += 1; //skip the current element which is under processing.
+
+		for (j; j < 10; ++j)
+		{
+			if (p[j] < c[j] && i< r[j][p[j]] && pos > r[j][p[j]])
+			{
+				pos = r[j][p[j]];
+			}
+		}
+
+		if (INT_MAX == pos)
+		{
+			j = a[i];
+			--j;
+			for (; j >= 0; --j)
+			{
+				if (p[j] < c[j] && i < r[j][p[j]])
+				{
+					pos = r[j][p[j]];
+					break;
+				}
+			}
+		}
+
+		if (INT_MAX != pos)
+		{
+			int h = a[i] < a[pos] ? a[i] : a[pos];
+			for (int w = i + 1; w < pos; ++w)
+			{
+				maxWater += (h - a[w]);
+			}
+
+			for (int w = 0; w < 10; ++w)
+			{
+				while (p[w]<c[w] && pos > r[w][p[w]])
+				{
+					++p[w];
+				}
+			}
+		}
+		else
+		{
+			break;
+		}
+
+		i = pos;
+	}
+
+	cout << maxWater << endl;
+
+	return 0;
 }
