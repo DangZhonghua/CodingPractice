@@ -45,7 +45,7 @@ unsigned long long CalcUnqiueSubarray(int& pres, int& pree, int s, int e)
     unsigned long long n = (e+1-s);
 
     nSubArrayCount = (n*(n+1))/2;
-    nSubArrayCount -=d;
+    nSubArrayCount -=d;     //exclude the intersection part
 
     pree = e;
     return nSubArrayCount;
@@ -78,7 +78,7 @@ int CountSubarrayProductLessThanK(unsigned long long*a, int N,unsigned long long
                 p /=a[s];
             }
             ++s;
-            if(s>i)
+            if(s>i)//Make sure the start point not large the end point
             {
                 i = s;
             }
