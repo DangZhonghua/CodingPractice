@@ -47,25 +47,25 @@ int minCount2JudgeFloors(int eggs, int floors)
         edp[e][1] = 1;
     }
     
-    for(int e = 1; e<=eggs; ++e)
+    for(int e = 2; e<=eggs; ++e)
     {
-        for(int f = 1; f<=floors; ++f)
+        for(int f = 2; f<=floors; ++f) //Select the minimum trial count for certain floor
         {
-            int min = 0;
-            int max = INT_MAX;
-            for(int k = 1; k<=f; ++k)
+            int min = INT_MAX;
+            int maxpart = 0;
+            for(int k = 1; k<=f; ++k)//From kth floor to try: which is the master, select the minimum among these maximum
             {
-                min = M[e-1][k-1]> M[e][f-k]?  M[e-1][k-1]:M[e][f-k]
-                if(min<max)
+                maxpart = edp[e-1][k-1]> edp[e][f-k]?  edp[e-1][k-1]:edp[e][f-k]; 
+                if(min>maxpart)
                 {
-                    max = min;
+                    min = maxpart;
                 }
             }
-            edp[e][f] = 1+max;
+            edp[e][f] = 1+min;
         }
     }
 
-    cout<<edpM[eggs][floors]<<endl;
+    cout<<edp[eggs][floors]<<endl;
 
 
     return 0;
