@@ -20,19 +20,24 @@ void CTrie::InitItem(Trie_Item* p)
     }
 }
 
+short CTrie::makeupperchar(short c)
+{
+    short l = c;
+    if(c<='z' && c>='a')
+    {
+        l -= 32;
+    }
+    return l;
+}
+
 int CTrie::Insert(char* word)
 {
     int index = 0;
-    Trie_Item* pre = 0;
     Trie_Item* cur = root;
-    while(word[index] != '\0')
+    while(word[index] != '\0' && 0 != cur)
     {
-        int l = word[index];
-        if(l<='z' && l>='a')
-        {
-            l -= 32;
-        }
-        if(0 == cur[l-'A'].pChild)
+        short l = makeupperchar(word[index]);
+        if(0 == cur[l-'A'].pChild &&  '\0' != word[index+1] )
         {
             cur[l-'A'].pChild = new Trie_Item[sizeof(root)/sizeof(root[0])];
             InitItem(cur[l-'A'].pChild);
@@ -41,8 +46,8 @@ int CTrie::Insert(char* word)
         if(word[index+1] == '\0')
         {
             cur[l-'A'].c = '$';
+            break;
         }
-        pre = cur;
         cur = cur[l-'A'].pChild;
         ++index;
     }
@@ -51,24 +56,20 @@ int CTrie::Insert(char* word)
 
 bool CTrie::Find(char* word)
 {
-    bool bFind = true;
-
-    int index = 0;
+    bool bFind  = true;
+    int index   = 0;
     Trie_Item* cur = root;
+    
     while(word[index] != '\0')
-    {
-        int l = word[index];
-        if(l<='z' && l>='a')
+    {  
+        short l = makeupperchar(word[index]);
+        if(word[index+1] == '\0' )
         {
-            l -= 32;
-        }
-        if(word[index+1] == '\0')
-        {
-            if(cur[l-'A'].c != '$')
+            if( cur[l-'A'].c != '$')
             {
               bFind = false;
-              break;
             }
+            break;     
         }
         cur = cur[l-'A'].pChild;
         if(0 == cur)

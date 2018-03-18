@@ -17,7 +17,8 @@ public:
     int Insert(char* word);
     bool Find(char* word);
 private:
-    void InitItem(Trie_Item* p);    
+    void InitItem(Trie_Item* p);
+    short makeupperchar(short c);
  private:
     Trie_Item   root[26];
 };
