@@ -43,83 +43,148 @@ using namespace std;
 
 struct dfsvertex
 {
- bool m_bVisited;
- int  m_nDepth;
- int  m_nLowlink;
- bool m_bCutVertex;
- int  m_nParentVertex;
- int  m_nChildCount;
-    dfsvertex()
-    {
-        m_bVisited      = false;
-        m_nDepth        = 0;
-        m_nLowlink      = 0;
-        m_bCutVertex    = false;
-        m_nParentVertex = -1;
-        m_nChildCount   = 0;
-    }
+	bool m_bVisited;
+	int  m_nDepth;
+	int  m_nLowlink;
+	bool m_bCutVertex;
+	int  m_nParentVertex;
+	int  m_nChildCount;
+	dfsvertex()
+	{
+		m_bVisited = false;
+		m_nDepth = 0;
+		m_nLowlink = 0;
+		m_bCutVertex = false;
+		m_nParentVertex = -1;
+		m_nChildCount = 0;
+	}
 };
 
 
 
-int bccDetect(vector< vector<int > >& G,unordered_map<int,dfsvertex>& vInfomap, int u, int Seq)
+int bccDetect(vector< vector<int > >& G, unordered_map<int, dfsvertex>& vInfomap, int u, int Seq, bool& bBiconnectedGraph)
 {
-    ++Seq; //Record the DFS scan sequence.
-    vInfomap[u].m_nDepth = Seq;
-    vInfomap[u].m_nLowlink = Seq; //This may update during visit its descendents.
-    
-    
-    for(auto vIt = G[u].begin(); vIt != G[u].end(); ++vIt)
-    {
-        if(!vInfomap[*vIt].m_bVisited) //This is tree edge.
-        {
-            vInfomap[*vIt].m_nParentVertex = u;
-            vInfomap[u].m_nChildCount += 1;
-            bccDetect(G,vInfomap,*vIt, Seq);
-            if( vInfomap[*vIt].m_nLowlink > vInfomap[u].m_nDepth)
-            {
-                vInfomap[u].m_bCutVertex = true;
-            }
-            vInfomap[u].m_nLowlink  = vInfomap[u].m_nLowlink < vInfomap[*vIt].m_nLowlink? vInfomap[u].m_nLowlink : vInfomap[*vIt].m_nLowlink;
-        }        
-        else if( (*vIt) != vInfomap[u].m_nParentVertex)
-        {
-            vInfomap[u].m_nLowlink = vInfomap[u].m_nLowlink<vInfomap[u].m_nDepth?  vInfomap[u].m_nLowlink:vInfomap[u].m_nDepth; 
-        }
-    }
+	++Seq; //Record the DFS scan sequence.
+	vInfomap[u].m_nDepth = Seq;
+	vInfomap[u].m_nLowlink = Seq; //This may update during visit its descendents.
+	vInfomap[u].m_bVisited = true;
+	bool bCutVertex = false;
 
 
-    return 0;
+	for (auto vIt = G[u].begin(); vIt != G[u].end(); ++vIt)
+	{
+		if (!vInfomap[*vIt].m_bVisited) //This is tree edge.
+		{
+			vInfomap[*vIt].m_nParentVertex = u;
+			vInfomap[u].m_nChildCount += 1;
+			bccDetect(G, vInfomap, *vIt, Seq, bBiconnectedGraph);
+			if (vInfomap[*vIt].m_nLowlink > vInfomap[u].m_nDepth)
+			{
+				vInfomap[u].m_bCutVertex = true;
+				bBiconnectedGraph = false;
+			}
+			vInfomap[u].m_nLowlink = vInfomap[u].m_nLowlink < vInfomap[*vIt].m_nLowlink ? vInfomap[u].m_nLowlink : vInfomap[*vIt].m_nLowlink;
+		}
+		else if ((*vIt) != vInfomap[u].m_nParentVertex)
+		{
+			vInfomap[u].m_nLowlink = vInfomap[u].m_nLowlink < vInfomap[*vIt].m_nDepth ? vInfomap[u].m_nLowlink : vInfomap[*vIt].m_nDepth;
+		}
+	}
+	if (-1 == vInfomap[u].m_nParentVertex && vInfomap[u].m_nChildCount > 1)
+	{
+		vInfomap[u].m_bCutVertex = true;
+		bBiconnectedGraph = false;
+	}
+
+	return 0;
 }
 
 
-int DetectBCG_TarjanAlgo(vector< vector<int > >& G, int V)
+int DetectBCG_TarjanAlgo(vector< vector<int > >& G, int V, bool& bBiconnectedGraph)
 {
-    int Seq = 0;
-    int nConnectedComponents = 0;
-    unordered_map<int, dfsvertex> vertexinfo;
-    dfsvertex dfsv;
-    for(int v = 0; v<V; ++v)
-    {
-        vertexinfo[v] = dfsv;
-    }
+	int Seq = 0;
+	int nConnectedComponents = 0;
+	unordered_map<int, dfsvertex> vertexinfo;
+	dfsvertex dfsv;
 
-    for(int v = 0; v<V; ++v)
-    {
-        if(!vertexinfo[v].m_bVisited) // Every vertex only need be scanned once.
-        {
-            bccDetect(G,vertexinfo,v,Seq);
-            ++nConnectedComponents;
-        }
-    }
-    
+	bBiconnectedGraph = true;
+	for (int v = 0; v < V; ++v)
+	{
+		vertexinfo[v] = dfsv;
+	}
 
-    return 0;
+	for (int v = 0; v < V; ++v)
+	{
+		if (!vertexinfo[v].m_bVisited) // Every vertex only need be scanned once.
+		{
+			bccDetect(G, vertexinfo, v, Seq, bBiconnectedGraph);
+			++nConnectedComponents;
+		}
+	}
+	if (bBiconnectedGraph && nConnectedComponents > 1)
+	{
+		bBiconnectedGraph = false;
+	}
+
+	if (1 == nConnectedComponents)
+	{
+		if (2 == V)
+		{
+			bBiconnectedGraph = true;
+		}
+	}
+
+	return 0;
 }
 
 
 
-int BiConnectedGraph(vector< vector<int > >& G, int V)
+bool BiConnectedGraph(vector< vector<int > >& G, int V)
 {
-    return 0;
+	bool bBiconnectedGraph = true;
+
+	DetectBCG_TarjanAlgo(G, V, bBiconnectedGraph);
+	if (bBiconnectedGraph)
+	{
+		cout << 1 << endl;
+	}
+	else
+	{
+		cout << 0 << endl;
+	}
+
+	return bBiconnectedGraph;
+}
+
+
+//For testing on GeeksForGeeks
+int main()
+{
+
+	int t = 0;
+	int N = 0;
+	int M = 0;
+
+	vector< vector<int> > G;
+	cin >> t;
+
+	while (t > 0)
+	{
+		--t;
+		cin >> N >> M;
+		G.clear();
+		for (int v = 0; v < N; ++v)
+		{
+			G.push_back(vector<int>());
+		}
+		for (int edge = 0; edge < M; ++edge)
+		{
+			int s, e;
+			cin >> s >> e;
+			G[s].push_back(e);
+			G[e].push_back(s);
+		}
+		BiConnectedGraph(G, N);
+	}
+
 }
