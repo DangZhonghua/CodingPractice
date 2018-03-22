@@ -98,7 +98,7 @@ int bccDetect(vector< vector<int > >& G, unordered_map<int, dfsvertex>& vInfomap
 
 	return 0;
 }
-
+//test acount
 
 int DetectBCG_TarjanAlgo(vector< vector<int > >& G, int V, bool& bBiconnectedGraph)
 {
