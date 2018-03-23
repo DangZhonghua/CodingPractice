@@ -61,7 +61,8 @@ struct Node
 
 //This is nlog(n) solution. two cursor: one for parent elmemt, one for child element.
 //for parent->parent->...->root to verify BST property.
-
+//lets try to construct BST, of course, the BST may can't be constructed. if parent index
+// equal with child index.
 
 #include<vector>
 #include<map>
