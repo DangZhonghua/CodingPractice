@@ -24,8 +24,8 @@ public:
     CTrie();
     ~CTrie();
 public:
-    int Insert(char* word);
-    bool Find(char* word);
+    int Insert(const char* word);
+    bool Find( const char* word);
 private:
     void InitItem(Trie_Item* p);
     short makeupperchar(short c);
@@ -39,6 +39,16 @@ int BuildcDictionary(char* dict[], int count,CTrie& trieObject)
     for(int i = 0; i< count; ++i)
     {
         trieObject.Insert(dict[i]);
+    }
+
+    return 0;
+}
+
+int BuildcDictionary(vector<string>& dicts,CTrie& trieObject)
+{
+    for(int i = 0; i<dicts.size(); ++i)
+    {
+        trieObject.Insert(dicts[i].c_str());
     }
 
     return 0;
@@ -111,7 +121,7 @@ int DFS(vector< vector<char> >& boggle, vector< vector<char> >& visited, int M, 
 
 
 
-int SearchBoggle(vector< vector<char> >& boggle, int M, int N)
+int SearchBoggle(vector< vector<char> >& boggle, vector<string>& strDict, int M, int N)
 {
     vector< vector<char> > visit;
     for(int i = 0; i<M; ++i)
@@ -124,9 +134,12 @@ int SearchBoggle(vector< vector<char> >& boggle, int M, int N)
         visit.push_back(row);
     }
 
+    CTrie dict;
+    vector<string> words;
     
+    BuildcDictionary(strDict,dict);
 
-   // DFS(boggle,visit,M,N);
+   DFS(boggle,visit,M,N,dict,words);
 
     return 0;
 }
@@ -171,7 +184,7 @@ short CTrie::makeupperchar(short c)
     return l;
 }
 
-int CTrie::Insert(char* word)
+int CTrie::Insert(const char* word)
 {
     int index = 0;
     Trie_Item* cur = root;
@@ -195,7 +208,7 @@ int CTrie::Insert(char* word)
     return 0;
 }
 
-bool CTrie::Find(char* word)
+bool CTrie::Find(const char* word)
 {
     bool bFind  = true;
     int index   = 0;
