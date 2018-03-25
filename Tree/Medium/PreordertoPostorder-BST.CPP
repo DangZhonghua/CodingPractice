@@ -43,6 +43,7 @@
 #include<map>
 #include<queue>
 #include <iostream>
+#include <utility>
 using namespace std;
 
 struct Node
@@ -66,25 +67,94 @@ Node* CreateNode(int data)
 Node* constructBstFromPreOrder(int arr[], int n)
 {
 	vector<Node*> nodes;
-	vector<pair>  ranges;
+	vector<pair<int,int>>  ranges;
 	vector<char>  branch;
-	
+	vector<int>   parent;
+
 	Node* root = CreateNode(arr[0]);
-	ranges.push_back(pair(0,n-1));
+	ranges.push_back(pair<int,int>(0, n - 1));
 	nodes.push_back(root);
 	branch.push_back(0);
+	parent.push_back(-1);
 
-	int i  = 0;
+
+	int i = 0;
 	int nodesCount = 1;
-	while(i<nodesCount)
+	bool bBst = true;
+	while (i < nodesCount && bBst)
 	{
 		nodes[i]->data = arr[ranges[i].first];
-		
+		//Now let's check whether current node voliate BST property.
+		{
+			int n = parent[i];
+			int b = i;
+			while (n >= 0)
+			{
+				if ('L' == branch[b])
+				{
+					if (nodes[n]->data < nodes[i]->data)
+					{
+						bBst = false;
+						break;
+					}
+				}
+				else if ('R' == branch[b])
+				{
+					if (nodes[n]->data > nodes[i]->data)
+					{
+						bBst = false;
+						break;
+					}
+				}
+				b = n;
+				n = parent[n];
+			}
+		}
+		if (!bBst)
+		{
+			break;
+		}
+
+		//Now lets find the partition according to the pre-order traversal.
+		int p = 0;
+		for (p = ranges[i].first + 1; p <= ranges[i].second; ++p)
+		{
+			if (arr[p] > arr[ranges[i].first])
+			{
+				break;
+			}
+		}
+		if (p - 1 > ranges[i].first)//this is the left subtree
+		{
+			Node* node = CreateNode(arr[ranges[i].first + 1]);
+			nodes.push_back(node);
+			parent.push_back(i);
+			branch.push_back('L');
+			ranges.push_back(pair<int,int>(ranges[i].first + 1, p - 1));
+
+			nodes[i]->left = node;
+
+			++nodesCount;
+		}
+		if (p <= ranges[i].second)// this is the right subtree
+		{
+			Node* node = CreateNode(arr[p]);
+			nodes.push_back(node);
+			parent.push_back(i);
+			branch.push_back('R');
+			ranges.push_back(pair<int,int>(p, ranges[i].second));
+			nodes[i]->right = node;
+			++nodesCount;
+		}
+		++i;//Current nodes has been finished, so process next.
 	}
-	
+	if (!bBst)
+	{
+		root = NULL;
+	}
 
+	return root;
 
-	
 }
 
 
@@ -92,36 +162,42 @@ void verifyBSTByInorder(Node* root)
 {
 	if (NULL == root)
 	{
-		return ;
+		return;
 	}
 	verifyBSTByInorder(root->left);
 	cout << root->data << " ";
-	
+
 	verifyBSTByInorder(root->right);
 }
 
 void postOrderFromPreOrder(Node* root)
 {
-    if(NULL != root)
-    {
-        return 0;
-    }
-    postOrderFromPreOrder(root->left);
-    postOrderFromPreOrder(root->right);
-    cout<<root->data<<" ";
-    
+	if (NULL == root)
+	{
+		return;
+	}
+	postOrderFromPreOrder(root->left);
+	postOrderFromPreOrder(root->right);
+	cout << root->data << " ";
+
 }
 
 
 int main()
 {
-	int arr[] = { 40, 30, 35, 80, 100 };
+	int arr[] = { 7 , 9 ,6, 1, 4 ,2 ,3, 40 };
 
 	Node* root = constructBstFromPreOrder(arr, _countof(arr));
+	if (NULL == root)
+	{
+		cout << "This is not a BST";
+	}
+	else
+	{
+		postOrderFromPreOrder(root);
+	}
 
-	postOrderFromPreOrder(root);
-
-	cout<<endl;
+	cout << endl;
 
 	return 0;
 }
