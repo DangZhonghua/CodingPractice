@@ -5,6 +5,7 @@
 
 #include<vector>
 #include<iostream>
+#include<string>
 
 using namespace std;
 
@@ -33,26 +34,99 @@ private:
 };
 
 
-int BuildcDictionary(char* dict[], int count)
+int BuildcDictionary(char* dict[], int count,CTrie& trieObject)
 {
-    
+    for(int i = 0; i< count; ++i)
+    {
+        trieObject.Insert(dict[i]);
+    }
+
     return 0;
 }
 
+bool Isaccessible(vector<vector<char>>& visited, int M, int N, int r, int c)
+{
+    if(visited[r][c])
+    {
+        return false;
+    }
+    if(r>=0  && r<M && c>=0 && c<N)
+    {
+        return true;
+    }
+    return false;
+}
+int DFSVisit(vector< vector<char> >& boggle, vector<vector<char>>& visited, string& strword,
+            int M, int N, int u, int v,CTrie& dict, vector<string>& words)
+{
+    visited[u][v] = true;
+    strword.push_back(boggle[u][v]);
+    char* szword = (char*)strword.c_str();
+    int len  = strword.length();
+    len -= 1;
+    while (len >=0 )
+    {
+        if(dict.Find(szword+len))
+        {
+            words.push_back(szword+len);
+        }
+        --len;
+    }
+
+    static int vnbr[8] = {-1,-1, -1, 0,1,1,1, 0};
+    static int hnbr[8] = {-1, 0,  1, 1,1,0,-1,-1};
+    
+    for(int i = 0; i< 8; ++i)
+    {
+     if(Isaccessible(visited,M,N,u+vnbr[i],v+hnbr[i]))
+     {
+         DFSVisit(boggle,visited,strword,M,N,u+vnbr[i],v+hnbr[i],dict,words);
+     }
+    }
 
 
-int DFS(vector< vector<char> > boggle, vector< vector<char> > visited, int M, int N)
+    return 0;
+}
+
+int DFS(vector< vector<char> >& boggle, vector< vector<char> >& visited, int M, int N,
+ CTrie& dict, vector<string>& words)
 {
     
+    for(int r = 0; r<M;++r)
+    {
+        for(int c = 0; c<N; ++c)
+        {
+            if(!visited[r][c])
+            {
+                string strword = "";
+                DFSVisit(boggle,visited,strword,M,N,r,c,dict,words);                
+            }
+        }
+    }
+ 
+ return 0;
 }
 
 
 
 
 
-int SearchBoggle(vector< vector<char> > boggle, int M, int N)
+int SearchBoggle(vector< vector<char> >& boggle, int M, int N)
 {
+    vector< vector<char> > visit;
+    for(int i = 0; i<M; ++i)
+    {
+        vector<char> row;
+        for(int j = 0; j<N; ++j)
+        {
+            row.push_back(0);
+        }
+        visit.push_back(row);
+    }
+
     
+
+   // DFS(boggle,visit,M,N);
 
     return 0;
 }
