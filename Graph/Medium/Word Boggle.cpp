@@ -5,12 +5,14 @@
 
 #include<vector>
 #include <map>
+#include <unordered_set>
 #include<iostream>
 #include<string>
+#include <memory.h>
 
 using namespace std;
 
-
+#define MAX 10
 typedef struct _st_Trie_Item_
 {
 	char c;
@@ -27,6 +29,7 @@ public:
 	int Insert(const char *word);
 	bool Find(const char *word);
 	void PrefixWords(const char *prefix, vector<string> &vWords);
+	bool CheckPrefix(const char* prefix);
 	void Clear();
 private:
 	void dfsTrietree(PTrie_Item cur, vector<string> &vWords, const string& strPrefix);
@@ -58,7 +61,7 @@ int BuildcDictionary(vector<string>& dicts, CTrie& trieObject)
 	return 0;
 }
 
-bool Isaccessible(vector<vector<char>>& visited, int M, int N, int r, int c)
+bool Isaccessible(char visited[MAX][MAX], int M, int N, int r, int c)
 {
 	if (r >= 0 && r < M && c >= 0 && c < N && !visited[r][c])
 	{
@@ -66,19 +69,19 @@ bool Isaccessible(vector<vector<char>>& visited, int M, int N, int r, int c)
 	}
 	return false;
 }
-int DFSVisit(vector< vector<char> >& boggle, vector<vector<char>>& visited, string& strword,
-	int M, int N, int u, int v, CTrie& dict, map<string, string>& words)
+int DFSVisit(char boggle[MAX][MAX], char visited[MAX][MAX], char* strword, int wordindex,
+	int M, int N, int u, int v, CTrie& dict, unordered_set<string>& words)
 {
 	visited[u][v] = true;
-	strword.push_back(boggle[u][v]);
-	char* szword = (char*)strword.c_str();
-	int len = strword.length();
-	len -= 1;
+	strword[wordindex++] = boggle[u][v];
+	strword[wordindex + 1] = '\0';
+	int len = wordindex - 1;
 	while (len >= 0)
 	{
-		if (dict.Find(szword + len))
+		if (dict.Find(strword + len))
 		{
-			words[szword + len] = (szword + len);
+			if (words.end() == words.find(strword + len))
+				words.insert(strword + len);
 		}
 		--len;
 	}
@@ -88,29 +91,34 @@ int DFSVisit(vector< vector<char> >& boggle, vector<vector<char>>& visited, stri
 
 	for (int i = 0; i < 8; ++i)
 	{
-		if (Isaccessible(visited, M, N, u + vnbr[i], v + hnbr[i]))
+		int r = u + vnbr[i];
+		int c = v + hnbr[i];
+		if (r >= 0 && r < M && c >= 0 && c < N && !visited[r][c])
 		{
-			DFSVisit(boggle, visited, strword, M, N, u + vnbr[i], v + hnbr[i], dict, words);
+			DFSVisit(boggle, visited, strword, wordindex, M, N, u + vnbr[i], v + hnbr[i], dict, words);
 		}
 	}
-	strword.pop_back();
+	--wordindex;
 	visited[u][v] = false;
 
 	return 0;
 }
 
-int DFS(vector< vector<char> >& boggle, vector< vector<char> >& visited, int M, int N,
-	CTrie& dict, map<string, string>& words)
+int DFS(char boggle[MAX][MAX], char visited[MAX][MAX], int M, int N,
+	CTrie& dict, unordered_set< string>& words)
 {
-
+	char preword[2] = { 0 };
+	char word[MAX*MAX] = { 0 };
 	for (int r = 0; r < M; ++r)
 	{
 		for (int c = 0; c < N; ++c)
 		{
 			if (!visited[r][c])
 			{
-				string strword = "";
-				DFSVisit(boggle, visited, strword, M, N, r, c, dict, words);
+				word[0] = '\0';
+				preword[0] = boggle[r][c];
+				if (dict.CheckPrefix(preword))
+					DFSVisit(boggle, visited, word, 0, M, N, r, c, dict, words);
 			}
 		}
 	}
@@ -122,28 +130,27 @@ int DFS(vector< vector<char> >& boggle, vector< vector<char> >& visited, int M, 
 
 
 
-int SearchBoggle(vector< vector<char> >& boggle, vector<string>& strDict, int M, int N)
+int SearchBoggle(char boggle[MAX][MAX], vector<string>& strDict, int M, int N)
 {
-	vector< vector<char> > visit;
+	char visit[MAX][MAX];
+
 	for (int i = 0; i < M; ++i)
 	{
-		vector<char> row;
 		for (int j = 0; j < N; ++j)
 		{
-			row.push_back(0);
+			visit[i][j] = 0;
 		}
-		visit.push_back(row);
 	}
 
 	CTrie dict;
-	map<string,string> words;
+	unordered_set<string> words;
 
 	BuildcDictionary(strDict, dict);
 
 	DFS(boggle, visit, M, N, dict, words);
 	for (auto it = words.begin(); it != words.end(); ++it)
 	{
-		cout << it->second.c_str()<< " ";
+		cout << it->c_str() << " ";
 	}
 	cout << endl;
 	return 0;
@@ -156,7 +163,8 @@ int main()
 {
 	int t = 0;
 	int nWordDict = 0;
-	vector< vector<char> >boggle;
+	char boggle[MAX][MAX];
+	char strword[1000];
 	vector<string> strDict;
 
 	cin >> t;
@@ -165,11 +173,10 @@ int main()
 	{
 		--t;
 		cin >> nWordDict;
-		string strword;
 		int i = 0;
 		while (i < nWordDict)
 		{
-			cin >> strword;
+			scanf("%s", strword);
 			strDict.push_back(strword);
 			++i;
 		}
@@ -178,18 +185,13 @@ int main()
 		cin >> R >> C;
 		for (int r = 0; r < R; ++r)
 		{
-			vector<char> row;
 			for (int c = 0; c < C; ++c)
 			{
-				char letter = 0;
-				cin >> letter;
-				row.push_back(letter);
+				cin >> boggle[r][c];
 			}
-			boggle.push_back(row);
 		}
 
 		SearchBoggle(boggle, strDict, R, C);
-		boggle.clear();
 		strDict.clear();
 	}
 
@@ -210,11 +212,7 @@ CTrie::~CTrie()
 
 void CTrie::InitItem(Trie_Item* p)
 {
-	for (int i = 0; i < sizeof(root) / sizeof(root[0]); ++i)
-	{
-		p[i].c = 0;
-		p[i].pChild = 0;
-	}
+	memset(p, 0, sizeof(Trie_Item) * 26);
 }
 
 short CTrie::makeupperchar(short c)
@@ -266,6 +264,32 @@ bool CTrie::Find(const char* word)
 			{
 				bFind = false;
 			}
+			break;
+		}
+		cur = cur[l - 'A'].pChild;
+		if (0 == cur)
+		{
+			bFind = false;
+			break;
+		}
+		++index;
+	}
+
+	return bFind;
+}
+
+bool CTrie::CheckPrefix(const char* prefix)
+
+{
+	bool bFind = true;
+	int index = 0;
+	Trie_Item* cur = root;
+
+	while (prefix[index] != '\0')
+	{
+		short l = makeupperchar(prefix[index]);
+		if (prefix[index + 1] == '\0')
+		{
 			break;
 		}
 		cur = cur[l - 'A'].pChild;
