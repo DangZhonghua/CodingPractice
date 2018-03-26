@@ -14,11 +14,13 @@ public:
     CTrie();
     ~CTrie();
 public:
-    int Insert(char* word);
-    bool Find(char* word);
+    int Insert(const char* word);
+    bool Find(const char* word);
+    void  Clear();
 private:
     void InitItem(Trie_Item* p);
     short makeupperchar(short c);
+    void  ClearNode(PTrie_Item node);
  private:
     Trie_Item   root[26];
 };

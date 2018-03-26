@@ -8,7 +8,7 @@ CTrie::CTrie()
 
 CTrie::~CTrie()
 {
-
+    Clear();
 }
 
 void CTrie::InitItem(Trie_Item* p)
@@ -30,7 +30,7 @@ short CTrie::makeupperchar(short c)
     return l;
 }
 
-int CTrie::Insert(char* word)
+int CTrie::Insert(const char* word)
 {
     int index = 0;
     Trie_Item* cur = root;
@@ -54,7 +54,7 @@ int CTrie::Insert(char* word)
     return 0;
 }
 
-bool CTrie::Find(char* word)
+bool CTrie::Find(const char* word)
 {
     bool bFind  = true;
     int index   = 0;
@@ -81,4 +81,26 @@ bool CTrie::Find(char* word)
     }
 
     return bFind;
+}
+
+void CTrie::Clear()
+{
+    ClearNode(root);
+    InitItem(root);  
+}
+
+void  CTrie::ClearNode(PTrie_Item node)
+{
+    for(int i = 0; i<26; ++i)
+    {
+        if(node[i].pChild)
+        {
+            ClearNode(node[i].pChild);
+            node[i].pChild = 0;
+        }
+    }
+    if(node != root)
+    {
+        delete[] node;
+    }
 }
