@@ -1,4 +1,101 @@
-#include "Trie.hpp"
+//This class handle word consist of alpha table.
+#include<iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+typedef struct _st_Trie_Item_
+{
+    char c;
+    struct _st_Trie_Item_ *pChild;
+} Trie_Item, *PTrie_Item;
+
+class CTrie
+{
+  public:
+    CTrie();
+    ~CTrie();
+
+  public:
+    int Insert(const char *word);
+    bool Find(const char *word);
+    void PrefixWords(const char *prefix, vector<string> &vWords);
+    void Clear();
+  private:
+    void dfsTrietree(PTrie_Item cur, vector<string> &vWords, const string& strPrefix);
+    void InitItem(Trie_Item *p);
+    short makeupperchar(short c);
+    void ClearNode(PTrie_Item node);
+
+  private:
+    Trie_Item root[26];
+};
+
+
+void ListPrefixWords(vector<string>& vWords, string& strPrefix)
+{
+    CTrie dict;
+    for(auto it = vWords.begin(); it != vWords.end(); ++it)
+    {
+        dict.Insert(it->c_str());
+    }
+    
+    vector<string> vPrefixList;
+    
+    string strKey;
+    for(int i = 0; i<strPrefix.length(); ++i)
+    {
+        strKey.push_back(strPrefix[i]);
+        dict.PrefixWords(strKey.c_str(),vPrefixList);
+        for(auto it = vPrefixList.begin(); it != vPrefixList.end(); ++it )
+        {
+            cout<<it->c_str()<<" ";
+        }
+        if(vPrefixList.empty())
+        {
+            cout<<"0";
+        }
+        vPrefixList.clear();
+        cout<<endl;
+    }
+    
+}
+
+
+
+int main()
+ {
+    int t = 0;
+    int nWords = 0;
+    
+     cin>>t;
+     
+     while(t>0)
+     {
+         --t;
+         cin>>nWords;
+         int i = 0;
+         vector<string> vWords;
+        
+        while(i<nWords)
+        {
+            string strWord;
+            cin>>strWord;
+            vWords.push_back(strWord);
+            ++i;
+        }
+        string strPrefix;
+        cin>>strPrefix;
+        
+        ListPrefixWords(vWords,strPrefix);
+        
+     }
+    
+    
+
+	return 0;
+}
+
 
 
 CTrie::CTrie()
