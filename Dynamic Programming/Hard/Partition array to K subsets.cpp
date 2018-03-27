@@ -1,0 +1,1 @@
+//https://practice.geeksforgeeks.org/problems/partition-array-to-k-subsets/1
