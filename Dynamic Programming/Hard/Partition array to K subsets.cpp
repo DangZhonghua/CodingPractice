@@ -48,19 +48,24 @@ Suppose, There are multiple bags with same capacity. For Every bag, we use 0-1 k
 
 */
 
+#include<algorithm>
 #include <vector>
 #include <climits>
 using namespace std; 
 
-int  ZeroOnePack(int a[], int N, int C, vector<int>& selectedIndex)
+bool  ZeroOnePack(vector<int>& v, int N, int C, vector<int>& selectedIndex)
 {
+    // Initialize the status matrix.
+    vector< vector<int> > track;
     vector< vector<int> > m;
     for(int r = 0; r<=N;  ++r)
     {
         m.push_back( vector<int>() );
+        track.push_back(vector<int>() );
         for(int c = 0; c<=C; ++c)
         {
-            if(0 == c)
+            track[r].push_back(0);
+            if(0 == c && 0 == r)
             {
                 m[r].push_back(0);
             }
@@ -71,16 +76,52 @@ int  ZeroOnePack(int a[], int N, int C, vector<int>& selectedIndex)
         }
     }
 
+    for(int i = 1; i<=N; ++i)
+    {
+        for(int c = 0; c<=C; ++c)
+        {
+            m[i][c] = m[i-1][c];
+            if(c>=v[i] && m[i-1][c-v[i]] != INT_MIN)
+            {
+                if(m[i-1][c-v[i]] + v[i]>m[i][c])
+                {
+                    m[i][c] = m[i-1][c-v[i]] + v[i];
+                    track[i][c] = 1;
+                }
+            }
+        }
+    }
 
+    if(C != m[N][C] )
+    {
+        return false;;
+    }
 
+    int c = C;
+    int i = N;
 
-    return 0;
+    while(i>0)
+    {
+        if(track[i][c])
+        {
+            selectedIndex.push_back(i);
+            c -= v[i];
+            i = i-1;
+        }
+        else
+        {
+            i = i-1;    
+        }
+    }
+
+    return true;
 }
 
 
 bool isKPartitionPossible(int A[], int N, int K)
 {
      //Your code here
+     bool bPartition = true;
      int sum    = 0;
      int group  = 0;
 
@@ -93,12 +134,51 @@ bool isKPartitionPossible(int A[], int N, int K)
          return false;
      }
      sum /=  K;
+
+     vector<int> v;
+     
+     v.push_back(0);
+     for(int i = 0; i<N; ++i)
+     {
+         v.push_back(A[i]);
+     }
+
+     int Count = N;
     
     while(group != K)
     {
-
+        vector<int> selectedIndex;
+        if(!ZeroOnePack(v,Count,sum,selectedIndex))
+        {
+            break;
+        }
+        ++group;
+        Count -= selectedIndex.size();
+        v.clear();
+        v.push_back(0);
+        auto it = selectedIndex.rbegin();
+        for(int i = 0; i<N; ++i)
+        {
+            if(it !=  selectedIndex.rend())
+            {
+                if(i !=  (*it) -1)
+                {
+                    v.push_back(A[i]);
+                }
+                else
+                {
+                    ++it;    
+                }
+            }
+            else{
+                v.push_back(A[i]);
+            }
+        }      
     }
 
-
-
+    if(group == K && Count ==0)
+    {
+        return true;
+    }
+    return false;
 }
