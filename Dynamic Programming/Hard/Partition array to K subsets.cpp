@@ -47,3 +47,58 @@ Suppose, There are multiple bags with same capacity. For Every bag, we use 0-1 k
 
 
 */
+
+#include <vector>
+#include <climits>
+using namespace std; 
+
+int  ZeroOnePack(int a[], int N, int C, vector<int>& selectedIndex)
+{
+    vector< vector<int> > m;
+    for(int r = 0; r<=N;  ++r)
+    {
+        m.push_back( vector<int>() );
+        for(int c = 0; c<=C; ++c)
+        {
+            if(0 == c)
+            {
+                m[r].push_back(0);
+            }
+            else
+            {
+                m[r].push_back(INT_MIN);
+            }     
+        }
+    }
+
+
+
+
+    return 0;
+}
+
+
+bool isKPartitionPossible(int A[], int N, int K)
+{
+     //Your code here
+     int sum    = 0;
+     int group  = 0;
+
+     for(int i = 0; i<N; ++i)
+     {
+         sum += A[i];
+     }
+     if(sum % K )//Can't be diviable, so it is not partitioned
+     {
+         return false;
+     }
+     sum /=  K;
+    
+    while(group != K)
+    {
+
+    }
+
+
+
+}
