@@ -12,7 +12,7 @@
 
 using namespace std;
 
-#define MAX 10
+#define MAX 20
 typedef struct _st_Trie_Item_
 {
 	char c;
@@ -61,6 +61,10 @@ int BuildcDictionary(vector<string>& dicts, CTrie& trieObject)
 	return 0;
 }
 
+static int vnbr[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
+static int hnbr[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
+int  g_maxWordLen = 0;
+
 bool Isaccessible(char visited[MAX][MAX], int M, int N, int r, int c)
 {
 	if (r >= 0 && r < M && c >= 0 && c < N && !visited[r][c])
@@ -69,25 +73,26 @@ bool Isaccessible(char visited[MAX][MAX], int M, int N, int r, int c)
 	}
 	return false;
 }
+
 int DFSVisit(char boggle[MAX][MAX], char visited[MAX][MAX], char* strword, int wordindex,
 	int M, int N, int u, int v, CTrie& dict, unordered_set<string>& words)
 {
-	visited[u][v] = true;
-	strword[wordindex++] = boggle[u][v];
-	strword[wordindex + 1] = '\0';
-	int len = wordindex - 1;
-	while (len >= 0)
-	{
-		if (dict.Find(strword + len))
-		{
-			if (words.end() == words.find(strword + len))
-				words.insert(strword + len);
-		}
-		--len;
-	}
 
-	static int vnbr[8] = { -1, -1, -1, 0, 1, 1, 1, 0 };
-	static int hnbr[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
+	strword[wordindex++] = boggle[u][v];
+	strword[wordindex] = '\0';
+	if (!dict.CheckPrefix(strword))
+	{ 
+		--wordindex;
+		return 0;
+	}
+	if (dict.Find(strword))
+	{
+		if (words.end() == words.find(strword))
+		{
+			words.insert(strword);
+		}
+	}
+	visited[u][v] = true;
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -104,10 +109,8 @@ int DFSVisit(char boggle[MAX][MAX], char visited[MAX][MAX], char* strword, int w
 	return 0;
 }
 
-int DFS(char boggle[MAX][MAX], char visited[MAX][MAX], int M, int N,
-	CTrie& dict, unordered_set< string>& words)
+int DFS(char boggle[MAX][MAX], char visited[MAX][MAX], int M, int N, CTrie& dict, unordered_set< string>& words)
 {
-	char preword[2] = { 0 };
 	char word[MAX*MAX] = { 0 };
 	for (int r = 0; r < M; ++r)
 	{
@@ -116,9 +119,7 @@ int DFS(char boggle[MAX][MAX], char visited[MAX][MAX], int M, int N,
 			if (!visited[r][c])
 			{
 				word[0] = '\0';
-				preword[0] = boggle[r][c];
-				if (dict.CheckPrefix(preword))
-					DFSVisit(boggle, visited, word, 0, M, N, r, c, dict, words);
+				DFSVisit(boggle, visited, word, 0, M, N, r, c, dict, words);
 			}
 		}
 	}
@@ -130,9 +131,10 @@ int DFS(char boggle[MAX][MAX], char visited[MAX][MAX], int M, int N,
 
 
 
-int SearchBoggle(char boggle[MAX][MAX], vector<string>& strDict, int M, int N)
+int SearchBoggle(char boggle[MAX][MAX], char strDict[11][1000], int nWordDict, int M, int N)
 {
 	char visit[MAX][MAX];
+
 
 	for (int i = 0; i < M; ++i)
 	{
@@ -145,12 +147,27 @@ int SearchBoggle(char boggle[MAX][MAX], vector<string>& strDict, int M, int N)
 	CTrie dict;
 	unordered_set<string> words;
 
-	BuildcDictionary(strDict, dict);
+	//	BuildcDictionary(strDict, dict);
+
+	for (int i = 0; i < nWordDict; ++i)
+	{
+		dict.Insert(strDict[i]);
+	}
 
 	DFS(boggle, visit, M, N, dict, words);
+	map<string,int> sortedWords;
 	for (auto it = words.begin(); it != words.end(); ++it)
 	{
-		cout << it->c_str() << " ";
+		//printf("%s ", it->c_str());
+		sortedWords[*it] = 0;
+	}
+	for (auto it = sortedWords.begin(); it != sortedWords.end(); ++it)
+	{
+		printf("%s ", it->first.c_str());
+	}
+	if (sortedWords.empty())
+	{
+		printf("-1");
 	}
 	cout << endl;
 	return 0;
@@ -158,41 +175,39 @@ int SearchBoggle(char boggle[MAX][MAX], vector<string>& strDict, int M, int N)
 
 
 
-
+char boggle[MAX][MAX];
 int main()
 {
 	int t = 0;
 	int nWordDict = 0;
-	char boggle[MAX][MAX];
-	char strword[1000];
-	vector<string> strDict;
+	char strword[11][1000];
 
-	cin >> t;
+	scanf("%d", &t);
 
 	while (t > 0)
 	{
 		--t;
-		cin >> nWordDict;
+		scanf("%d", &nWordDict);
 		int i = 0;
+		g_maxWordLen = 100;
 		while (i < nWordDict)
 		{
-			scanf("%s", strword);
-			strDict.push_back(strword);
+			scanf("%s", strword[i]);
 			++i;
 		}
 		int R = 0;
 		int C = 0;
-		cin >> R >> C;
+		scanf("%d%d", &R, &C);
 		for (int r = 0; r < R; ++r)
 		{
 			for (int c = 0; c < C; ++c)
 			{
 				cin >> boggle[r][c];
+
 			}
 		}
 
-		SearchBoggle(boggle, strDict, R, C);
-		strDict.clear();
+		SearchBoggle(boggle, strword, nWordDict, R, C);
 	}
 
 	return 0;
@@ -207,7 +222,7 @@ CTrie::CTrie()
 
 CTrie::~CTrie()
 {
-	Clear();
+	//Clear();
 }
 
 void CTrie::InitItem(Trie_Item* p)
@@ -231,13 +246,12 @@ int CTrie::Insert(const char* word)
 	Trie_Item* cur = root;
 	while (word[index] != '\0' && 0 != cur)
 	{
-		short l = makeupperchar(word[index]);
+		char l = makeupperchar(word[index]);
 		if (0 == cur[l - 'A'].pChild &&  '\0' != word[index + 1])
 		{
 			cur[l - 'A'].pChild = new Trie_Item[sizeof(root) / sizeof(root[0])];
 			InitItem(cur[l - 'A'].pChild);
 		}
-
 		if (word[index + 1] == '\0')
 		{
 			cur[l - 'A'].c = '$';
@@ -279,23 +293,21 @@ bool CTrie::Find(const char* word)
 }
 
 bool CTrie::CheckPrefix(const char* prefix)
-
 {
-	bool bFind = true;
-	int index = 0;
+	bool	bFind = true;
+	int		index = 0;
 	Trie_Item* cur = root;
 
 	while (prefix[index] != '\0')
 	{
-		short l = makeupperchar(prefix[index]);
-		if (prefix[index + 1] == '\0')
-		{
-			break;
-		}
+		char l = makeupperchar(prefix[index]);
 		cur = cur[l - 'A'].pChild;
-		if (0 == cur)
+		if ( 0 == cur )
 		{
-			bFind = false;
+			if (prefix[index + 1] != L'\0')
+			{
+				bFind = false;
+			}
 			break;
 		}
 		++index;
