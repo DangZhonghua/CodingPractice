@@ -9,9 +9,9 @@ Note: All elements of this array should be part of exactly one partition.
 Examples:
 Input : A[] = [2, 1, 4, 5, 6], K = 3
 Output : 1, as we can divide above array into 3 parts with equal sum as (2, 4), (1, 5), (6)
- 
 
-Input : A[] = [2, 1, 5, 5, 6], K = 3 
+
+Input : A[] = [2, 1, 5, 5, 6], K = 3
 Output : 0, as it is not possible to divide above array into 3 parts with equal sum
 
 
@@ -48,137 +48,169 @@ Suppose, There are multiple bags with same capacity. For Every bag, we use 0-1 k
 
 */
 
-#include<algorithm>
+#include <algorithm>
 #include <vector>
 #include <climits>
-using namespace std; 
+#include <iostream>
+using namespace std;
 
 bool  ZeroOnePack(vector<int>& v, int N, int C, vector<int>& selectedIndex)
 {
-    // Initialize the status matrix.
-    vector< vector<int> > track;
-    vector< vector<int> > m;
-    for(int r = 0; r<=N;  ++r)
-    {
-        m.push_back( vector<int>() );
-        track.push_back(vector<int>() );
-        for(int c = 0; c<=C; ++c)
-        {
-            track[r].push_back(0);
-            if(0 == c && 0 == r)
-            {
-                m[r].push_back(0);
-            }
-            else
-            {
-                m[r].push_back(INT_MIN);
-            }     
-        }
-    }
+	// Initialize the status matrix.
+	vector< vector<int> > track;
+	vector< vector<int> > m;
+	for (int r = 0; r <= N; ++r)
+	{
+		m.push_back(vector<int>());
+		track.push_back(vector<int>());
+		for (int c = 0; c <= C; ++c)
+		{
+			track[r].push_back(0);
+			if (0 == c && 0 == r)
+			{
+				m[r].push_back(0);
+			}
+			else
+			{
+				m[r].push_back(INT_MIN);
+			}
+		}
+	}
 
-    for(int i = 1; i<=N; ++i)
-    {
-        for(int c = 0; c<=C; ++c)
-        {
-            m[i][c] = m[i-1][c];
-            if(c>=v[i] && m[i-1][c-v[i]] != INT_MIN)
-            {
-                if(m[i-1][c-v[i]] + v[i]>m[i][c])
-                {
-                    m[i][c] = m[i-1][c-v[i]] + v[i];
-                    track[i][c] = 1;
-                }
-            }
-        }
-    }
+	for (int i = 1; i <= N; ++i)
+	{
+		for (int c = 0; c <= C; ++c)
+		{
+			m[i][c] = m[i - 1][c];
+			if (c >= v[i] && m[i - 1][c - v[i]] != INT_MIN)
+			{
+				if (m[i - 1][c - v[i]] + v[i] >= m[i][c])
+				{
+					m[i][c] = m[i - 1][c - v[i]] + v[i];
+					track[i][c] = 1;
+				}
+			}
+		}
+	}
 
-    if(C != m[N][C] )
-    {
-        return false;;
-    }
+	if (C != m[N][C])
+	{
+		return false;;
+	}
 
-    int c = C;
-    int i = N;
+	int c = C;
+	int i = N;
 
-    while(i>0)
-    {
-        if(track[i][c])
-        {
-            selectedIndex.push_back(i);
-            c -= v[i];
-            i = i-1;
-        }
-        else
-        {
-            i = i-1;    
-        }
-    }
+	while (i>0)
+	{
+		if (track[i][c])
+		{
+			selectedIndex.push_back(i);
+			c -= v[i];
+			i = i - 1;
+		}
+		else
+		{
+			i = i - 1;
+		}
+	}
 
-    return true;
+	return true;
 }
 
 
 bool isKPartitionPossible(int A[], int N, int K)
 {
-     //Your code here
-     bool bPartition = true;
-     int sum    = 0;
-     int group  = 0;
+	//Your code here
+	bool bPartition = false;
+	int sum = 0;
+	int group = 0;
 
-     for(int i = 0; i<N; ++i)
-     {
-         sum += A[i];
-     }
-     if(sum % K )//Can't be diviable, so it is not partitioned
-     {
-         return false;
-     }
-     sum /=  K;
+	for (int i = 0; i<N; ++i)
+	{
+		sum += A[i];
+	}
+	if (sum % K)//Can't be dividable, so it is not partitioned
+	{
+		cout << 0<<endl;
+		return false;
+	}
+	sum /= K;
 
-     vector<int> v;
-     
-     v.push_back(0);
-     for(int i = 0; i<N; ++i)
-     {
-         v.push_back(A[i]);
-     }
+	vector<int> v;
 
-     int Count = N;
-    
-    while(group != K)
-    {
-        vector<int> selectedIndex;
-        if(!ZeroOnePack(v,Count,sum,selectedIndex))
-        {
-            break;
-        }
-        ++group;
-        Count -= selectedIndex.size();
-        v.clear();
-        v.push_back(0);
-        auto it = selectedIndex.rbegin();
-        for(int i = 0; i<N; ++i)
-        {
-            if(it !=  selectedIndex.rend())
-            {
-                if(i !=  (*it) -1)
-                {
-                    v.push_back(A[i]);
-                }
-                else
-                {
-                    ++it;    
-                }
-            }
-            else{
-                v.push_back(A[i]);
-            }
-        }      
-    }
+	v.push_back(0);
+	for (int i = 0; i<N; ++i)
+	{
+		v.push_back(A[i]);
+	}
+	vector<int> leftelements;
+	int Count = N;
+	vector<int>* pSubArray = &v;
+	vector<int>* pLeftSubArray = &leftelements;
 
-    if(group == K && Count ==0)
-    {
-        return true;
-    }
-    return false;
+	while (group != K)
+	{
+		vector<int> selectedIndex;
+		if (!ZeroOnePack(*pSubArray, Count, sum, selectedIndex))
+		{		
+			break;
+		}
+		++group;
+		//Decrease the element count.
+		Count -= selectedIndex.size();
+		pLeftSubArray->push_back(0);
+		auto it = selectedIndex.rbegin();
+
+		for (int i = 1; i<pSubArray->size(); ++i)
+		{
+			if (it != selectedIndex.rend())
+			{
+				if (i != (*it))
+				{
+					pLeftSubArray->push_back(pSubArray->at(i));
+				}
+				else
+				{
+					++it;
+				}
+			}
+			else{
+				pLeftSubArray->push_back(pSubArray->at(i));
+			}
+		}
+		auto    t = pSubArray;
+		pSubArray = pLeftSubArray;
+		pLeftSubArray = t;
+		pLeftSubArray->clear();
+	}
+
+	if (group == K && Count == 0)
+	{
+		bPartition = true;
+	}
+
+	if (bPartition)
+	{
+		cout<<1<<endl;
+	}
+	else
+	{
+		cout<<0<<endl;
+	}
+	return bPartition;
 }
+
+
+/*
+int main()
+{
+	int K = 3;
+	//int a[] = { 26, 86, 23, 100, 41, 43, 99, 14, 99, 91 };
+	int a[] = { 29, 28, 51, 85, 59, 21, 25, 23, 70, 97, 82, 31, 85, 93, 73 };
+
+
+	isKPartitionPossible(a, _countof(a), K);
+	return 0;
+}
+*/
