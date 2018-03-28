@@ -118,10 +118,9 @@ bool  ZeroOnePack(vector<int>& v, int N, int C, vector<int>& selectedIndex)
 	return true;
 }
 
-
-bool isKPartitionPossible(int A[], int N, int K)
+bool doPartition(int A[], int N, int K)
 {
-	//Your code here
+    	//Your code here
 	bool bPartition = false;
 	int sum = 0;
 	int group = 0;
@@ -132,10 +131,10 @@ bool isKPartitionPossible(int A[], int N, int K)
 	}
 	if (sum % K)//Can't be dividable, so it is not partitioned
 	{
-		cout << 0<<endl;
 		return false;
 	}
 	sum /= K;
+
 
 	vector<int> v;
 
@@ -190,15 +189,16 @@ bool isKPartitionPossible(int A[], int N, int K)
 		bPartition = true;
 	}
 
-	if (bPartition)
-	{
-		cout<<1<<endl;
-	}
-	else
-	{
-		cout<<0<<endl;
-	}
 	return bPartition;
+}
+
+
+bool isKPartitionPossible(int A[], int N, int K)
+{
+    bool b = doPartition(A,N,K);
+    
+    
+    return b;
 }
 
 
