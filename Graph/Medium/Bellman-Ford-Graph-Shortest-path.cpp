@@ -1,6 +1,7 @@
 #include<climits>
 #include<unordered_map>
 #include<vector>
+#include<iostream>
 using namespace std;
 
 int Init_Single_Source(unordered_map<int,int>& mapD, int V, int s)
@@ -63,8 +64,40 @@ int Bellman_Ford( vector<vector<int> >& G, int V, int s)
 
     if(!bRelax)
     {
-    
+        for(int i  = 0; i <V; ++i)
+        {
+            cout<<"["<<s<<":"<<i<<":"<<mapD[i]<<"].\n";
+        }
     }
 
     return 0;
+}
+
+int main()
+{
+
+	int t = 0;
+	int V = 0;
+	cin >> t;
+	while (t)
+	{
+		--t;
+
+		cin >> V;
+		vector< vector<int> > D;
+		for (int u = 0; u < V; ++u)
+		{
+			D.push_back(vector<int>());
+			for (int v = 0; v < V; ++v)
+			{
+				int e;
+				cin >> e;
+				D[u].push_back(e);
+			}
+		}
+		Bellman_Ford(D, V,V-1);
+
+	}
+
+	return 0;
 }
