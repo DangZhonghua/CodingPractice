@@ -91,7 +91,7 @@ int KnightWalk(int N, int M, int s1, int s2, int d1, int d2)
             {
 				bfind = true;
 				break;
-                
+
 			}
 
 			for (int i = 0; i < 8; ++i)
@@ -121,8 +121,15 @@ int KnightWalk(int N, int M, int s1, int s2, int d1, int d2)
 
 	}
 
-
-	cout << nLevel << endl;
+   if(bfind)
+   {
+    cout << nLevel << endl;
+   }
+   else
+   {
+       cout<<-1<<endl;
+   }
+	
 
 	return 0;
 }
