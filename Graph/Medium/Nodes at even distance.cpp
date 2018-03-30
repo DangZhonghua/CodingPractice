@@ -70,70 +70,80 @@ struct BFSItem
 
 int BFS(vector< vector<int> >& G, int V, long long& tEvenNumber)
 {
-    queue<BFSItem> levelQ;
-    vector<int>  visited;
-    BFSItem sItem; 
+    queue<BFSItem>  levelQ;
+    vector<int>     visited;
     
     int nVertex = 0;
     int maxEdge = 0;
-    for(int i = 0; i<V; ++i)
-    {
-        if(!G[i].empty())
-        {
-            sItem.vertex = i;
-            levelQ.push(sItem);
-            break;
-        }
-        
-    }
+
     for(int i= 0; i<V; ++i)
     {
         visited.push_back(0);
     }
+    tEvenNumber             = 0;
+    long long nEven =0;
+    long long nOdd = 0;
     
-    int nEven =0;
-    int nOdd = 0;
-    
-    tEvenNumber  = 0;
-    visited[sItem.vertex] = 1;
-    while(!levelQ.empty())
+    for(int i = 0; i<V; ++i)
     {
-        BFSItem h = levelQ.front();
-        levelQ.pop();
-        ++nVertex;
-        for(int i = 0; i<G[h.vertex].size(); ++i)
+        if(!G[i].empty() )
         {
-            if(visited[G[h.vertex][i]] )
+            if(visited[i])
             {
                 continue;
             }
-            BFSItem  lv;
-            lv.edges = h.edges+1;
-            lv.vertex = G[h.vertex][i];
-
-            if((lv.edges%2) ==0)
-            {
-               ++nEven;
-            }
-            else
-            {
-                ++nOdd;
-            }
             
-            levelQ.push(lv);
-            visited[G[h.vertex][i]] = 1;
+            BFSItem sItem;
+            sItem.vertex = i;
+            
+            visited[i] = 1;
+            
+            levelQ.push(sItem);
+            
+            while(!levelQ.empty())
+            {
+                BFSItem h = levelQ.front();
+                levelQ.pop();
+                ++nVertex;
+                
+                if(h.edges>maxEdge)
+                {
+                    maxEdge = h.edges;
+                }
+                
+                if((h.edges)%2 ==0)
+                {
+                    ++nEven;
+                }
+                else
+                {
+                    ++nOdd;
+                }
+                
+                for(int i = 0; i<G[h.vertex].size(); ++i)
+                {
+                    if(visited[G[h.vertex][i]] )
+                    {
+                        continue;
+                    }
+                    BFSItem  lv;
+                    lv.edges            = h.edges+1;
+                    lv.vertex           = G[h.vertex][i];
+                    visited[lv.vertex]  = 1;
+                    levelQ.push(lv);
+                }
+            }
         }
     }
+    
 
-    if(nEven)
+   
+    tEvenNumber = ((nEven*(nEven-1))/2 + (nOdd*(nOdd-1))/2);
+    
+    if(378 == tEvenNumber)
     {
-        tEvenNumber += (nEven*(nEven-1))/2;
+       //cout<<nVertex<<":"<<nEven<<":"<<nOdd<<endl;
     }
-    if(nOdd)
-    {
-        tEvenNumber += (nOdd*(nOdd-1))/2;
-    }
-
 
 
     return 0;
@@ -171,6 +181,7 @@ int main()
         {
             cin>>s>>e;
             G[s-1].push_back(e-1);
+            G[e-1].push_back(s-1);
         }
         QueryEvenDistanceNodeNumber(G,N);
         G.clear();
