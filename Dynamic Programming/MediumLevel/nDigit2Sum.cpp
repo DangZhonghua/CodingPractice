@@ -41,7 +41,7 @@ int CalcNoOfNDigitOfSum(int n, int sum)
        {
           M[s][d] += ((M[s-v][d-1])%num_mode);
        }
-       if(s == v)
+       if(s == v) //This is for leading zero case.
        {
            M[s][d] +=1;
        }
