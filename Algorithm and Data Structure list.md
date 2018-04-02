@@ -24,8 +24,8 @@
 7. heap:  heap sort and priority queue
 8. Graph: build mode for practice problem into graph form.
 ##Graph
-    Graph can be representedn by adjacency list and adjacency matrix. for sparse graph, adjacency list can save space; for dense graph, adjacency matrix have low cost for graph access.
-    Vertex and edges(connection or relationship between vertex) are basic  elements of graph.
+>Graph can be representedn by adjacency list and adjacency matrix. for sparse graph, adjacency list can save space; for dense graph, adjacency matrix have low cost for graph access.
+>Vertex and edges(connection or relationship between vertex) are basic  elements of graph.
 
 1. Connect Graph, Disconnect Graph
 2. Direct Graph
@@ -66,4 +66,12 @@
 2. Dynamic Programming
 3. Geedy Programming
 4. Linear Pogramming
+
+# Argument Algorithm
+>These algorithm introduced in textbook are common algorithm, but for the practice, typical algorithm
+>need do some change to apply the practical problem. Know the essentience of common algorithm is the prerequest.
+>enchance the logical of common algorithm based on keep invariant of common algorithm.
+
+# Argument Data Structure
+>There is typical argument data structure lecture in CLRS: interval tree which argument of BST to support range operation.
       
