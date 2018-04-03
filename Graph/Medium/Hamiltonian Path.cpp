@@ -38,110 +38,111 @@ using namespace std;
 
 enum VERTEXCOLOR
 {
-    WHITE,
-    GRAY,
-    BLACK
+	WHITE,
+	GRAY,
+	BLACK
 };
 
 /* path length is the vertex count, not the edge count */
-int DFSVisit(vector< vector<int> >& G, vector<int>& visited, vector<int>& path, int u,  int V)
+int DFSVisit(vector< vector<int> >& G, vector<int>& visited, vector<int>& path, int u, int V)
 {
-    visited[u] = GRAY;
-    path.push_back(u);
-    if(path.size() == V)
-    {
-        visited[u] = WHITE;
-        return 0;
-    }
-    
-    for(auto it = G[u].begin(); it != G[u].end();++it)
-    {
-        if(WHITE == visited[*it])
-        {
-            DFSVisit(G,visited,path,*it, V);
-            if(path.size() == V)
-            {
-                break;               
-            }
-            else
-            {
-                path.pop_back();
-            }
-        }
-    }
-    visited[u] = WHITE;
-    return 0;
+	visited[u] = GRAY;
+	path.push_back(u);
+	if (path.size() == V)
+	{
+		visited[u] = WHITE;
+		return 0;
+	}
+
+	for (auto it = G[u].begin(); it != G[u].end(); ++it)
+	{
+		if (WHITE == visited[*it])
+		{
+			DFSVisit(G, visited, path, *it, V);
+			if (path.size() == V)
+			{
+				break;
+			}
+			else
+			{
+				path.pop_back();
+			}
+		}
+	}
+	visited[u] = WHITE;
+	return 0;
 }
 
 
 int HamiltonianPathDetect(vector< vector<int> >& G, int V)
 {
-    bool bFind = false;
-    vector<int> visited;
-    vector<int> path;
+	bool bFind = false;
+	vector<int> visited;
+	vector<int> path;
 
-    for(int i = 0; i<V; ++i)
-    {
-        visited.push_back(WHITE);
-    }
-    
-    for(int i = 0; i<V; ++i)
-    {
-        DFSVisit(G,visited,path,i,V);
-        if(path.size() == V)
-        {
-            bFind = true;
-            break;
-        }
-        path.clear();
-        for(int v = 0; v<V; ++v)
-        {
-            visited[v] = WHITE;
-        }
-    }
+	for (int i = 0; i < V; ++i)
+	{
+		visited.push_back(WHITE);
+	}
 
-    cout<<(bFind?1:0)<<endl;
-    
-    if(bFind)
-    {
-        for(auto it = path.begin(); it != path.end(); ++it)
-        {
-            cout<<*it<<" ";
-        }
-        cout<<endl;
-    }
+	for (int i = 0; i < V; ++i)
+	{
+		DFSVisit(G, visited, path, i, V);
+		if (path.size() == V)
+		{
+			bFind = true;
+			break;
+		}
+		path.clear();
+		for (int v = 0; v < V; ++v)
+		{
+			visited[v] = WHITE;
+		}
+	}
 
-    return 0;
+	cout << (bFind ? 1 : 0) << endl;
+
+	if (bFind)
+	{
+		for (auto it = path.begin(); it != path.end(); ++it)
+		{
+			// +1 for transform zero based to one based
+			cout << *it +1 << " ";
+		}
+		cout << endl;
+	}
+
+	return 0;
 }
 
 
 int main()
 {
 
-    int t = 0;
-    int V,E;
-    vector< vector<int> > G;
-    cin>>t;
-    
-    while(t--)
-    {
-        cin>>V>>E;
+	int t = 0;
+	int V, E;
+	vector< vector<int> > G;
+	cin >> t;
 
-        G.clear();
-        for(int i = 0; i<V; ++i)
-        {
-            G.push_back(vector<int>());
-        }
-        for(int i = 0; i<E; ++i)
-        {
-            int v1, v2;
-            cin>>v1>>v2;
-            G[v1-1].push_back(v2-1);
-            G[v2-1].push_back(v1-1);
-        }
-        HamiltonianPathDetect(G,V);
-    }
+	while (t--)
+	{
+		cin >> V >> E;
+
+		G.clear();
+		for (int i = 0; i < V; ++i)
+		{
+			G.push_back(vector<int>());
+		}
+		for (int i = 0; i < E; ++i)
+		{
+			int v1, v2;
+			cin >> v1 >> v2;
+			G[v1 - 1].push_back(v2 - 1);
+			G[v2 - 1].push_back(v1 - 1);
+		}
+		HamiltonianPathDetect(G, V);
+	}
 
 
-    return 0;
+	return 0;
 }
