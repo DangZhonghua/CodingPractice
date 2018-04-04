@@ -5,12 +5,12 @@
 
 Consider a directed graph whose vertices are numbered from 1 to n. There is an edge from a vertex i to a vertex j iff either j = i + 1 or j = 3i. The task is to find the minimum number of edges in a path in G from vertex 1 to vertex n.
 
-Input:  
+Input:
 The first line of input contains an integer T denoting the number of test cases. The description of T test cases follows.
 
-Each test case contains a value of n. 
+Each test case contains a value of n.
 
-Output:  
+Output:
 Print the number of edges in the shortest path from 1 to n.
 
 Constraints:
@@ -38,78 +38,78 @@ using namespace std;
 
 int CalcShortestPath(int N)
 {
-    int d = 0;
-    struct BFSItem
-    {
-        int v;
-        int d;
-    };
+	int d = 0;
+	struct BFSItem
+	{
+		int v;
+		int d;
+	};
 
-    vector<int> visited;
-    queue<BFSItem> bfsQ;
+	vector<int> visited;
+	queue<BFSItem> bfsQ;
 
-    for(int i = 0; i<=N; ++i)
-    {
-        visited.push_back(0);
-    }
-    
-    BFSItem item;
-    item.v = 1;
-    item.d = 0;
-    visited[1] = 1;
+	for (int i = 0; i <= N; ++i)
+	{
+		visited.push_back(0);
+	}
 
-    bfsQ.push(item);
+	BFSItem item;
+	item.v = 1;
+	item.d = 0;
+	visited[1] = 1;
 
-    while(!bfsQ.empty())
-    {
-        BFSItem head = bfsQ.front();
-        bfsQ.pop();
-        if(!visited[head.v + 1])
-        {
-            visited[head.v + 1] = 1;
-            BFSItem item;
-            item.d = head.d+1;
-            item.v = head.v+1;
-            if(item.v == N)
-            {
-                d = item.d;
-                break;
-            }
-            bfsQ.push(item);
-        }
-        if(!visited[head.v*3])
-        {
-            visited[head.v*3] = 1;
-            BFSItem item;
-            item.d = head.d+1;
-            item.v = head.v*3;
-            if(item.v == N)
-            {
-                d = item.d;
-                break;
-            }
-            bfsQ.push(item);
-        }
-    }
-    bfsQ.clear();
-    cout<<d<<endl;
+	bfsQ.push(item);
+
+	while (!bfsQ.empty())
+	{
+		BFSItem head = bfsQ.front();
+		bfsQ.pop();
+		if ( (head.v + 1) <=N && !visited[head.v + 1])
+		{
+			visited[head.v + 1] = 1;
+			BFSItem item;
+			item.d = head.d + 1;
+			item.v = head.v + 1;
+			if (item.v == N)
+			{
+				d = item.d;
+				break;
+			}
+			bfsQ.push(item);
+		}
+		if ((head.v * 3)<=N && !visited[head.v * 3])
+		{
+			visited[head.v * 3] = 1;
+			BFSItem item;
+			item.d = head.d + 1;
+			item.v = head.v * 3;
+			if (item.v == N)
+			{
+				d = item.d;
+				break;
+			}
+			bfsQ.push(item);
+		}
+	}
+	//bfsQ.clear();
+	cout << d << endl;
 
 
-    return 0;
+	return 0;
 
 }
 
 int main()
 {
-    int t = 0;
-    int N = 0;
+	int t = 0;
+	int N = 0;
 
-    cin>>t;
+	cin >> t;
 
-    while(t--)
-    {
-        cin>>N;
-        CalcShortestPath(N);
-    }
+	while (t--)
+	{
+		cin >> N;
+		CalcShortestPath(N);
+	}
 
 }
