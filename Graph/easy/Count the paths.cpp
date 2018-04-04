@@ -47,7 +47,7 @@ int DFSVisit(int d, int p, int u, vector< vector<int> >& matrix, vector<int>& vi
 	{
 		for (auto it = matrix[u].begin(); it != matrix[u].end(); ++it)
 		{
-			if ( WHITE == visited[*it] && u != *it)
+			if ( WHITE == visited[*it] && u != *it /* eliminate the self loop since it is simple path*/)
 			{
 				DFSVisit(d, u, *it, matrix, visited, path, find);
 			}
