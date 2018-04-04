@@ -34,3 +34,10 @@ Output:
 0
 
 */
+
+/*
+
+This problem main purpose: construct BST from tree pre-order seq. if the BST can be constructed
+so its true.
+
+*/
