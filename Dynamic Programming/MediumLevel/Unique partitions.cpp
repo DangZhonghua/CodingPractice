@@ -45,3 +45,11 @@ These 5 possible ways are there so that we can get the sum 4 .
 
 
 */
+
+/*
+
+    Dynamic Programming: (1)Optimal sub-structure (2) overlapped sub-problems. 
+    But it is general description. For practical problem: analyze the charactic of problem target with
+    reduce the problem scale, and but whole from small scale.
+
+*/
