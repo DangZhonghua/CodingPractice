@@ -67,12 +67,48 @@ using namespace std;
 
 static const int max_count = 40;
 
+struct sumset
+{
+  int ncount;
+  vector< vector<int> > seg;
+  sumset()
+  {
+      ncount = 0;
+  }
+};
+
 int UniquePartition(int N)
 {
-    vector< vector<int> > segarr[max_count];
-
-    vector< vector<int> > baseSeg;
+    vector< sumset > segarr[max_count];
     
+    segarr[0].push_back(sumset());
+
+    vector<int> oneseg;
+    oneseg.push_back(1);
+    
+    sumset baseset;
+    baseset.ncount = 1;
+    baseset.seg.push_back(oneseg);
+
+    segarr[1].push_back(sumset());
+    segarr[1].push_back(baseset);
+
+    for(int n = 2; n<=N; ++n)
+    {
+        segarr[n].push_back(sumset());
+        oneseg.clear();
+        oneseg.push_back(n);
+        
+        baseset.ncount = 1;
+        baseset.seg.push_back(oneseg);
+
+    }
+    
+    
+    
+
+    
+  
 
 
 
