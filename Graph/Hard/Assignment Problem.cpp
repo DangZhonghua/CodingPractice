@@ -34,12 +34,14 @@ Output:
 3
 
 Explanation: 
-The first person takes times 3 and 5 for jobs 1 and 2 respectively. The second person takes times 10 and 1 for jobs 1 and 2 respectively. We can see that the optimal assignment will be to give job 1 to person 1 and job 2 to person 2 for a total for 3 + 1 = 4.
+The first person takes times 3 and 5 for jobs 1 and 2 respectively. 
+The second person takes times 10 and 1 for jobs 1 and 2 respectively. 
+We can see that the optimal assignment will be to give job 1 to person 1 and job 2 to person 2 for a total for 3 + 1 = 4.
 
 */
 
 /*
-Solution: This is optimal bipartite graph matching problem which can be sloved by 'Hungarian Method'
+Solution: This is optimal bipartite graph matching problem which can be sloved by 'Hunganrian Method'
 
 Refer to:
 https://en.wikipedia.org/wiki/Hungarian_algorithm

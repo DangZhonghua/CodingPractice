@@ -1,7 +1,10 @@
 /*
 https://practice.geeksforgeeks.org/problems/unique-partitions/0
 
-Given a positive integer n, generate all possible unique ways to represent n as sum of positive integers. The output should be printed in lexicographically decreasing order partitions.  For example, if given number is 52, then 52 itself should be printed first, then 51 1, then 50 2,  ... and at the end partition with all 1s.
+Given a positive integer n, generate all possible unique ways to represent n as sum of positive integers.
+The output should be printed in lexicographically decreasing order partitions.
+For example, if given number is 52, then 52 itself should be printed first, then 51 1, then 50 2,  ... 
+and at the end partition with all 1s.
 
 Note :  2+1 and 1+2 are considered as duplicates.
 
@@ -53,3 +56,46 @@ These 5 possible ways are there so that we can get the sum 4 .
     reduce the problem scale, and but whole from small scale.
 
 */
+
+
+#include<iostream>
+#include<vector>
+#include<list>
+#include<unordered_map>
+using namespace std;
+
+
+static const int max_count = 40;
+
+int UniquePartition(int N)
+{
+    vector< vector<int> > segarr[max_count];
+
+    vector< vector<int> > baseSeg;
+    
+
+
+
+
+    
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        UniquePartition(N);
+    }
+
+
+    return 0;
+}
