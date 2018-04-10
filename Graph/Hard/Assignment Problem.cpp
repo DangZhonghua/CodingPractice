@@ -41,10 +41,133 @@ We can see that the optimal assignment will be to give job 1 to person 1 and job
 */
 
 /*
-Solution: This is optimal bipartite graph matching problem which can be sloved by 'Hunganrian Method'
+Solution: This is optimal bipartite graph matching problem which can be sloved by 'Hungarian Method'
 
 Refer to:
 https://en.wikipedia.org/wiki/Hungarian_algorithm
 https://en.wikipedia.org/wiki/Bipartite_graph#Matching
 
 */
+
+#include<iostream>
+#include<climits>
+#include<vector>
+using namespace std;
+
+
+static const int max = 31;
+
+
+struct HunPoint
+{
+    int r;
+    int c;
+};
+
+struct HunLine
+{
+    HunPoint s;
+    HunPoint e;
+};
+
+
+
+int Hungarian_AdjustCost(int costm[max][max],int N, vector<HunLine>& lines)
+{
+
+
+    return 0;
+}
+
+
+int Hungarian_lines(int costm[max][max], int N, int& lineNum)
+{
+
+
+
+    return 0;
+}
+
+int Hungarian_drawlines(int costm[max][max], int N)
+{
+
+    int nlines = 0;
+    while(1)
+    {
+        nlines = 0;
+       Hungarian_lines(costm,N,nlines);
+        if(nlines<N)
+        {
+            
+        }
+        else
+        {
+         break;    
+        }
+    }
+
+    return 0;
+}
+
+int Hungarian_InitCostMatrix(int costm[max][max], int N)
+{
+    //operate rows of cost matrix.
+    for(int r = 0; r<N; ++r)
+    {
+        int min = INT_MAX;
+        for(int c = 0; c<N; ++c)
+        {
+            if(min>costm[r][c])
+            {
+                min = costm[r][c];
+            }
+        }
+
+        for(int c = 0; c<N; ++c)
+        {
+            costm[r][c] -= min;
+        }
+    }
+
+    //operate columns of cost matrix
+    for(int c = 0; c<N; ++c)
+    {
+        int min = INT_MAX;
+        for(int r = 0; r< N; ++r)
+        {
+            if(min>costm[c][r])
+            {
+                min = costm[c][r];
+            }
+        }
+
+        for(int r = 0; r<N; ++r)
+        {
+            costm[c][r] -= min;
+        }
+    }
+
+    return 0;
+}
+
+int Hungarian_algorithm(int costm[max][max], int N)
+{
+    //Init cost matrix
+    Hungarian_InitCostMatrix(costm, N);
+
+
+    //Draw least number of lines    
+    Hungarian_drawlines(costm,N);
+
+
+
+    return 0;
+}
+
+
+int main()
+{
+
+
+    return 0;
+}
