@@ -98,6 +98,7 @@ int UniquePartition(int N)
 
         while(base >= (n/2 + n%2) || preindex<segarr[n-1].size())
         {
+            
             if(base >=segarr[n-1][preindex].seg[0])
             {
                 parition p;
