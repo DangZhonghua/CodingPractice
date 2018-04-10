@@ -70,11 +70,25 @@ struct HunLine
     HunPoint e;
 };
 
+bool isHorizontalLine(HunLine& line)
+{
+    if(line.s.r == line.e.r)
+    {
+        return true;
+    }
+    return false;
+}
 
+int Hungarian_genMinCost(int costm[max][max],int N, vector<HunLine>& lines)
+{
+
+
+    return 0;
+}
 
 int Hungarian_AdjustCost(int costm[max][max],int N, vector<HunLine>& lines)
 {
-
+    
 
     return 0;
 }
