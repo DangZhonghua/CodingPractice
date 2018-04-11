@@ -84,9 +84,57 @@ bool isHorizontalLine(HunLine& line)
     return false;
 }
 
-int Hungarian_genMinCost(int costm[MAX][MAX],int N, vector<HunLine>& lines)
+int Hungarian_genAssignment(int costm[MAX][MAX],int N, vector<HunLine>& lines, vector<HunPoint>& assignment)
 {
 
+    unordered_set<int> hselect;
+    unordered_set<int> vselect;
+    
+    for(int i = 0; i<lines.size(); ++i)
+    {
+        if(!isHorizontalLine(lines[i]) )
+        {
+            for(int r = 0; r < N; ++r)
+            {
+                if( 0 == costm[r][lines[i].s.c])
+                {
+                    if(hselect.end() == hselect.find(r) && vselect.end() == vselect.find(lines[i].s.c))
+                    {
+                        hselect.insert(r);
+                        vselect.insert(lines[i].s.c);
+                        HunPoint point;
+                        point.r = r;
+                        point.c = lines[i].s.c;
+                        assignment.push_back(point);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i<lines.size(); ++i)
+    {
+        if(isHorizontalLine(lines[i]) )
+        {
+            for(int c = 0; c<N; ++c)
+            {
+                if(0 == costm[lines[i].s.r][c])
+                {
+                    if(hselect.end() == hselect.find(lines[i].s.r) && vselect.end() == vselect.find(c))
+                    {
+                        hselect.insert(lines[i].s.r);
+                        vselect.insert(c);
+                        HunPoint point;
+                        point.r = lines[i].s.r;
+                        point.c = c;
+                        assignment.push_back(point);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     return 0;
 }
@@ -155,6 +203,42 @@ int Hungarian_AdjustCost(int costm[MAX][MAX],int N, vector<HunLine>& lines)
 
     return 0;
 }
+struct zeroprop
+{
+  int nZeros;
+  bool bRow; 
+  zeroprop(int n, bool b)
+  {
+      nZeros = n;
+      bRow = b;
+  }
+};
+class zeropropComp
+{
+public:
+    zeropropComp(){};
+    ~zeropropComp(){};
+public:
+    bool operator () (const zeroprop& lhs, const zeroprop& rhs) const
+    {
+        if(lhs.nZeros>rhs.nZeros)
+        {
+            return true;
+        }
+        else if(lhs.nZeros == rhs.nZeros)
+        {
+            if(lhs.bRow)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+};
 
 
 //Draw virtual mininum number lines to cover all zeros in cost matrix
@@ -193,7 +277,9 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
         };
     };
 
-    multimap<int, lineprop, std::greater<int> >      mapzerosCount2Direct;
+
+
+    multimap<zeroprop, lineprop, zeropropComp >      mapzerosCount2Direct;
 
 
     lines.clear();
@@ -237,12 +323,12 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
         
        for(auto itrow = rowzeromap.begin(); itrow != rowzeromap.end(); ++itrow)
        {
-         mapzerosCount2Direct.insert( {itrow->second,lineprop(true,itrow->first)} );
+         mapzerosCount2Direct.insert( {zeroprop(itrow->second,true),lineprop(true,itrow->first)} );
        }
 
        for(auto itcol = columnzeromap.begin(); itcol != columnzeromap.end(); ++itcol)
        {
-         mapzerosCount2Direct.insert( {itcol->second,lineprop(false,itcol->first)} );
+         mapzerosCount2Direct.insert( {zeroprop(itcol->second,false),lineprop(false,itcol->first)} );
        }
       
 
@@ -307,6 +393,7 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 
           }    
       }
+
 
     }while(false);
 
@@ -393,18 +480,43 @@ int Hungarian_InitCostMatrix(int costm[MAX][MAX], int N)
     return 0;
 }
 
+int Hungarian_genCost(int cost[MAX][MAX],int N, vector<HunPoint>& assignment)
+{
+    int minicost  = 0;
+    
+    for(int i = 0; i<assignment.size(); ++i)
+    {
+        cout<<assignment[i].r<<":"<<assignment[i].c<<endl;
+        minicost += cost[assignment[i].r][assignment[i].c];
+    }
+    
+
+    return minicost;
+}
+
 int Hungarian_algorithm(int costm[MAX][MAX], int N)
 {
+    int cost[MAX][MAX];
+    //Keep copy
+    for(int r = 0; r<N; ++r)
+    {
+        for(int c = 0; c<N; ++c)
+        {
+            cost[r][c] = costm[r][c];
+        }
+    }
+
     //Init cost matrix
     Hungarian_InitCostMatrix(costm, N);
-
-
     //Draw least number of lines
     vector<HunLine> lines;
     Hungarian_lines(costm,N,lines);
+    vector<HunPoint> assignment;
+    Hungarian_genAssignment(costm, N, lines, assignment);
+    
+   int miniCost = Hungarian_genCost(cost,N, assignment);
 
-
-
+    cout<<miniCost<<endl;
     return 0;
 }
 
