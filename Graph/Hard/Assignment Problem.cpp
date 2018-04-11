@@ -52,10 +52,14 @@ https://en.wikipedia.org/wiki/Bipartite_graph#Matching
 #include<iostream>
 #include<climits>
 #include<vector>
+#include<unordered_set>
+#include<unordered_map>
+#include<map>
+#include<functional>
 using namespace std;
 
 
-static const int max = 31;
+static const int MAX = 31;
 
 
 struct HunPoint
@@ -68,6 +72,7 @@ struct HunLine
 {
     HunPoint s;
     HunPoint e;
+    bool row;
 };
 
 bool isHorizontalLine(HunLine& line)
@@ -79,51 +84,275 @@ bool isHorizontalLine(HunLine& line)
     return false;
 }
 
-int Hungarian_genMinCost(int costm[max][max],int N, vector<HunLine>& lines)
+int Hungarian_genMinCost(int costm[MAX][MAX],int N, vector<HunLine>& lines)
 {
 
 
     return 0;
 }
 
-int Hungarian_AdjustCost(int costm[max][max],int N, vector<HunLine>& lines)
+int Hungarian_AdjustCost(int costm[MAX][MAX],int N, vector<HunLine>& lines)
 {
-    
-
-    return 0;
-}
-
-
-int Hungarian_lines(int costm[max][max], int N, int& lineNum)
-{
-
-
-
-    return 0;
-}
-
-int Hungarian_drawlines(int costm[max][max], int N)
-{
-
-    int nlines = 0;
-    while(1)
+    unordered_set<int> rowlines;
+    unordered_set<int> collines;
+    for(int i= 0; i<lines.size(); ++i)
     {
-        nlines = 0;
-       Hungarian_lines(costm,N,nlines);
-        if(nlines<N)
+        if(isHorizontalLine(lines[i]))
         {
-            
+            rowlines.insert(lines[i].s.r);
         }
         else
         {
-         break;    
+            collines.insert(lines[i].s.c);
+        }
+    }
+    //select the minimum value which is not covered by any lines.
+    int min = INT_MAX;
+    
+    for(int r = 0; r<N; ++r)
+    {
+        if(rowlines.end() != rowlines.find(r))
+        {
+            continue;
+        }
+        for(int c = 0; c<N;++c)
+        {
+            if(collines.end() != collines.find(c))
+            {
+                continue;
+            }
+            if(min > costm[r][c])
+            {
+                min = costm[r][c];
+            }
+        }
+    }
+    //subtract this minimum value from every uncovered rows.
+    for(int r = 0; r<N; ++r)
+    {
+        if(rowlines.end() != rowlines.find(r))
+        {
+            continue;
+        }
+        for(int c = 0; c<N; ++c)
+        {
+            costm[r][c] -= min;
+        }
+    }
+    //add this minimum value to these covered columns.
+    
+    for(int c = 0; c<N; ++c)
+    {
+        if(collines.end() == collines.find(c))
+        {
+            continue;
+        }
+        for(int r = 0; r<N; ++r)
+        {
+            costm[r][c] += min;
         }
     }
 
     return 0;
 }
 
-int Hungarian_InitCostMatrix(int costm[max][max], int N)
+
+//Draw virtual mininum number lines to cover all zeros in cost matrix
+int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
+{
+    
+    //Use Geedy idea:let one line cover as many as zero.
+    int zeros = 0;
+    unordered_map<int, int> rowzeromap;
+    unordered_map<int, int> columnzeromap;
+    unordered_set<int>      rowlineSet;
+    unordered_set<int>      columnlineSet;
+  
+
+
+    
+    struct  lineprop
+    {
+        bool  isRow;
+        int   number;
+        lineprop(bool b, int num)
+        {
+            isRow = b;
+            number   = num;
+        };
+        lineprop(const lineprop& rhs)
+        {
+            isRow = rhs.isRow;
+            number = rhs.number;
+        };
+       lineprop& operator =(const lineprop& rhs)
+        {
+            isRow = rhs.isRow;
+            number = rhs.number; 
+            return *this;
+        };
+    };
+
+    multimap<int, lineprop, std::greater<int> >      mapzerosCount2Direct;
+
+
+    lines.clear();
+    for(int r = 0; r< N; ++r)
+    {
+        for(int c = 0; c<N; ++c)
+        {
+            if(0 == costm[r][c])
+            {
+                auto itrow = rowzeromap.find(r);
+                if(itrow != rowzeromap.end())
+                {
+                    itrow->second += 1;
+                }
+                else
+                {
+                    rowzeromap.insert(std::make_pair(r,1));
+                }
+               
+                auto itcol = columnzeromap.find(c);
+                if(itcol != columnzeromap.end())
+                {
+                    itcol->second += 1;
+                }
+                else
+                {
+                    columnzeromap.insert(std::make_pair(c,1));
+                }
+
+                ++zeros;
+            }
+        }
+    }
+
+    do
+    {
+        if(0 == zeros)
+        {
+            break;
+        }
+        
+       for(auto itrow = rowzeromap.begin(); itrow != rowzeromap.end(); ++itrow)
+       {
+         mapzerosCount2Direct.insert( {itrow->second,lineprop(true,itrow->first)} );
+       }
+
+       for(auto itcol = columnzeromap.begin(); itcol != columnzeromap.end(); ++itcol)
+       {
+         mapzerosCount2Direct.insert( {itcol->second,lineprop(false,itcol->first)} );
+       }
+      
+
+      int nlinesZero = 0;
+      for(auto it = mapzerosCount2Direct.begin(); nlinesZero <= zeros && it != mapzerosCount2Direct.end(); ++it)
+      {
+          bool bFind = false;
+          if(it->second.isRow)
+          {
+              
+              for(int c = 0; c<N; ++c)
+              {
+                  if(0 == costm[it->second.number][c])
+                  {
+                      if(columnlineSet.end() == columnlineSet.find(c))
+                      {
+                          bFind = true;
+                          ++nlinesZero;
+                      }
+                  }
+              }
+              if(bFind)
+              {
+                rowlineSet.insert(it->second.number);
+                HunLine oneline;
+                oneline.s.r = it->second.number;
+                oneline.s.c = 0;
+
+                oneline.e.r = it->second.number;
+                oneline.e.c = N-1;
+                oneline.row = true;
+                lines.push_back(oneline);
+              }
+
+          }
+          else
+          {
+            
+            for(int r = 0; r<N; ++r)
+            {
+                if(0 == costm[r][it->second.number])
+                {
+                    if(rowlineSet.end() == rowlineSet.find(r))
+                    {
+                        bFind = true;
+                        ++nlinesZero;
+                    }
+                }
+            }
+            if(bFind)
+            {
+              columnlineSet.insert(it->second.number); 
+              HunLine oneline;
+              oneline.s.r = 0;
+              oneline.s.c = it->second.number;
+
+              oneline.e.r = N-1;
+              oneline.e.c = it->second.number;
+              oneline.row = false;
+              lines.push_back(oneline);
+            }
+
+          }    
+      }
+
+    }while(false);
+
+
+
+
+    return 0;
+}
+
+
+int outputlines(vector<HunLine>& lines)
+{
+    for(int i = 0; i<lines.size(); ++i)
+    {
+        cout<<(lines[i].row?"H":"V")<<" [ "<<lines[i].s.r<<" : "<<lines[i].s.c<<" ] # [ "<<lines[i].e.r<<" : "<<lines[i].e.c<<" ]."<<endl;
+    }
+    
+    cout<<endl;
+
+    return 0;
+}
+
+
+int Hungarian_lines(int costm[MAX][MAX], int N,  vector<HunLine>& lines)
+{
+    while(1)
+    {
+        lines.clear();
+        Hungarian_drawlines(costm,N,lines);
+        outputlines(lines);
+        if(lines.size()<N)
+        {
+            Hungarian_AdjustCost(costm,N,lines);
+        }
+        else
+        {
+            break;    
+        }
+    }
+
+
+    return 0;
+}
+
+
+int Hungarian_InitCostMatrix(int costm[MAX][MAX], int N)
 {
     //operate rows of cost matrix.
     for(int r = 0; r<N; ++r)
@@ -149,29 +378,30 @@ int Hungarian_InitCostMatrix(int costm[max][max], int N)
         int min = INT_MAX;
         for(int r = 0; r< N; ++r)
         {
-            if(min>costm[c][r])
+            if(min>costm[r][c])
             {
-                min = costm[c][r];
+                min = costm[r][c];
             }
         }
 
         for(int r = 0; r<N; ++r)
         {
-            costm[c][r] -= min;
+            costm[r][c] -= min;
         }
     }
 
     return 0;
 }
 
-int Hungarian_algorithm(int costm[max][max], int N)
+int Hungarian_algorithm(int costm[MAX][MAX], int N)
 {
     //Init cost matrix
     Hungarian_InitCostMatrix(costm, N);
 
 
-    //Draw least number of lines    
-    Hungarian_drawlines(costm,N);
+    //Draw least number of lines
+    vector<HunLine> lines;
+    Hungarian_lines(costm,N,lines);
 
 
 
@@ -181,7 +411,22 @@ int Hungarian_algorithm(int costm[max][max], int N)
 
 int main()
 {
+int costm[4][4] = {
+                {90, 75, 75, 80},
+                {35, 85, 55, 65},
+                {125, 95, 90, 105},
+                {45, 110, 95, 115}
+            };
 
+int cost[MAX][MAX] = {
+                {90, 75, 75, 80},
+                {35, 85, 55, 65},
+                {125, 95, 90, 105},
+                {45, 110, 95, 115}
+            };
+
+
+Hungarian_algorithm(cost, 4);
 
     return 0;
 }
