@@ -52,6 +52,42 @@ https://en.wikipedia.org/wiki/Bipartite_graph#Matching
 
 */
 
+/***** Hungarian method description *****/
+
+
+/*
+
+
+
+The Hungarian algorithm
+The Hungarian algorithm consists of the four steps below. The first two steps are executed once, while Steps 3 and 4 are repeated until an optimal assignment is found. The input of the algorithm is an n by n square matrix with only nonnegative elements.
+
+Step 1: Subtract row minima
+
+For each row, find the lowest element and subtract it from each element in that row.
+
+Step 2: Subtract column minima
+
+Similarly, for each column, find the lowest element and subtract it from each element in that column.
+
+Step 3: Cover all zeros with a minimum number of lines
+
+Cover all zeros in the resulting matrix using a minimum number of horizontal and vertical lines. If n lines are required, an optimal assignment exists among the zeros. The algorithm stops.
+
+If less than n lines are required, continue with Step 4.
+
+Step 4: Create additional zeros
+
+Find the smallest element (call it k) that is not covered by a line in Step 3. 
+Subtract k from all uncovered elements, and add k to all elements that are covered twice
+(elements @intersection of two lines).
+
+
+
+*/
+
+
+
 #include<iostream>
 #include<climits>
 #include<vector>
