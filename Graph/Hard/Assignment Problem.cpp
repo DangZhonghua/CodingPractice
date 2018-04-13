@@ -44,7 +44,7 @@ We can see that the optimal assignment will be to give job 1 to person 1 and job
 */
 
 /*
-Solution: This is optimal bipartite graph matching problem which can be sloved by 'Hungarian Method'
+Solution: This is optimal bipartite graph matching problem which can be solved by 'Hungarian Method'
 
 Refer to:
 https://en.wikipedia.org/wiki/Hungarian_algorithm
@@ -72,13 +72,14 @@ Similarly, for each column, find the lowest element and subtract it from each el
 
 Step 3: Cover all zeros with a minimum number of lines
 
-Cover all zeros in the resulting matrix using a minimum number of horizontal and vertical lines. If n lines are required, an optimal assignment exists among the zeros. The algorithm stops.
-
+Cover all zeros in the resulting matrix using a minimum number of horizontal and vertical lines.
+If n lines are required, an optimal assignment exists among the zeros. The algorithm stops.
 If less than n lines are required, continue with Step 4.
+
 
 Step 4: Create additional zeros
 
-Find the smallest element (call it k) that is not covered by a line in Step 3. 
+Find the smallest element (call it k) that is not covered by a line in Step 3.
 Subtract k from all uncovered elements, and add k to all elements that are covered twice
 (elements @intersection of two lines).
 
@@ -126,10 +127,10 @@ bool isHorizontalLine(HunLine& line)
 int Hungarian_OutputMatrix(int costm[MAX][MAX], int N)
 {
 	cout << "###############################\n";
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
 		printf("%4d:", r);
-		for (int c = 0; c<N; ++c)
+		for (int c = 0; c < N; ++c)
 		{
 			printf("%4d", costm[r][c]);
 		}
@@ -157,7 +158,7 @@ int Hungarian_DFS(int costm[MAX][MAX], vector<int> &rvisited, vector<int>& cvisi
 	rvisited[u] = 1;
 	cvisited[v] = 1;
 
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
 		if (v + 1 < N && !rvisited[r] && !cvisited[v + 1] && 0 == costm[r][v + 1])
 		{
@@ -184,13 +185,13 @@ int Hungarian_genAssignment(int costm[MAX][MAX], int N, vector<HunPoint>& assign
 {
 	vector<int> rowvisted;
 	vector<int> colvisted;
-	for (int i = 0; i<N; ++i)
+	for (int i = 0; i < N; ++i)
 	{
 		rowvisted.push_back(0);
 	}
 	colvisted = rowvisted;
 
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
 		if (0 == costm[r][0])
 		{
@@ -210,7 +211,7 @@ int Hungarian_AdjustCost(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 {
 	unordered_set<int> rowlines;
 	unordered_set<int> collines;
-	for (int i = 0; i<lines.size(); ++i)
+	for (int i = 0; i < lines.size(); ++i)
 	{
 		if (isHorizontalLine(lines[i]))
 		{
@@ -224,7 +225,7 @@ int Hungarian_AdjustCost(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 	//select the minimum value which is not covered by any lines.
 	int min = INT_MAX;
 
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
 		if (rowlines.end() != rowlines.find(r))
 		{
@@ -243,31 +244,39 @@ int Hungarian_AdjustCost(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 		}
 	}
 	//subtract this minimum value from every uncovered rows.
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
 		if (rowlines.end() != rowlines.find(r))
 		{
 			continue;
 		}
-		for (int c = 0; c<N; ++c)
+		for (int c = 0; c < N; ++c)
 		{
+			if (collines.end() != collines.find(c))
+			{
+				continue;
+			}
 			costm[r][c] -= min;
 		}
 	}
 	//add this minimum value to these covered columns.
 
-	for (int c = 0; c<N; ++c)
+	for (int c = 0; c < N; ++c)
 	{
 		if (collines.end() == collines.find(c))
 		{
 			continue;
 		}
-		for (int r = 0; r<N; ++r)
+		for (int r = 0; r < N; ++r)
 		{
-			costm[r][c] += (2*min);
+			if (rowlines.end() == rowlines.find(r))
+			{
+				continue;
+			}
+			costm[r][c] += min;
 		}
 	}
-
+	cout << "adjust: the minimum value is: "<<min<<" the length is:"<<lines.size()<<endl;
 	return 0;
 }
 struct zeroprop
@@ -288,7 +297,7 @@ public:
 public:
 	bool operator () (const zeroprop& lhs, const zeroprop& rhs) const
 	{
-		if (lhs.nZeros>rhs.nZeros)
+		if (lhs.nZeros > rhs.nZeros)
 		{
 			return true;
 		}
@@ -333,17 +342,17 @@ struct  lineprop
 int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 {
 
-	//Use Geedy idea:let one line cover as many as zero.
+	//Use Greedy idea:let one line cover as many as zero.
 	int zeros = 0;
 	unordered_map<int, int> rowzeromap;
 	unordered_map<int, int> columnzeromap;
 	vector< vector<int> >   charged;
 	vector<int > flag;
-	for (int i = 0; i<N; ++i)
+	for (int i = 0; i < N; ++i)
 	{
 		flag.push_back(0);
 	}
-	for (int i = 0; i<N; ++i)
+	for (int i = 0; i < N; ++i)
 	{
 		charged.push_back(flag);
 	}
@@ -351,9 +360,9 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 	multimap<zeroprop, lineprop, zeropropComp >      mapzerosCount2Direct;
 
 	lines.clear();
-	for (int r = 0; r< N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
-		for (int c = 0; c<N; ++c)
+		for (int c = 0; c < N; ++c)
 		{
 			if (0 == costm[r][c])
 			{
@@ -391,7 +400,7 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 
 		for (auto itrow = rowzeromap.begin(); itrow != rowzeromap.end(); ++itrow)
 		{
-			mapzerosCount2Direct.insert(std::make_pair( zeroprop(itrow->second, true), lineprop(true, itrow->first) ));
+			mapzerosCount2Direct.insert(std::make_pair(zeroprop(itrow->second, true), lineprop(true, itrow->first)));
 		}
 
 		for (auto itcol = columnzeromap.begin(); itcol != columnzeromap.end(); ++itcol)
@@ -407,7 +416,7 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 			if (it->second.isRow)
 			{
 
-				for (int c = 0; c<N; ++c)
+				for (int c = 0; c < N; ++c)
 				{
 					if (0 == costm[it->second.number][c] && !charged[it->second.number][c])
 					{
@@ -432,7 +441,7 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 			else
 			{
 
-				for (int r = 0; r<N; ++r)
+				for (int r = 0; r < N; ++r)
 				{
 					if (0 == costm[r][it->second.number] && !charged[r][it->second.number])
 					{
@@ -464,7 +473,7 @@ int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 
 int outputlines(vector<HunLine>& lines)
 {
-	for (int i = 0; i<lines.size(); ++i)
+	for (int i = 0; i < lines.size(); ++i)
 	{
 		cout << (lines[i].row ? "H" : "V") << " [ " << lines[i].s.r << " : " << lines[i].s.c << " ] # [ " << lines[i].e.r << " : " << lines[i].e.c << " ]." << endl;
 	}
@@ -482,7 +491,9 @@ int Hungarian_lines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 		lines.clear();
 		Hungarian_drawlines(costm, N, lines);
 		//outputlines(lines);
-		if (lines.size()<N)
+		Hungarian_OutputMatrix(costm, N);
+		outputlines(lines);
+		if (lines.size() < N)
 		{
 			Hungarian_AdjustCost(costm, N, lines);
 		}
@@ -501,7 +512,7 @@ int Hungarian_lines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 int Hungarian_InitCostMatrix(int costm[MAX][MAX], int N)
 {
 	//operate rows of cost matrix.
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
 		int min = INT_MAX;
 		for (int c = 0; c<N; ++c)
@@ -512,14 +523,14 @@ int Hungarian_InitCostMatrix(int costm[MAX][MAX], int N)
 			}
 		}
 
-		for (int c = 0; c<N; ++c)
+		for (int c = 0; c < N; ++c)
 		{
 			costm[r][c] -= min;
 		}
 	}
 
 	//operate columns of cost matrix
-	for (int c = 0; c<N; ++c)
+	for (int c = 0; c < N; ++c)
 	{
 		int min = INT_MAX;
 		for (int r = 0; r< N; ++r)
@@ -530,7 +541,7 @@ int Hungarian_InitCostMatrix(int costm[MAX][MAX], int N)
 			}
 		}
 
-		for (int r = 0; r<N; ++r)
+		for (int r = 0; r < N; ++r)
 		{
 			costm[r][c] -= min;
 		}
@@ -543,7 +554,7 @@ int Hungarian_genCost(int cost[MAX][MAX], int N, vector<HunPoint>& assignment)
 {
 	int minicost = 0;
 
-	for (int i = 0; i<assignment.size(); ++i)
+	for (int i = 0; i < assignment.size(); ++i)
 	{
 		//cout << assignment[i].r << ":" << assignment[i].c << endl;
 		minicost += cost[assignment[i].r][assignment[i].c];
@@ -557,9 +568,9 @@ int Hungarian_algorithm(int costm[MAX][MAX], int N)
 {
 	int cost[MAX][MAX];
 	//Keep copy
-	for (int r = 0; r<N; ++r)
+	for (int r = 0; r < N; ++r)
 	{
-		for (int c = 0; c<N; ++c)
+		for (int c = 0; c < N; ++c)
 		{
 			cost[r][c] = costm[r][c];
 		}
@@ -572,6 +583,7 @@ int Hungarian_algorithm(int costm[MAX][MAX], int N)
 	Hungarian_lines(costm, N, lines);
 	vector<HunPoint> assignment;
 	Hungarian_genAssignment(costm, N, assignment);
+	outputlines(lines);
 	//Hungarian_OutputMatrix(costm, N);
 	int miniCost = Hungarian_genCost(cost, N, assignment);
 
@@ -606,9 +618,9 @@ int main()
 	while (t--)
 	{
 		cin >> N;
-		for (int r = 0; r<N; ++r)
+		for (int r = 0; r < N; ++r)
 		{
-			for (int c = 0; c<N; ++c)
+			for (int c = 0; c < N; ++c)
 			{
 				cin >> cost[r][c];
 			}
