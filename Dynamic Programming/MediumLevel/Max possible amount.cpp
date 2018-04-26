@@ -36,6 +36,12 @@ Output
 15
 22
 
+*/
 
+/*
 
+What is the optimal sub-structure and overlapped subproblems.
+count[0...N] = max{a[N] + count[0...N-1], a[0] + count[1...N]}
+
+Dynamic problem need check every sub-problems and chose the best choice.
 */
