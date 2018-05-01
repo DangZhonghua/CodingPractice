@@ -38,10 +38,70 @@ Output
 
 */
 
+
+
 /*
 
 What is the optimal sub-structure and overlapped subproblems.
-count[0...N] = max{a[N] + count[0...N-1], a[0] + count[1...N]}
+count[1,N] = max{a[1] + count[2,N], a[N] + count[1,N-1]}
+count[i,j] = max{a[i] + count[i+1,j], a[j] + count[i, j-1]}
 
 Dynamic problem need check every sub-problems and chose the best choice.
+
 */
+
+#include <iostream>
+using namespace std;
+
+int maxCount(int a[], int N, int& max)
+{
+    int count[101][101];
+
+    for(int i = 1; i<=N; ++i)
+    {
+        count[i][i] = 0;
+    }
+
+    for(int l = 2; l<=N; l += 2 )
+    {
+        for(int i =  1; i <= N; i += l)
+        {
+            count[i][i+l-1] = a[i] + count[i+1][i+l-1];
+            
+            if(count[i][i+l-1] <a[i+l-1] + count[i][i+l-2])
+            {
+                count[i][i+l-1] = a[i+l-1] + count[i][i+l-2];
+            }
+            count[i][i+l] = count[i][i+l-1];
+        }
+    }
+    cout<<count[1][N]<<endl;
+    max = count[1][N];
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[101] = {0};
+    int max = 0;
+
+    cin>>t;
+    
+    while(t>0)
+    {
+        --t;
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[++i];
+        }
+        maxCount(a,N, max);
+    }
+
+    return 0;
+}

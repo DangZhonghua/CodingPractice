@@ -106,6 +106,11 @@ struct HunPoint
 {
 	int r;
 	int c;
+	HunPoint(int a = 0, int b = 0)
+	{
+		r = a;
+		c = b;
+	}
 };
 
 struct HunLine
@@ -123,6 +128,65 @@ bool isHorizontalLine(HunLine& line)
 	}
 	return false;
 }
+struct zeroprop
+{
+	int nZeros;
+	bool bRow;
+	zeroprop(int n, bool b)
+	{
+		nZeros = n;
+		bRow = b;
+	}
+};
+
+class zeropropComp
+{
+public:
+	zeropropComp(){};
+	~zeropropComp(){};
+public:
+	bool operator () (const zeroprop& lhs, const zeroprop& rhs) const
+	{
+		if (lhs.nZeros > rhs.nZeros)
+		{
+			return true;
+		}
+		else if (lhs.nZeros == rhs.nZeros)
+		{
+			if (lhs.bRow&&!rhs.bRow)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return false;
+	}
+};
+
+struct  lineprop
+{
+	bool  isRow;
+	int   number;
+	lineprop(bool b, int num)
+	{
+		isRow = b;
+		number = num;
+	};
+	lineprop(const lineprop& rhs)
+	{
+		isRow = rhs.isRow;
+		number = rhs.number;
+	};
+	lineprop& operator =(const lineprop& rhs)
+	{
+		isRow = rhs.isRow;
+		number = rhs.number;
+		return *this;
+	};
+};
 
 int Hungarian_OutputMatrix(int costm[MAX][MAX], int N)
 {
@@ -196,12 +260,13 @@ int Hungarian_genAssignment(int costm[MAX][MAX], int N, vector<HunPoint>& assign
 		if (0 == costm[r][0])
 		{
 			Hungarian_DFS(costm, rowvisted, colvisted, N, r, 0, assignment);
+			if (assignment.size() == N)
+			{
+				break;
+			}
+			assignment.clear();
 		}
-		if (assignment.size() == N)
-		{
-			break;
-		}
-		assignment.clear();
+
 	}
 
 	return 0;
@@ -276,200 +341,190 @@ int Hungarian_AdjustCost(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 			costm[r][c] += min;
 		}
 	}
-	cout << "adjust: the minimum value is: "<<min<<" the length is:"<<lines.size()<<endl;
+	cout << "adjust: the minimum value is: " << min << " the length is:" << lines.size() << endl;
 	return 0;
 }
-struct zeroprop
+
+int Hungarian_DFSLines(int costm[MAX][MAX], int N, vector<HunPoint>&  maxAssignment, vector<HunPoint>& assignment,
+	vector<int>& rowvisted, vector<int>& colvisted, int r, int c)
 {
-	int nZeros;
-	bool bRow;
-	zeroprop(int n, bool b)
+	assignment.push_back(HunPoint(r, c));
+
+	if (maxAssignment.size() < assignment.size())
 	{
-		nZeros = n;
-		bRow = b;
+		maxAssignment = assignment;
 	}
-};
-class zeropropComp
-{
-public:
-	zeropropComp(){};
-	~zeropropComp(){};
-public:
-	bool operator () (const zeroprop& lhs, const zeroprop& rhs) const
+	if (maxAssignment.size() == N)
 	{
-		if (lhs.nZeros > rhs.nZeros)
-		{
-			return true;
-		}
-		else if (lhs.nZeros == rhs.nZeros)
-		{
-			if (lhs.bRow)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		return false;
+		return 0;
 	}
-};
+	rowvisted[r] = 1;
+	colvisted[c] = 1;
 
-struct  lineprop
+	bool bExistZero = false;
+	int col = c;
+	while (!bExistZero && col + 1 < N)
+	{
+		for (int row = 0; row < N; ++row)
+		{
+			if (0 == rowvisted[row] && 0 == colvisted[col + 1] && 0 == costm[row][col + 1])
+			{
+				bExistZero = true;
+				Hungarian_DFSLines(costm, N, maxAssignment, assignment, rowvisted, colvisted, row, col + 1);
+				assignment.pop_back();
+				if (maxAssignment.size() == N)
+				{
+					break;
+				}
+			}
+		}
+		++col;
+	}
+	rowvisted[r] = 0;
+	colvisted[c] = 0;
+	return 0;
+}
+
+int Hungarian_genlinesV4(int costm[MAX][MAX], int N, vector<HunPoint>&  maxAssignment, vector<HunLine>& lines)
 {
-	bool  isRow;
-	int   number;
-	lineprop(bool b, int num)
-	{
-		isRow = b;
-		number = num;
-	};
-	lineprop(const lineprop& rhs)
-	{
-		isRow = rhs.isRow;
-		number = rhs.number;
-	};
-	lineprop& operator =(const lineprop& rhs)
-	{
-		isRow = rhs.isRow;
-		number = rhs.number;
-		return *this;
-	};
-};
-
-//Draw virtual mininum number lines to cover all zeros in cost matrix
-int Hungarian_drawlines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
-{
-
-	//Use Greedy idea:let one line cover as many as zero.
-	int zeros = 0;
-	unordered_map<int, int> rowzeromap;
-	unordered_map<int, int> columnzeromap;
-	vector< vector<int> >   charged;
-	vector<int > flag;
+	vector<int> rowzero;
+	vector<int> colzero;
+	vector<int> rowsline;
+	vector<int> colsline;
+	vector<int> markrow;
+	vector<int> markcol;
 	for (int i = 0; i < N; ++i)
 	{
-		flag.push_back(0);
+		rowzero.push_back(0);
 	}
-	for (int i = 0; i < N; ++i)
-	{
-		charged.push_back(flag);
-	}
+	colzero		= rowzero;
+	rowsline	= rowzero;
+	colsline	= rowzero;
+	markrow		= rowzero;
+	markcol		= rowzero;
 
-	multimap<zeroprop, lineprop, zeropropComp >      mapzerosCount2Direct;
-
-	lines.clear();
 	for (int r = 0; r < N; ++r)
 	{
 		for (int c = 0; c < N; ++c)
 		{
 			if (0 == costm[r][c])
 			{
-				auto itrow = rowzeromap.find(r);
-				if (itrow != rowzeromap.end())
-				{
-					itrow->second += 1;
-				}
-				else
-				{
-					rowzeromap.insert(std::make_pair(r, 1));
-				}
-
-				auto itcol = columnzeromap.find(c);
-				if (itcol != columnzeromap.end())
-				{
-					itcol->second += 1;
-				}
-				else
-				{
-					columnzeromap.insert(std::make_pair(c, 1));
-				}
-
-				++zeros;
+				rowzero[r] += 1;
+				colzero[c] += 1;
 			}
 		}
 	}
-
-	do
+	
+	for (int i = 0; i < maxAssignment.size(); ++i)
 	{
-		if (0 == zeros)
+		rowsline[maxAssignment[i].r] = 1;
+		//colsline[maxAssignment[i].c] = 1;
+	}
+	for (int c = 0; c < N; ++c)
+	{
+		bool bNotCovered = false;
+		for (int r = 0; r < N; ++r)
 		{
-			break;
-		}
-
-		for (auto itrow = rowzeromap.begin(); itrow != rowzeromap.end(); ++itrow)
-		{
-			mapzerosCount2Direct.insert(std::make_pair(zeroprop(itrow->second, true), lineprop(true, itrow->first)));
-		}
-
-		for (auto itcol = columnzeromap.begin(); itcol != columnzeromap.end(); ++itcol)
-		{
-			mapzerosCount2Direct.insert({ zeroprop(itcol->second, false), lineprop(false, itcol->first) });
-		}
-
-
-		int nlinesZero = 0;
-		for (auto it = mapzerosCount2Direct.begin(); nlinesZero < zeros && it != mapzerosCount2Direct.end(); ++it)
-		{
-			bool bFind = false;
-			if (it->second.isRow)
+			if (0 == costm[r][c])
 			{
-
-				for (int c = 0; c < N; ++c)
+				if (0 == rowsline[r])
 				{
-					if (0 == costm[it->second.number][c] && !charged[it->second.number][c])
-					{
-						charged[it->second.number][c] = 1;
-						bFind = true;
-						++nlinesZero;
-					}
-				}
-				if (bFind)
-				{
-					HunLine oneline;
-					oneline.s.r = it->second.number;
-					oneline.s.c = 0;
-
-					oneline.e.r = it->second.number;
-					oneline.e.c = N - 1;
-					oneline.row = true;
-					lines.push_back(oneline);
-				}
-
-			}
-			else
-			{
-
-				for (int r = 0; r < N; ++r)
-				{
-					if (0 == costm[r][it->second.number] && !charged[r][it->second.number])
-					{
-						charged[r][it->second.number] = 1;
-						bFind = true;
-						++nlinesZero;
-					}
-				}
-				if (bFind)
-				{
-					HunLine oneline;
-					oneline.s.r = 0;
-					oneline.s.c = it->second.number;
-
-					oneline.e.r = N - 1;
-					oneline.e.c = it->second.number;
-					oneline.row = false;
-					lines.push_back(oneline);
+					bNotCovered = true;
+					break;
 				}
 			}
 		}
-
-	} while (false);
-
+		if (bNotCovered)
+		{
+			colsline[c] = 1;
+			for (int row = 0; row < N; ++row)
+			{
+				if (0 == costm[row][c])
+				{
+					rowzero[row] -= 1;
+					if (0 == rowzero[row])
+					{
+						rowsline[row] = 0;
+					}
+				}
+			}
+		}
+	}
+	
+	for (int i = 0; i < N; ++i)
+	{
+		if (rowsline[i])
+		{
+			HunLine l;
+			l.row = true;
+			l.s.c = 0;
+			l.s.r = i;
+			
+			l.e.c = N - 1;
+			l.e.r = i;
+			lines.push_back(l);
+		}
+		if (colsline[i])
+		{
+			HunLine l;
+			l.row = false;
+			l.s.r = 0;
+			l.s.c = i;
+			l.e.r = N - 1;
+			l.e.c = i;
+			lines.push_back(l);
+		}
+	}
 
 	return 0;
 }
 
+int Hungarian_drawlinesV4(int costm[MAX][MAX], int N, vector<HunLine>& lines)
+{
+	vector<HunPoint>  maxAssignment;
+	vector<HunPoint> assignment;
+
+
+	vector<int> rowvisted;
+	vector<int> colvisted;
+	for (int i = 0; i < N; ++i)
+	{
+		rowvisted.push_back(0);
+	}
+	colvisted = rowvisted;
+
+	bool bExistZero = false;
+	int col = 0;
+	while (!bExistZero &&  col < N)
+	{
+		for (int r = 0; r < N; ++r)
+		{
+			if (0 == costm[r][col])
+			{
+				bExistZero = true;
+				Hungarian_DFSLines(costm, N, maxAssignment, assignment, rowvisted, colvisted, r,col);
+			}
+			if (maxAssignment.size() == N)
+			{
+				break;
+			}
+			assignment.clear();
+		}
+		++col;
+	}
+	cout << maxAssignment.size() << endl;
+	Hungarian_genlinesV4(costm, N, maxAssignment, lines);
+	//if (maxAssignment.size() == N)
+	{
+		for (int i = 0; i < maxAssignment.size(); ++i)
+		{
+			cout << maxAssignment[i].r << " " << maxAssignment[i].c << endl;
+		}
+
+	}
+
+	return 0;
+}
 
 int outputlines(vector<HunLine>& lines)
 {
@@ -489,9 +544,8 @@ int Hungarian_lines(int costm[MAX][MAX], int N, vector<HunLine>& lines)
 	while (1)
 	{
 		lines.clear();
-		Hungarian_drawlines(costm, N, lines);
-		//outputlines(lines);
 		Hungarian_OutputMatrix(costm, N);
+		Hungarian_drawlinesV4(costm, N, lines);
 		outputlines(lines);
 		if (lines.size() < N)
 		{
@@ -632,3 +686,10 @@ int main()
 
 	return 0;
 }
+
+/*
+
+http://www.hungarianalgorithm.com/solve.php?c=43-52-67-7-81-20-77-22--78-19-91-86-20-48-67-36--52-46-44-77-75-65-30-11--68-87-5-53-20-12-90-5--13-75-67-57-38-75-99-94--77-49-80-28-19-83-96-41--69-78-52-89-5-67-71-88--72-33-99-49-14-7-10-33&random=1
+
+http://www.hungarianalgorithm.com/solve.php?c=33-43-88-78-36-35-36-84--1-49-29-54-59-13-23-74--40-34-37-4-29-67-46-79--18-58-67-1-98-37-48-94--83-92-18-69-38-10-28-35--30-39-30-24-93-2-73-90--94-66-64-49-81-98-27-73--33-1-22-34-77-62-6-3&random=1
+*/
