@@ -41,7 +41,16 @@ Dynamatic programming: optimal sub-structure and overlapped sub-problems.
 
 For this: the sub-structure is: sub-solution og  l-1 length  array is included in soultion of l length array.
 
-count[i][j]:L = (count[i][i+L-2]:L-1)^a[j] for j=i+L-1 .... N
+count[i][j]:L = (count[i][k]:L-1)^a[j] for j=k+1 .... N
+
+6 9 4 2
+
+{6} {9} {4} {2}
+{6,9} {6,4} {6,2}
+{9,4} {9,2}
+{4,2}
+{6,9,4},{6,9,2}, {9,4,2}
+{6,9,4,2}
 
 */
 
@@ -49,54 +58,64 @@ count[i][j]:L = (count[i][i+L-2]:L-1)^a[j] for j=i+L-1 .... N
 #include<vector>
 using namespace std;
 
+struct xorrange
+{
+    int v;
+    int s;
+    int e;
+    int l;
+};
+
 int XORSubsetCount(int *a, int N, int K)
 {
-    int subsetCount = 0 ;
-    vector< vector<int> > c;
-    vector< vector<int> > n;
-    
-    vector< vector<int> >* cur;
-    vector< vector<int> >* next;
-    
-    for(int i = 0; i<N; ++i)
-    {
-        c.push_back(vector<int>());
-        for(int j = 0; j<N; ++j)
-        {
-            c[i].push_back(0);
-        }
-    }
-    n = c;
+    int subsetCount = 0;
 
+    vector<xorrange> c;
+    vector<xorrange> n;
+
+    vector<xorrange>* cur;
+    vector<xorrange>* next;
+    
     for(int i = 0; i<N; ++i)
     {
-        c[i][i] = a[i];
-        if(a[i] == K)
+        xorrange onexor;
+        onexor.v = a[i];
+        onexor.s = i;
+        onexor.e = i;
+        onexor.l = 1;
+        if(K == onexor.v)
         {
             ++subsetCount;
         }
+        c.push_back(onexor);
     }
-
-    cur  = &c;
+    cur = &c;
     next = &n;
-
-    for(int l = 2; l<=N; ++l)
+    int l = 2;
+    while(l<=N)
     {
-        for(int i = 0; i<=N-l;++i)
+        for(auto it = cur->begin(); it != cur->end(); ++it)
         {
-            for(int j = i+l-1; j<N; ++j)
+            xorrange onexor;
+            onexor.l = l;
+
+            for(int i = it->e+1; i<N; ++i)
             {
-                (*next)[i][j] = ((*cur)[i][i+l-2]^a[j]);
-                if(K == (*next)[i][j] )
+                onexor.e = i;
+                onexor.v = ( (it->v)^a[i]);
+                if(K == onexor.v)
                 {
                     ++subsetCount;
                 }
+                next->push_back(onexor);
             }
         }
-        vector< vector<int> >* t = cur;
+        vector<xorrange>* t= cur;
         cur = next;
-        next = t; 
+        next = t;
+        next->clear();
     }
+
 
     cout<<subsetCount<<endl;
 
