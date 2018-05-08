@@ -60,91 +60,159 @@ using namespace std;
 
 struct xorrange
 {
-    int v;
-    int s;
-    int e;
-    int l;
+	int v;
+	int s;
+	int e;
+	int l;
 };
 
 int XORSubsetCount(int *a, int N, int K)
 {
-    int subsetCount = 0;
+	int subsetCount = 0;
 
-    vector<xorrange> c;
-    vector<xorrange> n;
+	vector<xorrange> c;
+	vector<xorrange> n;
 
-    vector<xorrange>* cur;
-    vector<xorrange>* next;
-    
-    for(int i = 0; i<N; ++i)
-    {
-        xorrange onexor;
-        onexor.v = a[i];
-        onexor.s = i;
-        onexor.e = i;
-        onexor.l = 1;
-        if(K == onexor.v)
-        {
-            ++subsetCount;
-        }
-        c.push_back(onexor);
-    }
-    cur = &c;
-    next = &n;
-    int l = 2;
-    while(l<=N)
-    {
-        for(auto it = cur->begin(); it != cur->end(); ++it)
-        {
-            xorrange onexor;
-            onexor.l = l;
+	vector<xorrange>* cur;
+	vector<xorrange>* next;
 
-            for(int i = it->e+1; i<N; ++i)
-            {
-                onexor.e = i;
-                onexor.v = ( (it->v)^a[i]);
-                if(K == onexor.v)
-                {
-                    ++subsetCount;
-                }
-                next->push_back(onexor);
-            }
-        }
-        vector<xorrange>* t= cur;
-        cur = next;
-        next = t;
-        next->clear();
-    }
+	for (int i = 0; i<N; ++i)
+	{
+		xorrange onexor;
+		onexor.v = a[i];
+		onexor.s = i;
+		onexor.e = i;
+		onexor.l = 1;
+		if (K == onexor.v)
+		{
+			++subsetCount;
+		}
+		c.push_back(onexor);
+	}
+	cur = &c;
+	next = &n;
+	int l = 2;
+	while (l <= N)
+	{
+		for (auto it = cur->begin(); it != cur->end(); ++it)
+		{
+			xorrange onexor;
+			onexor.l = l;
 
-
-    cout<<subsetCount<<endl;
+			for (int i = it->e + 1; i<N; ++i)
+			{
+				onexor.e = i;
+				onexor.v = ((it->v) ^ a[i]);
+				if (K == onexor.v)
+				{
+					++subsetCount;
+				}
+				next->push_back(onexor);
+			}
+		}
+		vector<xorrange>* t = cur;
+		cur = next;
+		next = t;
+		next->clear();
+	}
 
 
-    return 0;
+	cout << subsetCount << endl;
+
+
+	return 0;
+}
+
+int XORSubsetCountRawMem(int *a, int N, int K)
+{
+	int subsetCount = 0;
+	int nCurCount = 0;
+	int nNextCount = 0;
+
+	xorrange* ax = new xorrange[184756];
+	xorrange* bx = new xorrange[184756];
+
+	xorrange* cur = ax;
+	xorrange* next = bx;
+
+	for (int i = 0; i<N; ++i)
+	{
+		cur[nCurCount].v = a[i];
+		if (K == cur[nCurCount].v)
+		{
+			++subsetCount;
+		}
+		cur[nCurCount].s = i;
+		cur[nCurCount].e = i;
+		cur[nCurCount].l = 1;
+		++nCurCount;
+		
+	}
+
+	int l = 2;
+	while (l <= N)
+	{
+		nNextCount = 0;
+		for (int index = 0; index<nCurCount; ++index)
+		{
+			for (int i = cur[index].e + 1; i<N; ++i)
+			{
+				next[nNextCount].s = cur[index].s;
+				next[nNextCount].l = l;
+				next[nNextCount].e = i;
+				next[nNextCount].v = (cur[index].v^a[i]);
+				if (K == next[nNextCount].v)
+				{
+					++subsetCount;
+				}
+				++nNextCount;
+			}
+		}
+		xorrange* t = cur;
+		cur = next;
+		next = t;
+		nCurCount = nNextCount;
+		nNextCount = 0;
+		++l;
+	}
+
+
+	cout << subsetCount << endl;
+
+	if (ax)
+	{
+		delete[] ax;
+	}
+	if (bx)
+	{
+		delete[] bx;
+	}
+
+	return 0;
 }
 
 
 int main()
 {
-    int t = 0;
-    int a[100] = {0};
-    int N;
-    int K;
+	int t = 0;
+	int a[100] = { 0 };
+	int N;
+	int K;
 
-    cin>>t;
-    
-    while(t>0)
-    {
-        --t;
-        cin>>N>>K;
-        int i = 0;
-        while(i<N)
-        {
-            cin>>a[i++];
-        }
-        XORSubsetCount(a,N,K);
-    }
+	cin >> t;
+
+	while (t>0)
+	{
+		--t;
+		cin >> N >> K;
+		int i = 0;
+		while (i<N)
+		{
+			cin >> a[i++];
+		}
+		XORSubsetCountRawMem(a, N, K);
+	}
 
 
-    return 0;
+	return 0;
 }
