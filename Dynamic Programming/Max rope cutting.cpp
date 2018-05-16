@@ -32,3 +32,12 @@ Output:
 6
 
 */
+
+/*
+
+This is dynamic programming problem: optimal sub-structure and overlapped sub-problem.
+
+C[1...N] = max{ C[1...j]*C[j+1...N]; } for j:2...N;
+
+
+*/

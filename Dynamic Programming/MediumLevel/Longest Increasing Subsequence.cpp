@@ -42,3 +42,69 @@ Output
 6
 
 */
+
+
+#include<iostream>
+using namespace std;
+
+int LIS(int*a, int*b, int N);
+
+int main()
+ {
+     int t = 0;
+     int N = 0;
+     int a[1001] = {0};
+     int b[1001] = {0};
+
+    cin>>t;
+    
+    while(t>0)
+    {
+        --t;
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i];
+            ++i;
+        }
+        LIS(a,b,N);
+    }
+
+	return 0;
+}
+
+int LIS(int*a, int*b, int N)
+{
+    
+    int maxlen = 1;
+    if(N == 0)
+    {
+        maxlen = 0;
+    }
+    
+    for(int i = 0; i<N; ++i)
+    {
+        b[i] = 1;
+    }
+    
+    for(int i =1; i<N;++i)
+    {
+        for(int j = 0; j<i; ++j)
+        {
+            if( a[i]>a[j] &&  b[i]<b[j]+1)
+            {
+                b[i] = b[j]+1;
+                
+                if(maxlen<b[i])
+                {
+                    maxlen = b[i];
+                }
+            }
+        }
+    }
+    
+    cout<<maxlen<<endl;
+    
+    return 0;
+}
