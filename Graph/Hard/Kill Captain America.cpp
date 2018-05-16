@@ -47,140 +47,225 @@ then find one target.
 
 */
 
+// #include<iostream>
+// #include<vector>
+// using namespace std;
+
+// enum
+// {
+//     UN_VISITED,
+//     VISITED,
+//     CONNECT_ALL
+// };
 
 
-#include<iostream>
-#include<vector>
+// //The index is started from 1 NOT zero.
+
+// int dfsconnectAllVertex(vector< vector<int> >& g, vector<int>& visited, int v,int n, int& nConnectedCount)
+// {
+//     ++nConnectedCount;
+//     visited[v] = VISITED;
+//     for(int adj = 0; adj < g[v].size(); ++adj)
+//     {
+//         if(UN_VISITED == visited[ g[v][adj] ])
+//         {
+//             dfsconnectAllVertex(g, visited,g[v][adj],n,nConnectedCount);
+//         }
+//         //if the v's connected vertex has been marked as CONNECT_ALL status by this DFS, or other DFS.
+//         //Mark v is CONNECT_ALL status.
+//         if(CONNECT_ALL == visited[ g[v][adj] ] )
+//         {
+//             visited[v] = CONNECT_ALL;
+//             break;
+//         }
+//     }
+
+//     return 0;
+// }
+
+// int DetectCentralRoom(vector< vector<int> >& g, int n, int m, int& centercount)
+// {
+//     centercount = 0;
+//     vector<int> visited;
+//     for(int i = 0;i<=n; ++i)
+//     {
+//         visited.push_back(UN_VISITED);
+//     }
+
+//     for(int v = 1; v<=n; ++v)
+//     {
+//         int nConnected = 0; 
+//         if(0 == visited[v])
+//         {
+//             dfsconnectAllVertex(g,visited,v,n, nConnected);
+//             if(nConnected == n || CONNECT_ALL == visited[v])
+//             {
+//                 visited[v] = CONNECT_ALL;
+//                 ++centercount;
+//             }
+
+//             for(int i = 1; i<=n; ++i)
+//             {
+//                 if(CONNECT_ALL != visited[i])
+//                 {
+//                     visited[i] = UN_VISITED;
+//                 }
+//             }
+//         }   
+//     }    
+    
+//     return 0;
+// }
+
+// int TransposeGraph(vector<vector<int> >& G, int n, int m, vector<vector<int> >& Gt)
+// {
+//     for(int v = 0; v<=n; ++v)
+//     {
+//         Gt.push_back(vector<int>());
+//     }
+//     for(int v = 1; v<=n; ++v)
+//     {
+//         for(int e = 0; e<G[v].size(); ++e)
+//         {
+//             Gt[G[v][e]].push_back(v);
+//         }
+//     }
+
+//     return 0;
+// }
+
+// int killCaptainAmerica(vector<vector<int> >& G, int n, int m)
+// {
+//     vector<vector<int> > Gt;
+//     int ncenterroom = 0;
+
+//     TransposeGraph(G,n,m,Gt);
+//     DetectCentralRoom(Gt,n,m,ncenterroom);
+//     cout<<ncenterroom<<endl;
+
+//     return 0;
+// }
+
+// int main()
+// {
+//     int t = 0;
+//     int n = 0;
+//     int m = 0;
+//     int s = 0;
+//     int e = 0;
+//     vector< vector<int> > g;
+
+//     cin>>t;
+    
+//     while(t>0)
+//     {
+//         --t;
+//         cin>>n>>m;
+//         g.clear();
+//         for(int v = 0; v<=n; ++v)
+//         {
+//             g.push_back(vector<int>());
+//         }
+//         for(int gate = 0; gate<m; ++gate)
+//         {
+//             cin>>s>>e;
+//             g[s].push_back(e);
+//         }
+
+//         killCaptainAmerica(g, n,m);
+
+//     }
+
+
+//     return 0;
+// }
+
+
+
+#include <bits/stdc++.h>
 using namespace std;
 
-enum
-{
-    UN_VISITED,
-    VISITED,
-    CONNECT_ALL
-};
-
-
-//The index is started from 1 NOT zero.
-
-int dfsconnectAllVertex(vector< vector<int> >& g, vector<int>& visited, int v,int n, int& nConnectedCount)
-{
-    ++nConnectedCount;
-    visited[v] = VISITED;
-    for(int adj = 0; adj < g[v].size(); ++adj)
-    {
-        if(UN_VISITED == visited[ g[v][adj] ])
-        {
-            dfsconnectAllVertex(g, visited,g[v][adj],n,nConnectedCount);
-        }
-        //if the v's connected vertex has been marked as CONNECT_ALL status by this DFS, or other DFS.
-        //Mark v is CONNECT_ALL status.
-        if(CONNECT_ALL == visited[ g[v][adj] ] )
-        {
-            visited[v] = CONNECT_ALL;
-            break;
-        }
-    }
-
-    return 0;
-}
-
-int DetectCentralRoom(vector< vector<int> >& g, int n, int m, int& centercount)
-{
-    centercount = 0;
-    vector<int> visited;
-    for(int i = 0;i<=n; ++i)
-    {
-        visited.push_back(UN_VISITED);
-    }
-
-    for(int v = 1; v<=n; ++v)
-    {
-        int nConnected = 0; 
-        if(0 == visited[v])
-        {
-            dfsconnectAllVertex(g,visited,v,n, nConnected);
-            if(nConnected == n || CONNECT_ALL == visited[v])
-            {
-                visited[v] = CONNECT_ALL;
-                ++centercount;
-            }
-
-            for(int i = 1; i<=n; ++i)
-            {
-                if(CONNECT_ALL != visited[i])
-                {
-                    visited[i] = 0;
-                }
-            }
-        }   
-    }    
-    
-    return 0;
-}
-
-int TransposeGraph(vector<vector<int> >& G, int n, int m, vector<vector<int> >& Gt)
-{
-    for(int v = 0; v<=n; ++v)
-    {
-        Gt.push_back(vector<int>());
-    }
-    for(int v = 1; v<=n; ++v)
-    {
-        for(int e = 0; e<G[v].size(); ++e)
-        {
-            Gt[G[v][e]].push_back(v);
-        }
-    }
-
-    return 0;
-}
-
-int killCaptainAmerica(vector<vector<int> >& G, int n, int m)
-{
-    vector<vector<int> > Gt;
-    int ncenterroom = 0;
-
-    TransposeGraph(G,n,m,Gt);
-    DetectCentralRoom(Gt,n,m,ncenterroom);
-    cout<<ncenterroom<<endl;
-
-    return 0;
-}
-
 int main()
-{
-    int t = 0;
-    int n = 0;
-    int m = 0;
-    int s = 0;
-    int e = 0;
-    vector< vector<int> > g;
-
-    cin>>t;
-    
-    while(t>0)
+ {
+	int t;
+	cin>>t;
+	for(int i=0;i<t;i++)
     {
-        --t;
-        cin>>n>>m;
-        g.clear();
-        for(int v = 0; v<=n; ++v)
+	    int n,m;
+	    cin>>n>>m;
+	    unordered_map<int,vector<int> > forward;
+	    unordered_map<int,vector<int> > backward;
+	    for(int j=0;j<m;j++)
         {
-            g.push_back(vector<int>());
-        }
-        for(int gate = 0; gate<m; ++gate)
+	        int x,y;
+	        cin>>x>>y;
+	        if(y>x)
+            {
+	            forward[x].push_back(y);
+	        }
+            else if(y<x)
+            {
+	            backward[x].push_back(y);
+	        }
+	    }
+	    int ans=0;
+	    queue<int> q;
+	    vector<bool> vf(n+1,0);
+	    vector<bool> vb(n+1,0);
+	    q.push(1);
+	    while(!q.empty())
         {
-            cin>>s>>e;
-            g[s].push_back(e);
-        }
-
-        killCaptainAmerica(g, n,m);
-
-    }
-
-
-    return 0;
+	        int f=q.front();
+	        q.pop();
+	        if(!vf[f])
+            {
+	            vf[f]=true;
+	            if(forward.find(f)!=forward.end())
+                {
+	                vector<int> temp=forward[f];
+	                for(int t=0;t<temp.size();t++)
+                    {
+	                    q.push(temp[t]);
+	                }
+	            }
+	        }
+	    }
+	    q.push(n);
+	    while(!q.empty()){
+	        int f=q.front();
+	        q.pop();
+	        if(!vb[f]){
+	            vb[f]=true;
+	            if(backward.find(f)!=backward.end()){
+	                vector<int> temp=backward[f];
+	                for(int t=0;t<temp.size();t++){
+	                    q.push(temp[t]);
+	                }
+	            }
+	        }
+	    }
+	    int fc=0;
+	    int bc=n+1;
+	    for(int l=1;l<=n;l++){
+	        if(vf[l]==true){
+	            fc++;
+	        }else{
+	            break;
+	        }
+	    }
+	    for(int l=n;l>=1;l--){
+	        if(vb[l]==true){
+	            bc--;
+	        }else{
+	            break;
+	        }
+	    }
+	    ans=(fc-bc+1);
+	    if(ans<=0){
+	        ans=0;
+	    }
+	    cout<<ans<<endl;
+	}
+	return 0;
 }
-
-
-
+>>>>>>> a25ab346ed7721023120cf5005990dd77256bfb0
