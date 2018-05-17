@@ -25,5 +25,55 @@ OUTPUT
 
 */
 
-int FindRepeatedElements
+#include<vector>
+#include<iostream>
+using namespace std;
 
+int FindRepeatedElements(int*a, vector<int>& vr, int N)
+{
+	int xorv = 0;
+	int c[101] = { 0 };
+
+	for (int i = 0; i<N; ++i)
+	{
+		c[a[i]]++;
+		if (2 == c[a[i]])
+		{
+			vr.push_back(a[i]);
+		}
+	}
+
+
+	for (int i = 0; i< vr.size(); ++i)
+	{
+		cout << vr[i] << " ";
+	}
+	cout << endl;
+	return 0;
+}
+
+
+
+int main()
+{
+	int t = 0;
+	int a[101] = { 0 };
+	int N = 0;
+
+	cin >> t;
+
+	while (t>0)
+	{
+		--t;
+		cin >> N;
+		int i = 0;
+		while (i<N + 2)
+		{
+			cin >> a[i++];
+		}
+		vector<int> vr;
+		FindRepeatedElements(a, vr, N + 2);
+	}
+
+	return 0;
+}
