@@ -2,6 +2,8 @@
 Count Increasing Subsequences 
 
 https://practice.geeksforgeeks.org/problems/two-repeated-elements/0/?ref=self
+https://www.geeksforgeeks.org/count-all-increasing-subsequences/
+
 
 Given an array of digits (values lie in range from 0 to 9). The task is to count all the sub sequences possible in array such that in each subsequence every digit is greater than its previous digits in the subsequence.
 
@@ -35,13 +37,10 @@ Output:
 
 Count of all increasing subsequences in given array of digits.
 
-
 Constraints: 
 
 1 ≤ T ≤ 30
 1 ≤ N ≤ 500
- 
-
 
 Example: 
 
