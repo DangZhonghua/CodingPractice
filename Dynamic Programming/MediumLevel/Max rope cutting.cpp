@@ -93,6 +93,13 @@ int main()
     }
 }
 
+/*
+
+Below is the accepted solution, but I think this not yield the optimal result(maximum product)
+since it not check every possible choice, it looks like a geedy algorithm.
+
+*/
+
 
 /*
 
