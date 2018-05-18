@@ -38,7 +38,9 @@ Test Case 1:  For N = 4,     we can expres 4 in { 1+1+1+1} {1+3} {3+1} {4} So, t
 This is dynamic programming problem:  overlapped sub-problems and optimal sub-structure.
 This is a variable of complete knapsack problem.
 
-c[]
-
+c[N] = C[N-1]*C[N-3]*C[N-4]
+c[0] = 1;
 
 */
+
+int Count
