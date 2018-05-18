@@ -31,6 +31,14 @@ Output:
 Explanation:
 Test Case 1:  For N = 4,     we can expres 4 in { 1+1+1+1} {1+3} {3+1} {4} So, total no. of ways are 4.
 
+*/
+
+/*
+
+This is dynamic programming problem:  overlapped sub-problems and optimal sub-structure.
+This is a variable of complete knapsack problem.
+
+c[]
 
 
 */
