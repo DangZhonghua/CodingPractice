@@ -90,13 +90,13 @@ int maximizeTipCalc(vector<stTip>& vTips, int N, int X, int Y)
     }
     cout<<endl;
 
-        for(int i = 0; i<N; ++i)
+    for(int i = 0; i<N; ++i)
     {
         cout<<vTips[i].b<<" ";
     }
     
     cout<<endl;
-    
+
     return 0;
 }
 
