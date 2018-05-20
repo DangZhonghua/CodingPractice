@@ -5,7 +5,8 @@ https://practice.geeksforgeeks.org/problems/maximum-tip-calculator/0
 
 Rahul and Ankit are the only two waiters in Royal Restaurant.
 Today, the restaurant received N orders. The amount of tips may differ when handled by different waiters, 
-if Rahul takes the ith order, he would be tipped Ai rupees and if Ankit takes this order, the tip would be Bi rupees.
+if Rahul takes the ith order, he would be tipped Ai rupees and if Ankit takes this order, the tip 
+would be Bi rupees.
 In order to maximize the total tip value they decided to distribute the order among themselves. 
 One order will be handled by one person only. 
 Also, due to time constraints Rahul cannot take more than X orders and Ankit cannot take more than Y orders. 
@@ -54,3 +55,90 @@ Output:
 43
 
 */
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct stTip
+{
+    int a;
+    int b;
+};
+
+struct CstTipCompare
+{
+    bool operator()(const stTip& lhs, const stTip& rhs) const
+    {
+        if(lhs.a<rhs.a)
+        {
+            return true;
+        }
+        return false;
+    }
+};
+
+
+int maximizeTipCalc(vector<stTip>& vTips, int N, int X, int Y)
+{
+    std::sort(vTips.begin(),vTips.end(), CstTipCompare());
+
+    for(int i = 0; i<N; ++i)
+    {
+        cout<<vTips[i].a<<" ";
+    }
+    cout<<endl;
+
+        for(int i = 0; i<N; ++i)
+    {
+        cout<<vTips[i].b<<" ";
+    }
+    
+    cout<<endl;
+    
+    return 0;
+}
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int X = 0;
+    int Y = 0;
+    vector<stTip> vTips;
+    
+    cin>>t;
+
+    while(t>0)
+    {
+        --t;
+        cin>>N>>X>>Y;
+        
+        int i = 0;
+        
+        while(i<N)
+        {
+            stTip t;
+            cin>>t.a;
+            vTips.push_back(t);
+            ++i;
+        }
+        i = 0;
+        while(i<N)
+        {
+            cin>>vTips[i].b;
+            ++i;
+        }
+
+        maximizeTipCalc(vTips,N,X,Y);
+        
+
+        
+    }
+
+
+
+
+    return 0;
+}
