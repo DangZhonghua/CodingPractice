@@ -96,23 +96,38 @@ int maximizeTipCalc(vector<stTip>& vTips, int N, int X, int Y)
 
     for(int i = 0; i<N; ++i)
     {
-        if(ix<X)
-        {
-            if(vTips[i].a>vTips[i].b)
-            {
+    
+         if(vTips[i].a>vTips[i].b)
+         {
+             if(ix<X)
+             {
                 sum += vTips[i].a;
                 ++ix;
-            }
-            else
-            {
+             }
+             else
+             {
+                 sum += vTips[i].b;
+                 ++iy;
+             }
+
+         }
+         else
+         {
+             if(iy<Y)
+             {
                 sum += vTips[i].b;
                 ++iy;
-            }
-        }
-        else
-        {
-            sum += vTips[i].b;
-        }
+             }
+             else
+             {
+                 sum += vTips[i].a;
+                 ++ix;
+             }
+
+             
+         }
+        
+ 
     }
     
     cout<<sum<<endl;
