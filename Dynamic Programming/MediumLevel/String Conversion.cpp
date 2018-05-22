@@ -36,7 +36,56 @@ Yes
 No
 Explanation :
 
-Test Case 1:  daBcd -> dABCd -> ABC Covert a and b at index 1 and 3 to upper case, delete the rest those are lowercase. We get the string Y so the output is: Yes.
+Test Case 1:  daBcd -> dABCd -> ABC Covert a and b at index 1 and 3 to upper case, delete the rest those are lowercase. 
+We get the string Y so the output is: Yes.
+
+*/
+
+
+/*
+
+this is a variable of LCS: LCS(X,Y) = |Y| insensitive case.
+WOW, DP again!
+
+
+                LCS[i-1][j-1] + 1;
+LCS[i][j] = 
+                max{LCS[i-1][j], LCS[i][j-1]}
 
 
 */
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+int StringConversion(const char* strx,  const char* stry, int n, int m)
+{
+    int LCS[101][101];
+
+
+    return 0;
+}
+
+
+int main()
+{
+    int t;
+    int n = 0;
+    int m = 0;
+    char szX[101] = {0};
+    char szY[101] = {0};
+    
+    cin>>t;
+    
+    while(t>0)
+    {
+        cin>>n>>m;
+        cin>>szX>>szY;
+
+        StringConversion(szX,szY,n,m);
+    }
+
+
+    return 0;
+}

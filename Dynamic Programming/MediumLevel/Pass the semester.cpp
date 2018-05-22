@@ -2,7 +2,8 @@
 Pass the semester
 https://practice.geeksforgeeks.org/problems/pass-the-semester/0
 
-Satish wants to prepare for tommorow's exam . He knows the distribution of marks for the subject along with time to learn the concepts.
+Satish wants to prepare for tommorow's exam . He knows the distribution of marks for 
+the subject along with time to learn the concepts.
 You are given remaining time for the exam along with marks for each topic and passing marks for the subject.
 Find the max marks Satish can attain by studing max no of topic in max no hours not excedding (p) .
 
