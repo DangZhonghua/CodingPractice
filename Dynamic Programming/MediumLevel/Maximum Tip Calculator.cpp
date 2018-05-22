@@ -5,8 +5,8 @@ https://practice.geeksforgeeks.org/problems/maximum-tip-calculator/0
 
 Rahul and Ankit are the only two waiters in Royal Restaurant.
 Today, the restaurant received N orders. The amount of tips may differ when handled by different waiters, 
-if Rahul takes the ith order, he would be tipped Ai rupees and if Ankit takes this order, the tip 
-would be Bi rupees.
+if Rahul takes the ith order, he would be tipped Ai rupees and 
+if Ankit takes this order, the tip would be Bi rupees.
 In order to maximize the total tip value they decided to distribute the order among themselves. 
 One order will be handled by one person only. 
 Also, due to time constraints Rahul cannot take more than X orders and Ankit cannot take more than Y orders. 
@@ -65,13 +65,14 @@ struct stTip
 {
     int a;
     int b;
+    int d;
 };
 
 struct CstTipCompare
 {
     bool operator()(const stTip& lhs, const stTip& rhs) const
     {
-        if(lhs.a<rhs.a)
+        if(lhs.d>rhs.d)
         {
             return true;
         }
@@ -82,20 +83,40 @@ struct CstTipCompare
 
 int maximizeTipCalc(vector<stTip>& vTips, int N, int X, int Y)
 {
+    for(int i = 0; i<N; ++i)
+    {
+        vTips[i].d = (vTips[i].a>vTips[i].b? vTips[i].a-vTips[i].b:vTips[i].b-vTips[i].a);
+    }
+
     std::sort(vTips.begin(),vTips.end(), CstTipCompare());
 
-    for(int i = 0; i<N; ++i)
-    {
-        cout<<vTips[i].a<<" ";
-    }
-    cout<<endl;
+    int sum = 0;
+    int ix = 0;
+    int iy = 0;
 
     for(int i = 0; i<N; ++i)
     {
-        cout<<vTips[i].b<<" ";
+        if(ix<X)
+        {
+            if(vTips[i].a>vTips[i].b)
+            {
+                sum += vTips[i].a;
+                ++ix;
+            }
+            else
+            {
+                sum += vTips[i].b;
+                ++iy;
+            }
+        }
+        else
+        {
+            sum += vTips[i].b;
+        }
     }
     
-    cout<<endl;
+    cout<<sum<<endl;
+   
 
     return 0;
 }
@@ -132,13 +153,9 @@ int main()
         }
 
         maximizeTipCalc(vTips,N,X,Y);
-        
-
+        vTips.clear();
         
     }
-
-
-
 
     return 0;
 }
