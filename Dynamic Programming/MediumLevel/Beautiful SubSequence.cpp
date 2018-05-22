@@ -45,6 +45,7 @@ Longest Sub Sequence are {1, 2, 6}, {1, 3, 6} so size is 3.
 
 /*
 Pre-process the array before DP: sort the array.
+The sort can reduce the complexity obviously
 
 */
 
