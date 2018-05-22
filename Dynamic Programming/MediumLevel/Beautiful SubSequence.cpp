@@ -2,7 +2,10 @@
 Beautiful SubSequence
 https://practice.geeksforgeeks.org/problems/beautiful-subsequence/0
 
-Nowadays Babul is solving problems on sub-sequence. He is struck with a problem in which he has to find the longest sub-sequence in an array A of size  N such that for all (i,j) where i!=j either A[i] divides A[j] or vice versa. If no such sub-sequence exists then print -1. Help him to accomplish this task.
+Nowadays Babul is solving problems on sub-sequence. 
+He is struck with a problem in which he has to find 
+the longest sub-sequence in an array A of size  N such that for all (i,j) where i!=j either A[i] divides A[j] or vice versa. 
+If no such sub-sequence exists then print -1. Help him to accomplish this task.
 
 Constraints : 
 1<=T<=100
@@ -39,3 +42,75 @@ Longest Sub Sequence are {1, 2, 6}, {1, 3, 6} so size is 3.
 
 
 */
+
+/*
+Pre-process the array before DP: sort the array.
+
+*/
+
+#include<iostream>
+#include<algorithm>
+using namespace std;
+
+int longestPerfectSubsequence(int*a, int*b, int N)
+{
+    int maxset = 1;
+    for(int i = 0; i<N; ++i)
+    {
+        b[i] = 1;
+    }
+    std::sort(a,a+N);
+
+    for(int i = 1; i<N; ++i)
+    {
+        for(int j = 0; j<i; ++j)
+        {
+            if(0 ==  (a[i]%a[j]) && b[i]<b[j]+1  )
+            {
+                b[i] = b[j] + 1;
+            }
+        }
+        if(b[i]>maxset)
+        {
+            maxset = b[i];
+        }
+    }
+    
+    if(1== maxset)
+    {
+        cout<<-1<<endl;
+    }
+    else
+    {
+         cout<<maxset<<endl;
+    }
+
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[1001] = {0};
+    int b[1001] = {0};
+
+    cin>>t;
+    
+    while(t>0)
+    {
+        --t;
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        longestPerfectSubsequence(a,b,N);
+    }
+
+
+    return 0;
+}
