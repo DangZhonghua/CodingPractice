@@ -62,15 +62,163 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 
 */
 
+// #include<iostream>
+// #include<string>
+// #include<unordered_set>
+// using namespace std;
+
+// int StringConversion(const char* strx, const char* stry, int n, int m)
+// {
+// 	int LCS[102][102];
+// 	int ELCS[102][102];
+// 	int nUpperCount = 0;
+// 	unordered_set<int> dict;
+// 	//Initialize the matrix.
+// 	for (int r = 0; r <= n; ++r)
+// 	{
+// 		if ('A' <= strx[r] && 'Z' >= strx[r])
+// 		{
+// 			++nUpperCount;
+// 		}
+
+// 		for (int c = 0; c <= m; ++c)
+// 		{
+// 			LCS[r][c] 	= 0;
+// 			ELCS[r][c] 	= 0;
+// 		}
+// 	}
+// 	//First, we calculate the LCS using case sensitive. the longest LCS is |Y| then we check the upper char count in X.
+// 	for (int r = 1; r <= n; ++r)
+// 	{
+// 		for (int c = 1; c <= m; ++c)
+// 		{
+// 			int i = r - 1;
+// 			int j = c - 1;
+// 			if (strx[i] == stry[j])
+// 			{
+// 				LCS[r][c] = LCS[r - 1][c - 1] + 1;
+// 			}
+// 			else
+// 			{
+// 				LCS[r][c] = LCS[r - 1][c];
+// 				if (LCS[r][c]<LCS[r][c - 1])
+// 				{
+// 					LCS[r][c] = LCS[r][c - 1];
+// 				}
+// 			}
+// 		}
+// 	}
+// 	if (LCS[n][m] == m)
+// 	{
+// 		if (nUpperCount == m)
+// 		{
+// 			cout << "Yes" << endl;
+// 		}
+// 		else if (nUpperCount > m)
+// 		{
+// 			cout << "No" << endl;
+// 		}
+// 		return 0;
+// 	}
+
+// 	////////////////////////////////////////
+// 	int nlowercount = 0;
+// 	for (int r = 1; r <= n; ++r)
+// 	{
+// 		for (int c = 1; c <= m; ++c)
+// 		{
+// 			int i = r - 1;
+// 			int j = c - 1;
+// 			if (strx[i] == stry[j] )
+// 			{
+// 				ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
+// 				if(ELCS[r][c] == c)
+// 				{
+// 					unordered_set<int>::iterator it = dict.find(j);
+// 					if(it != dict.end())
+// 					{
+// 						dict.erase(it);
+// 						--nlowercount;
+// 					}
+// 				}
+// 			}
+// 			else
+// 			{
+// 				if((strx[i] - 32) == stry[j] && (LCS[r - 1][c - 1] + 1)>LCS[r][c] )
+// 				{
+// 					if(dict.find(j) == dict.end())
+// 					{
+// 						++nlowercount;
+// 						dict.insert(j);	
+// 					}
+// 					ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
+// 				}
+// 				else
+// 				{
+// 					ELCS[r][c] = ELCS[r - 1][c];
+// 					if (ELCS[r][c]<ELCS[r][c - 1])
+// 					{
+// 						ELCS[r][c] = ELCS[r][c - 1];
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// 	if (ELCS[n][m] == m)
+// 	{
+// 		if (m - nlowercount == nUpperCount)
+// 		{
+// 			cout << "Yes" << endl;
+// 		}
+// 		else
+// 		{
+// 			cout << "No" << endl;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		cout << "No" << endl;
+// 	}
+
+// 	return 0;
+// }
+
+
 #include<iostream>
 #include<string>
 #include<unordered_set>
+#include<stack>
 using namespace std;
+
+enum 
+{
+	REL_INVALID,
+	REL_EQUAL,
+	REL_INEQUAL
+};
+
+struct commchar
+{
+	int op;
+	int i;
+	int j;
+	int pi;
+	int pj;
+	commchar()
+	{
+		op = REL_INVALID;
+		i = -1;
+		j = -1;
+		pi = -1;
+		pj = -1;
+	}
+};
+
 
 int StringConversion(const char* strx, const char* stry, int n, int m)
 {
-	int LCS[102][102];
-	int ELCS[102][102];
+	int 	LCS[102][102];
+	commchar ELCS[102][102];
 	int nUpperCount = 0;
 	unordered_set<int> dict;
 	//Initialize the matrix.
@@ -84,7 +232,7 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 		for (int c = 0; c <= m; ++c)
 		{
 			LCS[r][c] 	= 0;
-			ELCS[r][c] 	= 0;
+			ELCS[r][c] 	= commchar();
 		}
 	}
 	//First, we calculate the LCS using case sensitive. the longest LCS is |Y| then we check the upper char count in X.
@@ -97,91 +245,58 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 			if (strx[i] == stry[j])
 			{
 				LCS[r][c] = LCS[r - 1][c - 1] + 1;
+				ELCS[r][c].op = REL_EQUAL;
+				ELCS[r][c].i = i;
+				ELCS[r][c].j = j;
+				ELCS[r][c].pi = i-1;
+				ELCS[r][c].pj = j-1;
+				
 			}
 			else
 			{
+				ELCS[r][c].op 	= REL_INEQUAL;
+				ELCS[r][c].i 	= i;
+				ELCS[r][c].j 	= j;
+				ELCS[r][c].pi 	= i-1;
+				ELCS[r][c].pj 	= j;
+
 				LCS[r][c] = LCS[r - 1][c];
+				
 				if (LCS[r][c]<LCS[r][c - 1])
 				{
 					LCS[r][c] = LCS[r][c - 1];
+					ELCS[r][c].pi 	= i;
+					ELCS[r][c].pj 	= j-1;
 				}
 			}
 		}
-	}
-	if (LCS[n][m] == m)
-	{
-		if (nUpperCount == m)
-		{
-			cout << "Yes" << endl;
-		}
-		else if (nUpperCount > m)
-		{
-			cout << "No" << endl;
-		}
-		return 0;
 	}
 
-	////////////////////////////////////////
-	int nlowercount = 0;
-	for (int r = 1; r <= n; ++r)
+	int i = n;
+	int j = m;
+	stack<commchar> sLCS;
+    while(i>=0 && j>=0)
 	{
-		for (int c = 1; c <= m; ++c)
-		{
-			int i = r - 1;
-			int j = c - 1;
-			if (strx[i] == stry[j] )
-			{
-				ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
-				if(ELCS[r][c] == c)
-				{
-					unordered_set<int>::iterator it = dict.find(j);
-					if(it != dict.end())
-					{
-						dict.erase(it);
-						--nlowercount;
-					}
-				}
-			}
-			else
-			{
-				if((strx[i] - 32) == stry[j] && (LCS[r - 1][c - 1] + 1)>LCS[r][c] )
-				{
-					if(dict.find(j) == dict.end())
-					{
-						++nlowercount;
-						dict.insert(j);	
-					}
-					ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
-				}
-				else
-				{
-					ELCS[r][c] = ELCS[r - 1][c];
-					if (ELCS[r][c]<ELCS[r][c - 1])
-					{
-						ELCS[r][c] = ELCS[r][c - 1];
-					}
-				}
-			}
+		int a = ELCS[i][j].pi;
+		int b = ELCS[i][j].pj;
+		if(REL_EQUAL == ELCS[i][j].op)
+		{	
+			sLCS.push(ELCS[i][j]);
 		}
+
+		i = a;
+		j = b;
 	}
-	if (ELCS[n][m] == m)
-	{
-		if (m - nlowercount == nUpperCount)
-		{
-			cout << "Yes" << endl;
-		}
-		else
-		{
-			cout << "No" << endl;
-		}
-	}
-	else
-	{
-		cout << "No" << endl;
-	}
+	
+	
+
+	
+
+
 
 	return 0;
 }
+
 
 
 int main()
