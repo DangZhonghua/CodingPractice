@@ -54,17 +54,25 @@ max{LCS[i-1][j], LCS[i][j-1]}
 
 10 8
 EDFBccBcBE EDFBCBBE
+29 11
+AbcDDefgHilklMNnopqrstvuwXXyz ABCDDHMNXXZ
+
+28 17
+abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
+
 */
 
 #include<iostream>
 #include<string>
+#include<unordered_set>
 using namespace std;
 
 int StringConversion(const char* strx, const char* stry, int n, int m)
 {
 	int LCS[102][102];
+	int ELCS[102][102];
 	int nUpperCount = 0;
-
+	unordered_set<int> dict;
 	//Initialize the matrix.
 	for (int r = 0; r <= n; ++r)
 	{
@@ -75,7 +83,8 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 
 		for (int c = 0; c <= m; ++c)
 		{
-			LCS[r][c] = 0;
+			LCS[r][c] 	= 0;
+			ELCS[r][c] 	= 0;
 		}
 	}
 	//First, we calculate the LCS using case sensitive. the longest LCS is |Y| then we check the upper char count in X.
@@ -113,15 +122,6 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 	}
 
 	////////////////////////////////////////
-
-	for (int r = 0; r <= n; ++r)
-	{
-		for (int c = 0; c <= m; ++c)
-		{
-			LCS[r][c] = 0;
-		}
-	}
-
 	int nlowercount = 0;
 	for (int r = 1; r <= n; ++r)
 	{
@@ -129,25 +129,42 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 		{
 			int i = r - 1;
 			int j = c - 1;
-			if (strx[i] == stry[j] || (strx[i] - 32) == stry[j])
+			if (strx[i] == stry[j] )
 			{
-				if ((strx[i] - 32) == stry[j])
+				ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
+				if(ELCS[r][c] == c)
 				{
-					++nlowercount;
+					unordered_set<int>::iterator it = dict.find(j);
+					if(it != dict.end())
+					{
+						dict.erase(it);
+						--nlowercount;
+					}
 				}
-				LCS[r][c] = LCS[r - 1][c - 1] + 1;
 			}
 			else
 			{
-				LCS[r][c] = LCS[r - 1][c];
-				if (LCS[r][c]<LCS[r][c - 1])
+				if((strx[i] - 32) == stry[j] && (LCS[r - 1][c - 1] + 1)>LCS[r][c] )
 				{
-					LCS[r][c] = LCS[r][c - 1];
+					if(dict.find(j) == dict.end())
+					{
+						++nlowercount;
+						dict.insert(j);	
+					}
+					ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
+				}
+				else
+				{
+					ELCS[r][c] = ELCS[r - 1][c];
+					if (ELCS[r][c]<ELCS[r][c - 1])
+					{
+						ELCS[r][c] = ELCS[r][c - 1];
+					}
 				}
 			}
 		}
 	}
-	if (LCS[n][m] == m)
+	if (ELCS[n][m] == m)
 	{
 		if (m - nlowercount == nUpperCount)
 		{
