@@ -188,6 +188,7 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 #include<string>
 #include<unordered_set>
 #include<stack>
+#include<vector>
 using namespace std;
 
 enum 
@@ -215,12 +216,63 @@ struct commchar
 };
 
 
+bool CalcLCSWithCaseInSensitive(const char* strx, const char* stry, int n, int m)
+{
+	bool bConvert = true;
+	int  LCS[102][102];
+	int  nUpperCount = 0;
+
+	//Initialize the matrix.
+	for (int r = 0; r <= n; ++r)
+	{
+		if ('A' <= strx[r] && 'Z' >= strx[r])
+		{
+			++nUpperCount;
+		}
+
+		for (int c = 0; c <= m; ++c)
+		{
+			LCS[r][c] 	= 0;
+		}
+	}
+	for(int r = 1; r<n; ++r)
+	{
+		for(int c = 1; c<m; ++c)
+		{
+			int  i = r-1;
+			int  j = c-1;
+
+			if(strx[i]-32 == stry[j])
+			{
+				LCS[r][c] = LCS[r-1][c-1]+1;
+			}
+			else
+			{
+				LCS[r][c] = LCS[r-1][c];
+				if(LCS[r][c]<LCS[r][c-1])
+				{
+					LCS[r][c] = LCS[r][c-1];
+				}
+			}
+		}
+	}
+
+	if(nUpperCount || m != LCS[n][m])
+	{
+		bConvert = false;
+	}
+
+	return bConvert;
+}
+
 int StringConversion(const char* strx, const char* stry, int n, int m)
 {
-	int 	LCS[102][102];
+
+	int 	 LCS[102][102];
 	commchar ELCS[102][102];
 	int nUpperCount = 0;
 	unordered_set<int> dict;
+
 	//Initialize the matrix.
 	for (int r = 0; r <= n; ++r)
 	{
@@ -235,6 +287,7 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 			ELCS[r][c] 	= commchar();
 		}
 	}
+
 	//First, we calculate the LCS using case sensitive. the longest LCS is |Y| then we check the upper char count in X.
 	for (int r = 1; r <= n; ++r)
 	{
@@ -246,35 +299,37 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 			{
 				LCS[r][c] = LCS[r - 1][c - 1] + 1;
 				ELCS[r][c].op = REL_EQUAL;
-				ELCS[r][c].i = i;
-				ELCS[r][c].j = j;
-				ELCS[r][c].pi = i-1;
-				ELCS[r][c].pj = j-1;
+				ELCS[r][c].i = r;
+				ELCS[r][c].j = c;
+				ELCS[r][c].pi = i;
+				ELCS[r][c].pj = j;
 				
 			}
 			else
 			{
 				ELCS[r][c].op 	= REL_INEQUAL;
-				ELCS[r][c].i 	= i;
-				ELCS[r][c].j 	= j;
-				ELCS[r][c].pi 	= i-1;
-				ELCS[r][c].pj 	= j;
+				ELCS[r][c].i 	= r;
+				ELCS[r][c].j 	= c;
+				ELCS[r][c].pi 	= r-1;
+				ELCS[r][c].pj 	= c;
 
 				LCS[r][c] = LCS[r - 1][c];
 				
 				if (LCS[r][c]<LCS[r][c - 1])
 				{
 					LCS[r][c] = LCS[r][c - 1];
-					ELCS[r][c].pi 	= i;
-					ELCS[r][c].pj 	= j-1;
+					ELCS[r][c].pi 	= r;
+					ELCS[r][c].pj 	= c-1;
 				}
 			}
 		}
 	}
 
+
 	int i = n;
 	int j = m;
 	stack<commchar> sLCS;
+	vector<commchar> vLCS;
     while(i>=0 && j>=0)
 	{
 		int a = ELCS[i][j].pi;
@@ -287,11 +342,45 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 		i = a;
 		j = b;
 	}
-	
-	
 
-	
 
+	while(!sLCS.empty())
+	{
+		vLCS.push_back(sLCS.top());
+		sLCS.pop();
+	}
+
+	commchar s;
+	s.i = s.j = 1;
+
+	for(int i = 0; i<vLCS.size(); ++i)
+	{
+		if(s.j != vLCS[i].j) //Find the miss segment.
+		{
+			const char* a = strx+s.i-1;
+			const char* b = stry+s.j-1;
+			int an = vLCS[i].i-s.i;
+			int bm = vLCS[i].j-s.j;
+			if(!CalcLCSWithCaseInSensitive(a,b,an,bm))
+			{
+				cout<<"No"<<endl;
+				break;
+			}
+			s.i = vLCS[i].i+1;
+			s.j = vLCS[i].j+1;
+		}
+		s.i = vLCS[i].i+1;
+		s.j = vLCS[i].j+1;
+	}
+
+
+
+
+	for(int i = 0; i< vLCS.size(); ++i)
+	{
+		cout<<stry[vLCS[i].j-1]<<" "<<vLCS[i].j-1<<endl;
+	}
+	cout<<endl;
 
 
 	return 0;
@@ -321,3 +410,8 @@ int main()
 
 	return 0;
 }
+
+/*
+28 17
+abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
+*/
