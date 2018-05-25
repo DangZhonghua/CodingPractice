@@ -399,6 +399,65 @@ int StringConversion(const char* strx, const char* stry, int n, int m)
 
 
 
+int StringConversionLCS(const char* strx, const char* stry, int n, int m)
+{
+	int sc[102][102];
+
+	for(int r = 0; r<=n; ++r)
+	{
+		for(int c = 0; c<=m; ++c)
+		{
+			sc[r][c] = 0;
+			if( r != n && 'a'<=strx[r] && 'z'>= strx[r])
+			{
+				sc[r][c] = 1;
+			}
+			
+		}
+	}		
+	sc[0][0] = 1;
+
+	for(int r = 1; r<=n; ++r)
+	{
+		for(int c = 1; c<=m; ++c)
+		{
+			int i = r-1;
+			int j = c-1;
+			if(strx[i] == stry[j] || strx[i]-32 == stry[j])
+			{
+				sc[r][c] = sc[r-1][c-1];
+			}
+			else
+			{
+				if('a'<=strx[i] && 'z'>= strx[i])
+				{
+					sc[r][c] = sc[r-1][c];
+				}
+				else
+				{
+					sc[r][c] = sc[r-1][c];
+					if(sc[r][c-1])
+					{
+						sc[r][c] = sc[r][c-1];
+					}
+				}
+			}
+		}
+	}
+
+	if(sc[n][m])
+	{
+		cout<<"Yes"<<endl;
+	}
+	else
+	{
+		cout<<"No"<<endl;
+	}
+
+	return 0;
+}
+
+
 int main()
 {
 	int t;
@@ -415,9 +474,8 @@ int main()
 		cin >> n >> m;
 		cin >> szX >> szY;
 
-		StringConversion(szX, szY, n, m);
+		StringConversionLCS(szX, szY, n, m);
 	}
-
 
 	return 0;
 }
@@ -426,4 +484,14 @@ int main()
 1
 28 17
 abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
+
+2
+5 3
+daBcd ABC 
+4 3
+ABcd BCD 
+
+//no
+20 13
+ejBchGhhEjhhHGhahjgb BFAFGHDBGHGCC
 */
