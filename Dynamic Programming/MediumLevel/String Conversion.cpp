@@ -62,126 +62,6 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 
 */
 
-// #include<iostream>
-// #include<string>
-// #include<unordered_set>
-// using namespace std;
-
-// int StringConversion(const char* strx, const char* stry, int n, int m)
-// {
-// 	int LCS[102][102];
-// 	int ELCS[102][102];
-// 	int nUpperCount = 0;
-// 	unordered_set<int> dict;
-// 	//Initialize the matrix.
-// 	for (int r = 0; r <= n; ++r)
-// 	{
-// 		if ('A' <= strx[r] && 'Z' >= strx[r])
-// 		{
-// 			++nUpperCount;
-// 		}
-
-// 		for (int c = 0; c <= m; ++c)
-// 		{
-// 			LCS[r][c] 	= 0;
-// 			ELCS[r][c] 	= 0;
-// 		}
-// 	}
-// 	//First, we calculate the LCS using case sensitive. the longest LCS is |Y| then we check the upper char count in X.
-// 	for (int r = 1; r <= n; ++r)
-// 	{
-// 		for (int c = 1; c <= m; ++c)
-// 		{
-// 			int i = r - 1;
-// 			int j = c - 1;
-// 			if (strx[i] == stry[j])
-// 			{
-// 				LCS[r][c] = LCS[r - 1][c - 1] + 1;
-// 			}
-// 			else
-// 			{
-// 				LCS[r][c] = LCS[r - 1][c];
-// 				if (LCS[r][c]<LCS[r][c - 1])
-// 				{
-// 					LCS[r][c] = LCS[r][c - 1];
-// 				}
-// 			}
-// 		}
-// 	}
-// 	if (LCS[n][m] == m)
-// 	{
-// 		if (nUpperCount == m)
-// 		{
-// 			cout << "Yes" << endl;
-// 		}
-// 		else if (nUpperCount > m)
-// 		{
-// 			cout << "No" << endl;
-// 		}
-// 		return 0;
-// 	}
-
-// 	////////////////////////////////////////
-// 	int nlowercount = 0;
-// 	for (int r = 1; r <= n; ++r)
-// 	{
-// 		for (int c = 1; c <= m; ++c)
-// 		{
-// 			int i = r - 1;
-// 			int j = c - 1;
-// 			if (strx[i] == stry[j] )
-// 			{
-// 				ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
-// 				if(ELCS[r][c] == c)
-// 				{
-// 					unordered_set<int>::iterator it = dict.find(j);
-// 					if(it != dict.end())
-// 					{
-// 						dict.erase(it);
-// 						--nlowercount;
-// 					}
-// 				}
-// 			}
-// 			else
-// 			{
-// 				if((strx[i] - 32) == stry[j] && (LCS[r - 1][c - 1] + 1)>LCS[r][c] )
-// 				{
-// 					if(dict.find(j) == dict.end())
-// 					{
-// 						++nlowercount;
-// 						dict.insert(j);	
-// 					}
-// 					ELCS[r][c] = ELCS[r - 1][c - 1] + 1;
-// 				}
-// 				else
-// 				{
-// 					ELCS[r][c] = ELCS[r - 1][c];
-// 					if (ELCS[r][c]<ELCS[r][c - 1])
-// 					{
-// 						ELCS[r][c] = ELCS[r][c - 1];
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// 	if (ELCS[n][m] == m)
-// 	{
-// 		if (m - nlowercount == nUpperCount)
-// 		{
-// 			cout << "Yes" << endl;
-// 		}
-// 		else
-// 		{
-// 			cout << "No" << endl;
-// 		}
-// 	}
-// 	else
-// 	{
-// 		cout << "No" << endl;
-// 	}
-
-// 	return 0;
-// }
 
 
 #include<iostream>
@@ -191,211 +71,6 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 #include<vector>
 using namespace std;
 
-enum
-{
-	REL_INVALID,
-	REL_EQUAL,
-	REL_INEQUAL
-};
-
-struct commchar
-{
-	int op;
-	int i;
-	int j;
-	int pi;
-	int pj;
-	commchar()
-	{
-		op = REL_INVALID;
-		i = -1;
-		j = -1;
-		pi = -1;
-		pj = -1;
-	}
-};
-
-
-bool CalcLCSWithCaseInSensitive(const char* strx, const char* stry, int n, int m)
-{
-	bool bConvert = true;
-	int  LCS[102][102];
-	int  nUpperCount = 0;
-
-	//Initialize the matrix.
-	for (int r = 0; r <= n; ++r)
-	{
-		if (n != r &&'A' <= strx[r] && 'Z' >= strx[r])
-		{
-			++nUpperCount;
-		}
-
-		for (int c = 0; c <= m; ++c)
-		{
-			LCS[r][c] = 0;
-		}
-	}
-	for (int r = 1; r<=n; ++r)
-	{
-		for (int c = 1; c<=m; ++c)
-		{
-			int  i = r - 1;
-			int  j = c - 1;
-
-			if (strx[i] - 32 == stry[j])
-			{
-				LCS[r][c] = LCS[r - 1][c - 1] + 1;
-			}
-			else
-			{
-				LCS[r][c] = LCS[r - 1][c];
-				if (LCS[r][c]<LCS[r][c - 1])
-				{
-					LCS[r][c] = LCS[r][c - 1];
-				}
-			}
-		}
-	}
-
-	if (nUpperCount || m != LCS[n][m])
-	{
-		bConvert = false;
-	}
-
-	return bConvert;
-}
-
-int StringConversion(const char* strx, const char* stry, int n, int m)
-{
-
-	int 	 LCS[102][102];
-	commchar ELCS[102][102];
-	int nUpperCount = 0;
-	unordered_set<int> dict;
-
-	//Initialize the matrix.
-	for (int r = 0; r <= n; ++r)
-	{
-		if (r != n && 'A' <= strx[r] && 'Z' >= strx[r])
-		{
-			++nUpperCount;
-		}
-
-		for (int c = 0; c <= m; ++c)
-		{
-			LCS[r][c] = 0;
-			ELCS[r][c] = commchar();
-		}
-	}
-
-	//First, we calculate the LCS using case sensitive. the longest LCS is |Y| then we check the upper char count in X.
-	for (int r = 1; r <= n; ++r)
-	{
-		for (int c = 1; c <= m; ++c)
-		{
-			int i = r - 1;
-			int j = c - 1;
-			if (strx[i] == stry[j])
-			{
-				LCS[r][c] = LCS[r - 1][c - 1] + 1;
-				ELCS[r][c].op = REL_EQUAL;
-				ELCS[r][c].i = r;
-				ELCS[r][c].j = c;
-				ELCS[r][c].pi = i;
-				ELCS[r][c].pj = j;
-
-			}
-			else
-			{
-				ELCS[r][c].op = REL_INEQUAL;
-				ELCS[r][c].i = r;
-				ELCS[r][c].j = c;
-				ELCS[r][c].pi = r - 1;
-				ELCS[r][c].pj = c;
-
-				LCS[r][c] = LCS[r - 1][c];
-				ELCS[r][c] = ELCS[r - 1][c];
-
-				if (LCS[r][c]<LCS[r][c - 1])
-				{
-					LCS[r][c] = LCS[r][c - 1];
-					ELCS[r][c].pi = r;
-					ELCS[r][c].pj = c - 1;
-					ELCS[r][c] = ELCS[r][c-1];
-				}
-			}
-		}
-	}
-
-
-	int i = n;
-	int j = m;
-	stack<commchar> sLCS;
-	vector<commchar> vLCS;
-	while (i >= 0 && j >= 0)
-	{
-		int a = ELCS[i][j].pi;
-		int b = ELCS[i][j].pj;
-		if (REL_EQUAL == ELCS[i][j].op)
-		{
-			sLCS.push(ELCS[i][j]);
-		}
-
-		i = a;
-		j = b;
-	}
-
-
-	while (!sLCS.empty())
-	{
-		vLCS.push_back(sLCS.top());
-		sLCS.pop();
-	}
-
-	bool bConvert = true;
-	commchar s;
-	s.i = s.j = 1;
-
-	for (int i = 0; i<vLCS.size(); ++i)
-	{
-		if (s.j != vLCS[i].j) //Find the miss segment.
-		{
-			const char* a = strx + s.i - 1;
-			const char* b = stry + s.j - 1;
-			int an = vLCS[i].i - s.i;
-			int bm = vLCS[i].j - s.j;
-			if (!CalcLCSWithCaseInSensitive(a, b, an, bm))
-			{
-				bConvert = false;
-				break;
-			}
-			s.i = vLCS[i].i + 1;
-			s.j = vLCS[i].j + 1;
-		}
-		s.i = vLCS[i].i + 1;
-		s.j = vLCS[i].j + 1;
-	}
-
-	if (bConvert)
-	{
-		cout << "Yes" << endl;
-	}
-	else
-	{
-		cout << "No" << endl;
-	}
-
-
-
-	for (int i = 0; i< vLCS.size(); ++i)
-	{
-		cout << stry[vLCS[i].j - 1] << " " << vLCS[i].j - 1 << endl;
-	}
-	cout << endl;
-
-
-	return 0;
-}
 
 
 
@@ -408,11 +83,10 @@ int StringConversionLCS(const char* strx, const char* stry, int n, int m)
 		for(int c = 0; c<=m; ++c)
 		{
 			sc[r][c] = 0;
-			if( r != n && 'a'<=strx[r] && 'z'>= strx[r])
+			if(0 == c && r<n && 'a'<=strx[r] && 'z'>=strx[r])
 			{
 				sc[r][c] = 1;
-			}
-			
+			}		
 		}
 	}		
 	sc[0][0] = 1;
@@ -432,14 +106,6 @@ int StringConversionLCS(const char* strx, const char* stry, int n, int m)
 				if('a'<=strx[i] && 'z'>= strx[i])
 				{
 					sc[r][c] = sc[r-1][c];
-				}
-				else
-				{
-					sc[r][c] = sc[r-1][c];
-					if(sc[r][c-1])
-					{
-						sc[r][c] = sc[r][c-1];
-					}
 				}
 			}
 		}
@@ -494,4 +160,14 @@ ABcd BCD
 //no
 20 13
 ejBchGhhEjhhHGhahjgb BFAFGHDBGHGCC
+
+//yes
+1
+29 11
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
+A b c D D e f g H i  l  k  l  M  N  n  o  p  q  r  s  t  v  u  w  X  X  y  z 
+
+1 2 3 4 5 6 7 8 9 10 11
+A B C D D H M N X X  Z
+
 */
