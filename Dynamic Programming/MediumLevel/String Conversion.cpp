@@ -63,15 +63,19 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 
 #include <iostream>
 #include <string>
-#include <unordered_set>
+#include <vector>
 using namespace std;
 
 int StringConversionLCS(const char *strx, const char *stry, int n, int m)
 {
-	int sc[102][102];
-	int uc[102];
-
+	vector<int> row(n + 2, -1);
+	vector< vector<int> > cursc(n + 2, row);
+	vector< vector<int> > nextsc(n + 2, row);
+	vector< vector<int> >* next = &nextsc;
+	vector< vector<int> >* cur = &cursc;
+	int 	uc[102];
 	uc[0] = 0;
+
 	if ('A' <= strx[0] && 'Z' >= strx[0])
 	{
 		uc[0] = 1;
@@ -79,39 +83,64 @@ int StringConversionLCS(const char *strx, const char *stry, int n, int m)
 
 	for (int i = 1; i < n; ++i)
 	{
-		uc[i] = uc[i-1];
+		uc[i] = uc[i - 1];
 		if ('A' <= strx[i] && 'Z' >= strx[i])
 		{
 			uc[i] += 1;
 		}
 	}
 
-	sc[0][0] = 1;
-
-	for (int l = 1; l <=n; ++l)
+	for (int i = 0; i < n; ++i)
 	{
-		int r = 1;
-		int c = 1;
-		int i = 0;
-		int j = 0;
-		for(int k = 1;k<n; ++k)//For substring of strx begin at inde k, try to convert stry with the length l
+		if (strx[i] == stry[0] || strx[i] - 32 == stry[0])
 		{
-			c = r+l-1;
-			i = r-1;
-			j = c-1;
-			if(strx[i] == stry[j] || strx[i]-32 == stry[j])
+			cursc[i][0] = i;
+		}
+	}
+
+	for (int l = 2; l <= m; ++l)
+	{
+		int j = l - 1;
+		for (int x = 0; x < n; ++x)
+		{
+			int nm = 0;
+			(*next)[x][nm] = -1;
+			for (int i = 0; i < n; ++i)
 			{
-				sc[r][c] = sc[r-1][c-1];
+				if ((*cur)[x][i] < 0)
+				{
+					break;
+				}
+				for (int k = (*cur)[x][i] + 1; k < n; ++k)
+				{
+					if (strx[k] == stry[j] || strx[k] - 32 == stry[j])
+					{
+						(*next)[x][nm] = k;
+						++nm;
+					}
+				}
+			}
+		}
+		vector< vector<int> >* temp = next;
+		next = cur;
+		cur = temp;
+	}
+
+	bool bConvert = false;
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			if ((*cur)[i][j]<0)
+			{
+				break;
 			}
 			else
 			{
-				sc[r][c] = 0;
+
 			}
-		}	
+		}
 	}
-
-
-
 
 	return 0;
 }
@@ -121,8 +150,8 @@ int main()
 	int t;
 	int n = 0;
 	int m = 0;
-	char szX[102] = {0};
-	char szY[102] = {0};
+	char szX[102] = { 0 };
+	char szY[102] = { 0 };
 
 	cin >> t;
 
@@ -131,7 +160,6 @@ int main()
 		--t;
 		cin >> n >> m;
 		cin >> szX >> szY;
-
 		StringConversionLCS(szX, szY, n, m);
 	}
 
@@ -145,9 +173,9 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 
 2
 5 3
-daBcd ABC 
+daBcd ABC
 4 3
-ABcd BCD 
+ABcd BCD
 
 //no
 1
