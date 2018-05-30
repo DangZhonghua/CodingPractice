@@ -61,6 +61,13 @@ abAcjcvxhbdDMKLFNvxfhvndKSFL ABACJDMKLFNNDKSFL
 
 */
 
+
+/*
+sc
+
+
+*/
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -68,110 +75,38 @@ using namespace std;
 
 int StringConversionLCS(const char *strx, const char *stry, int n, int m)
 {
-	vector<int> row(n + 2, -1);
-	vector< vector<int> > cursc(n + 2, row);
-	vector< vector<int> > nextsc(n + 2, row);
-	vector< vector<int> >* next = &nextsc;
-	vector< vector<int> >* cur = &cursc;
-	int 	uc[102];
-	uc[0] = 0;
+	vector< vector<bool> > sc(n + 2, vector<bool>(m+2, 0));
 
-	if ('A' <= strx[0] && 'Z' >= strx[0])
+	bool bConvert = true;
+	for(int i = 1; i<=n; ++i)
 	{
-		uc[0] = 1;
-	}
-
-	for (int i = 1; i < n; ++i)
-	{
-		uc[i] = uc[i - 1];
-		if ('A' <= strx[i] && 'Z' >= strx[i])
+		if('A'<=strx[i-1] && 'Z'>=strx[i-1])
 		{
-			uc[i] += 1;
+			bConvert = false;
 		}
+		sc[i][0] = bConvert;
 	}
-
-	for (int i = 0; i < n; ++i)
+	sc[0][0] = true;
+	
+	for(int i = 1; i<=n; ++i)
 	{
-		if (strx[i] == stry[0] || strx[i] - 32 == stry[0])
+		for(int j = 1; j<=m; ++j)
 		{
-			cursc[i][0] = i;
-		}
-	}
-
-
-	for (int l = 2; l <= m; ++l)
-	{
-		int j = l - 1;
-		for (int x = 0; x < n; ++x)
-		{
-			int nm = 0;
-			(*next)[x][nm] = -1;
-			for (int i = 0; i < n; ++i)
+			sc[i][j] = sc[i-1][j]; // for lower case be deleted
+			if(strx[i-1] == stry[j-1] || strx[i-1]-32==stry[j-1])
 			{
-				if ((*cur)[x][i] < 0)
-				{
-					break;
-				}
-				for (int k = (*cur)[x][i] + 1; k < n; ++k)
-				{
-					if (strx[k] == stry[j] || strx[k] - 32 == stry[j])
-					{
-						(*next)[x][nm] = k;
-						++nm;
-					}
-					else if('A'<= strx[k] && 'Z'>=strx[k]) //since upper case can't be delete
-					{
-						break;
-					}
-				}
+				sc[i][j] = (sc[i-1][j] /* previous can be converted*/ || sc[i-1][j-1]);
 			}
-		}
-		vector< vector<int> >* temp = next;
-		next = cur;
-		cur = temp;
-	}
-
-	bool bConvert = false;
-	for (int i = 0; i < n && !bConvert; ++i)
-	{
-		for (int j = 0; j < n; ++j)
-		{
-			if ((*cur)[i][j]<0)
+			if(strx[i-1] != stry[j-1] && 'A'<=strx[i-1] && 'Z'>=strx[i-1])
 			{
-				break;
-			}
-			else
-			{
-				if(i-(*cur)[i][j]+1>=m)
-				{
-					int nUppcase = 0;
-					if(i>0)
-					{
-						nUppcase += uc[i-1];
-					}
-					int e = (*cur)[i][j];
-					if(e<m)
-					{
-						nUppcase += (uc[m-1]-uc[e]);
-					}
-					if(nUppcase == 0)
-					{
-						bConvert = true;
-						break;
-					}
-				}
+				sc[i][j] = false;
 			}
 		}
 	}
 
-	if(bConvert)
-	{
-		cout<<"Yes"<<endl;
-	}
-	else
-	{
-		cout<<"No"<<endl;
-	}
+	cout<<(sc[n][m]?"Yes":"No")<<endl;
+
+
 
 	return 0;
 }
@@ -197,33 +132,40 @@ int main()
 	return 0;
 }
 
-/*
 
-#include<bits/stdc++.h>
-using namespace std;
-int main(){
+
+/*
+int main()
+{
     int i,j,k,l,m,n,t;
     string x,y;
     cin>>t;
-    while(t--){
+    while(t--)
+	{
         cin>>m>>n;
         cin>>x>>y;
         vector<vector<bool>>dp(m+1,vector<bool>(n+1,false));
         bool check=true;
-        if(check){
-            for(i=1;i<=m;i++){
+        if(check)
+		{
+            for(i=1;i<=m;i++)
+			{
                 if(x[i-1]>='A'&&x[i-1]<='Z')check=false;
                 dp[i][0]=check;
             }
         }
         dp[0][0]=true;
-        for(i=1;i<=m;i++){
-            for(j=1;j<=n;j++){
+        for(i=1;i<=m;i++)
+		{
+            for(j=1;j<=n;j++)
+			{
                 dp[i][j]=dp[i-1][j];
-                if(x[i-1]==y[j-1] || x[i-1]-'a'==y[j-1]-'A'){
+                if(x[i-1]==y[j-1] || x[i-1]-'a'==y[j-1]-'A')
+				{
                     dp[i][j]=dp[i][j]||dp[i-1][j-1];
                 }
-                if(x[i-1]>='A'&&x[i-1]<='Z'&&x[i-1]!=y[j-1]){
+                if(x[i-1]>='A'&&x[i-1]<='Z'&&x[i-1]!=y[j-1])
+				{
                     dp[i][j]=false;
                 }
             }
@@ -233,9 +175,9 @@ int main(){
     }
 	return 0;
 }
-
-
 */
+
+
 
 /*
 1
