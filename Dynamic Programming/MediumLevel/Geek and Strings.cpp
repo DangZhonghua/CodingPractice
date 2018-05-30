@@ -2,11 +2,17 @@
 
 https://practice.geeksforgeeks.org/problems/geek-and-strings/0
 
-Geek recently read about strings, and he got interested in them.Geek has a list containing N words (not necessarily distinct)-denoted by Li.Now, he will ask Q queries.Each query will consist of a string x.You need to tell How many strings in the List has the string x as its prefix.
+Geek recently read about strings, and he got interested in them.Geek has a list containing N words 
+(not necessarily distinct)-denoted by Li.
+Now, he will ask Q queries.Each query will consist of a string x.
+You need to tell How many strings in the List has the string x as its prefix.
 
 Input:
-The First line contains an integer T, the number oftestcases.The first line of eachtestcase contains an integer N , the total number of Words.Each of the next N lines contains a string consisting of only lowercase alphabets -denoting Li.
-The next Line contains Q- denoting the number of queries.Each of the next Q linescontain a string -denoting the string x. 
+The First line contains an integer T, the number oftestcases.
+The first line of eachtestcase contains an integer N , the total number of Words.
+Each of the next N lines contains a string consisting of only lowercase alphabets -denoting Li.
+The next Line contains Q- denoting the number of queries.
+Each of the next Q linescontain a string -denoting the string x. 
 
 
 Output:

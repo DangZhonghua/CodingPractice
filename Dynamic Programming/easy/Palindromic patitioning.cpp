@@ -31,8 +31,19 @@ Output:
 3
 1
 
+*/
+
+
+/*
+
+
+
+
+
 
 */
+
+
 #include<iostream>
 #include<string>
 #include<vector>
@@ -47,10 +58,16 @@ int PalindromicPartition(string& strtext)
 
     for(int i = 0; i<N; ++i)
     {
-        psp[i][i] = 1;
+        psp[i][i] = 0;
     }
 
-    for()
+    for(int l = 2; l<=N; ++l)
+    {
+        for(int i = 0; i<=N-l; ++i)
+        {
+            int j = 
+        }
+    }
 
 
     return 0;
