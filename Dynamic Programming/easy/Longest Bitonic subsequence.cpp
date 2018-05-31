@@ -29,3 +29,77 @@ Output:
 6
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int CalcLongestBitonicSeq(int* a, int N)
+{
+    vector<int> vis(N,1);
+    vector<int> vds(N,1);
+    int max = 1;
+    
+    for(int i = 1; i<N; ++i)
+    {
+        for(int j = 0; j<i; ++j )
+        {
+            if(a[j]<a[i]) //Calc the increasing sequence.
+            {
+                if(vis[i] < vis[j]+1)
+                {
+                    vis[i] = vis[j] + 1;
+                }
+            }
+        }
+    }
+
+    for(int i =  N-2; i>=0; --i)
+    {
+        for(int j = N-1; j>i; --j)
+        {
+            if(a[i]>a[j] && vds[i]<(vds[j]+1))
+            {
+                vds[i] = (vds[j]+1);
+            }
+        }
+    }
+    
+    for(int i = 0; i<N; ++i)
+    {
+        if(max<(vis[i]+vds[i]-1))
+        {
+            max = (vis[i] + vds[i]-1);
+        }
+    }
+
+    cout<<max<<endl;
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[200];
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        CalcLongestBitonicSeq(a, N);
+    }
+
+
+
+
+    return 0;
+}

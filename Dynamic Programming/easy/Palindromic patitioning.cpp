@@ -37,10 +37,6 @@ Output:
 /*
 
 
-
-
-
-
 */
 
 
@@ -48,6 +44,24 @@ Output:
 #include<string>
 #include<vector>
 using namespace std;
+
+bool IsPalindromicString(const string& strtxt, int i, int j)
+{
+    bool bPalindromic = true;
+     while(i<j)
+     {
+         if(strtxt[i] != strtxt[j])
+         {
+             bPalindromic = false;
+             break;
+         }
+         ++i;
+         --j;
+     }
+
+    return bPalindromic;
+}
+
 
 
 //Matrix chain multiply extension.
@@ -65,7 +79,11 @@ int PalindromicPartition(string& strtext)
     {
         for(int i = 0; i<=N-l; ++i)
         {
-            int j = 
+          int j = i+l-1;
+          for(int k = i; k<j; ++k)
+          {
+
+          }
         }
     }
 
