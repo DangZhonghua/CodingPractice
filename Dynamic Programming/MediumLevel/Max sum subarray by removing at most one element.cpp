@@ -2,7 +2,8 @@
 Max sum subarray by removing at most one element
 https://practice.geeksforgeeks.org/problems/max-sum-subarray-by-removing-at-most-one-element/1
 
-Given an array, the task is to complete the function which  finds the maximum sum subarray, where you may remove atmost one element to get the maximum sum.
+Given an array, the task is to complete the function which  finds the maximum sum subarray, 
+where you may remove atmost one element to get the maximum sum.
 
 Examples:
 
@@ -41,3 +42,71 @@ Output:
 11
 9
 */
+
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+
+int CalcMaxsumofSubArray(int*a, int N)
+{
+    int max = INT_MIN;
+    vector< vector<int> > m(N+1, vector<int>(N+1, 0));
+    for(int i = 0; i<N; ++i)
+    {
+        m[i][i] = a[i];
+        if(max<a[i])
+        {
+            max = a[i];
+        }
+    }
+
+    for(int l = 2; l<=N; ++l)
+    {
+        for(int i = 0; i<=N-l; ++i)
+        {
+            int j = i+l-1;
+            m[i][j] = (a[i] + m[i+1][j]);
+            if(max<m[i][j])
+            {
+                max = m[i][j];
+            }
+            for(int k = i; k<=j; ++k)
+            {
+              if( ( m[i][j]-a[k] )> max)
+              {
+                  max = ( m[i][j]-a[k] );
+              }
+            }
+        }
+    }
+
+    cout<<max<<endl;
+    return 0;
+}
+
+
+
+int main(int argc, char const *argv[])
+{   
+    int t = 0;
+    int N = 0;
+    int a[101];
+
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        CalcMaxsumofSubArray(a,N);        
+    }
+
+
+    return 0;
+}

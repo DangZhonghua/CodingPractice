@@ -9,7 +9,9 @@ with at-most one ‘b’ and two ‘c’s allowed.
 
 Input:
 
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. The first line of each test case contains an integer N denoting the length of the string.
+The first line of input contains an integer T denoting the number of test cases. 
+Then T test cases follow. The first line of each test case contains 
+an integer N denoting the length of the string.
 
 
 Output:
