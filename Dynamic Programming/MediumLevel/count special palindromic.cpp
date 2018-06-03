@@ -30,5 +30,78 @@ OUTPUT:
 explanation :
 tese case 1 : All Special Palindromic substring size > 1 are : "aba", "bab" 
 
-
 */
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+int CountSps(const string& strtxt)
+{
+    int N = strtxt.size();
+    int nCount = 0;
+    vector< vector<bool> > cps(N+1,vector<bool>(N+1,false));
+    
+    for(int i = 0; i<N; ++i)
+    {
+        cps[i][i] = true;
+    }
+    
+    for(int l = 2; l<=N; ++l)
+    {
+        for(int i = 0; i<=N-l; ++i)
+        {
+            int j = i+l-1;
+            if(strtxt[i] == strtxt[j])
+            {
+                if(2 == l)
+                {
+                    ++nCount;
+                    cps[i][j] = true;
+                }
+                else
+                {
+                    if(cps[i+1][j-1])
+                    {
+                        if(l>3)
+                        {
+                            if(strtxt[i] == strtxt[i+1])
+                            {
+                                cps[i][j] = true;
+                                ++nCount;
+                            }
+                        }
+                        else
+                        {
+                            cps[i][j] = true;
+                            ++nCount;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    cout<<nCount<<endl;
+
+    return 0;
+}
+
+
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    string strtxt;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>strtxt;
+        CountSps(strtxt);
+    }
+
+    return 0;
+}
