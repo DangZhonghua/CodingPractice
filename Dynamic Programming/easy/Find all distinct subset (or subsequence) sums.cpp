@@ -2,6 +2,9 @@
 Find all distinct subset (or subsequence) sums
 
 https://practice.geeksforgeeks.org/problems/find-all-distinct-subset-or-subsequence-sums/0
+
+https://www.geeksforgeeks.org/find-distinct-subset-subsequence-sums-array/
+
 Given a set of integers, find distinct sum that can be generated from the subsets of the given sets
 and print them in an increasing order. It is given that sum of array elements is small.
 
