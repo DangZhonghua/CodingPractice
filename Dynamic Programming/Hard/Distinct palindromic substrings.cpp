@@ -1,0 +1,27 @@
+/*
+Distinct palindromic substrings 
+https://practice.geeksforgeeks.org/problems/distinct-palindromic-substrings/0/?ref=self
+
+Given a string of lowercase ASCII characters, find all distinct continuous palindromic sub-strings of it.
+
+Input:
+The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. Each test case contains a string.
+
+Output:
+Print the count of distinct continuous palindromic sub-strings of it.
+
+Constraints:
+1<=T<=10^5
+1<=length of string<=10^5
+
+Example:
+Input:
+2
+abaaa
+geek
+
+Output:
+5
+4
+
+*/

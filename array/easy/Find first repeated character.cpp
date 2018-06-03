@@ -32,17 +32,6 @@ int firstRepeatChar(const string& strText)
 		}
 	}
 
-	
-	// for (auto it = repmap.begin(); it != repmap.end(); ++it)
-	// {
-	// 	if (it->second.second>1)
-	// 	{
-	// 		if (min>it->second.first)
-	// 		{
-	// 			min = it->second.first;
-	// 		}
-	// 	}
-	// }
 
 	if (min == INT_MAX)
 	{

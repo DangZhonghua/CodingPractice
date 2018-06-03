@@ -102,5 +102,5 @@ int main()
         JudgeKPalindrome(strText,N);
     }
 
-
+    return 0;
 }
