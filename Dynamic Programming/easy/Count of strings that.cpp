@@ -43,3 +43,41 @@ Output:
 19
 
 */
+
+/*
+
+count[N][b] = count[N-1][c] + count[N-1][a] + count[N-1][2c]
+count[N][a] = count[N-1][a] + count[N-1][b] + count[N-1][c] + count[N-1][2c]
+count[N][c] = count[N-1][a] + count[N-1][b]
+count[N][2c] = count[N-1][c]
+
+
+*/
+
+#include<iostream>
+using namespace std;
+
+int CountOfCombineString(int N)
+{
+    unsigned long long count[2][4];
+
+
+    
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    
+    cin>>t;
+
+    while(t--)
+    {
+        cin>>N;
+        CountOfCombineString(N);
+    }
+}
