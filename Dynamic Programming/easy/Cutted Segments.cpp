@@ -37,3 +37,55 @@ Output
 2
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int MaxCutSeg(int N, int a[3])
+{
+    vector<int> vSeg(N+1, -1);
+    vSeg[0] = 0; // for 0 there is No segement
+
+    for(int i = 1; i<=N; ++i)
+    {
+        for(int s = 0; s<3; ++s)
+        {
+            if(i>=a[s])
+            {
+                if(vSeg[i-a[s]] != -1)
+                {
+                    if(vSeg[i]<vSeg[i-a[s]]+1)
+                    {
+                        vSeg[i]= vSeg[i-a[s]]+1; // 1 for adding current seg.
+                    }
+                }
+            }
+        }
+    }
+
+    cout<<vSeg[N]<<endl;
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[3];
+
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        cin>>a[0];
+        cin>>a[1];
+        cin>>a[2];
+        MaxCutSeg(N,a);
+    }
+
+    return 0;
+}
