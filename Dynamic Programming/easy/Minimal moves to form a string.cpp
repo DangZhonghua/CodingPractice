@@ -46,3 +46,102 @@ Explanation:
 
 
 */
+
+/*
+
+This is 0-1 knapsack extension.
+
+
+*/
+
+#include<string>
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int CalcPS(const char* szText, int N, vector<vector<bool> >& vps)
+{
+	for (int i = 0; i<N; ++i)
+	{
+		vps[i][i] = true;
+	}
+
+	for (int l = 2; l <= N; ++l)
+	{
+		for (int i = 0; i <= N - l; ++i)
+		{
+			int j = i + l - 1;
+			if (szText[i] == szText[j])
+			{
+				if (2 == l)
+				{
+					vps[i][j] = true;
+				}
+				else
+				{
+					vps[i][j] = vps[i + 1][j - 1];
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+
+int MinimalMovesForString(const char* szText, int N)
+{
+	//vector< vector<bool> > vps(N + 1, vector<bool>(N + 1, false));
+
+	vector<int> mc(N + 1, 0);
+	mc[0] = 1;
+
+	//CalcPS(szText, N, vps);
+
+	for (int i = 1; i<N; ++i)
+	{
+		mc[i] = mc[i - 1] + 1;
+
+		if ((i % 2))
+		{
+			bool bsym = true;
+			for (int k = 0; k <= i / 2; ++k)
+			{
+				if (szText[k] != szText[i / 2 + k+1])
+				{
+					bsym = false;
+					break;
+				}
+			}
+			if (bsym)
+			{
+				if (mc[i] > (mc[i / 2] + 1))
+				{
+					mc[i] = mc[i / 2] + 1;
+				}
+			}
+		}
+	}
+	cout << mc[N - 1] << endl;
+
+	return 0;
+}
+
+
+int main(int argc, char const *argv[])
+{
+	/* code */
+
+	int t = 0;
+	string strtxt;
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> strtxt;
+		MinimalMovesForString(strtxt.c_str(), strtxt.size());
+	}
+
+	return 0;
+}
