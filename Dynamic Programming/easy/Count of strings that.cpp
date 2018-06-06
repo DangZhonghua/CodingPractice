@@ -54,7 +54,15 @@ C[N][a]     = a*C[N-1] + b*(C[N-1][a]- C[N-1][b]) + c*(C[N-1][a]-C[N-1][2c])
 C[N][b]     = a*C[N-1][b]+ b*(C[N-1][a]- C[N-1][b]) + c*C[N-1][b]
 C[N][c]     += c*(C[N-1][a]-C[N-1][2c]);
 C[N][2c]    += c*(C[N-1][c]);
+https://careercup.appspot.com/question?id=5717453712654336
 
+cst[1][0][0] = 1; //only a
+cst[1][0][1] = 1; // only c
+cst[1][0][2] = 0; // no double c
+
+cst[1][1][0] = 1; //only b
+cst[1][1][1] = 0; // no b and c
+cst[1][1][2] = 0; // no b and 2c
 
 */
 
@@ -64,27 +72,57 @@ using namespace std;
 
 int CountOfCombineString(int N)
 {
-	vector< vector<int> > cst(N + 1, vector<int >(4, 0));
+	int cst[1001][2][3];
+	memset(cst, 0, sizeof(cst));
 
-	// 1 for b, 2 for c, 3 for double c.
+	cst[1][0][0] = 1; //only a
+	cst[1][0][1] = 1; // only c
+	cst[1][0][2] = 0; // no double c
 
+	cst[1][1][0] = 1; //only b
+	cst[1][1][1] = 0; // no b and c
+	cst[1][1][2] = 0; // no b and 2c
 
-	cst[1][0] = 3;
-	cst[1][1] = 1;
-	cst[1][2] = 1;
-	cst[1][3] = 0;
 
 	for (int i = 2; i <= N; ++i)
 	{
-		//Update the total number.
-		cst[i][0] = /*a*/  cst[i - 1][0] + /*b*/(cst[i - 1][0] - cst[i - 1][1]) + /*c*/(cst[i - 1][0] - cst[i - 1][3]);
-		cst[i][1] = ( /*a*/cst[i - 1][1] + /*c*/cst[i - 1][1] + /*b*/(cst[i - 1][0] - cst[i - 1][1]));
-		cst[i][2] = (/*a*/ cst[i - 1][2] + /*b*/cst[i - 1][2] + /*c*/ (cst[i - 1][0] - cst[i - 1][2] - cst[i - 1][3]));
-		cst[i][3] = (/*a*/cst[i - 1][3] + /*b*/cst[i - 1][3] + /*c*/ cst[i - 1][2]);
+		for (int k = 'a'; k<'d'; ++k)
+		{
+			if (k == 'a')
+			{
+				cst[i][0][0] = cst[i - 1][0][0];
+				cst[i][0][1] = cst[i - 1][0][1];
+				cst[i][0][2] = cst[i - 1][0][2];
+				cst[i][1][0] = cst[i - 1][1][0];
+				cst[i][1][1] = cst[i - 1][1][1];
+				cst[i][1][2] = cst[i - 1][1][2];
+
+			}
+			else if (k == 'b')
+			{
+				cst[i][1][0] += cst[i - 1][0][0];
+				cst[i][1][1] += cst[i - 1][0][1];
+				cst[i][1][2] += cst[i - 1][0][2];
+			}
+			else if (k == 'c')
+			{
+				cst[i][0][1] += cst[i - 1][0][0];
+				cst[i][1][1] += cst[i - 1][1][0];
+				cst[i][0][2] += cst[i - 1][0][1];
+				cst[i][1][2] += cst[i - 1][1][1];
+			}
+		}
 	}
 
-	cout << cst[N][0] << endl;
-
+	int count = 0;
+	for (int i = 0; i<2; ++i)
+	{
+		for (int j = 0; j<3; ++j)
+		{
+			count += cst[N][i][j];
+		}
+	}
+	cout << count << endl;;
 	return 0;
 }
 
@@ -100,7 +138,7 @@ int main()
 	{
 		cin >> n;
 		CountOfCombineString(n);
-		cout<< (1 + (n * 2) + (n*((n*n) - 1) / 2))<<endl;
+		//cout << (1 + (n * 2) + (n*((n*n) - 1) / 2)) << endl;
 	}
 
 	return 0;

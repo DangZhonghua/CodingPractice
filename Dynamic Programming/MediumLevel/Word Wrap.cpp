@@ -1,6 +1,7 @@
 /*
 Word Wrap 
 https://practice.geeksforgeeks.org/problems/word-wrap/0
+https://www.geeksforgeeks.org/word-wrap-problem-space-optimized-solution/
 
 Given an array of size N, which denotes the number of characters in one word. 
 The task is simple, count the number of words in a single line with space character between two words.
