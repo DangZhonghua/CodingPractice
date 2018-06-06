@@ -37,3 +37,12 @@ Line number 2: From word no. 2 to 3
 Line number 3: From word no. 4 to 4 
 
 */
+
+/*
+
+Dynamic programming: optimal sub-structure and overlapped sub-problems
+
+Line[N] =  Line[N-1] + 1;
+
+
+*/
