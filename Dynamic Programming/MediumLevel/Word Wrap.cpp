@@ -2,6 +2,9 @@
 Word Wrap
 https://practice.geeksforgeeks.org/problems/word-wrap/0
 https://www.geeksforgeeks.org/word-wrap-problem-space-optimized-solution/
+https://www.geeksforgeeks.org/dynamic-programming-set-18-word-wrap/
+
+https://en.wikipedia.org/wiki/Line_wrap_and_word_wrap
 
 Given an array of size N, which denotes the number of characters in one word.
 The task is simple, count the number of words in a single line with space character between two words.
@@ -37,13 +40,18 @@ Line number 1: From word no. 1 to 1
 Line number 2: From word no. 2 to 3
 Line number 3: From word no. 4 to 4
 
+1
+4
+3 2 2 5
+6
+
 */
 
 /*
 
 Dynamic programming: optimal sub-structure and overlapped sub-problems
 
-Line[N] =  Line[N-1] + 1;
+W[i][j]: value of i words puts in j lines 
 
 
 */
@@ -64,8 +72,8 @@ struct  PW
 	int weight;
 	PW()
 	{
-		pos		= 0;
-		weight	= 0;
+		pos = 0;
+		weight = INT_MAX;
 	}
 };
 
@@ -73,23 +81,28 @@ int WordWrap(int*a, int N, int lineWide)
 {
 	vector<  vector<PW> > WL(N + 1, vector<PW>(N + 1, PW()));
 
+
 	WL[1][1].weight = (N == 1 ? 0 : CalcSquare(lineWide - a[1]));
 	WL[1][1].pos = 1;
 
 	for (int w = 2; w <= N; ++w)
 	{
-		for (int l = 1; l <= w; ++l)
+		for (int l = 1; l < w; ++l)
 		{
-            // In the same line with w-1 case.
+			// In the same line with w-1 case.
 			if (WL[w - 1][l].pos && WL[w - 1][l].pos + a[w - 1] + a[w] <= lineWide)
 			{
-				WL[w][l].pos	= WL[w - 1][l].pos + a[w - 1] + 1/*for space*/;
-				int pweight		= CalcSquare(lineWide - (WL[w - 1][l].pos + a[w - 1]) + 1);
-				int curWeight	= CalcSquare(lineWide - (WL[w][l].pos + a[w]) + 1);
-				WL[w][l].weight = WL[w - 1][l].weight - pweight + curWeight;
+				WL[w][l].pos = WL[w - 1][l].pos + a[w - 1] + 1/*for space*/;
+				WL[w][l].weight = CalcSquare(lineWide - (WL[w][l].pos + a[w]) + 1);
+			}
+			else
+			{
+				//WL[w][l].weight = WL[w - 1][l].weight;
 			}
 		}
-        //New line case.
+		WL[w][w].pos = 1;
+		WL[w][w].weight = WL[w - 1][w - 1].weight + CalcSquare(lineWide - a[w]);
+		//New line case.
 	}
 
 	return 0;
