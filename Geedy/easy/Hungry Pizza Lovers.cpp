@@ -2,8 +2,10 @@
 Hungry Pizza Lovers
 https://practice.geeksforgeeks.org/problems/hungry-pizza-lovers/0
 
-Dominos Pizza has hungry customers waiting in queue. Each unique order ,i, is placed by a customer at time x[i], and the order takes y[i] units of time to complete.
-You have information of all n orders, Find the order in which all customers will receive their pizza and print it. If two or more orders are completed at same time then sort them by non decreasing order number.
+Dominos Pizza has hungry customers waiting in queue. Each unique order ,i, 
+is placed by a customer at time x[i], and the order takes y[i] units of time to complete.
+You have information of all n orders, Find the order in which all customers will receive their pizza and print it. 
+If two or more orders are completed at same time then sort them by non decreasing order number.
 
 Input:
 The first line contains a single integer T, denoting the number of testcases.
