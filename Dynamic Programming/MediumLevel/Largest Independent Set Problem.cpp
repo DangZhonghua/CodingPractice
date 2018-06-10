@@ -29,6 +29,90 @@ Output:
 2
 3
 
+*/
+
+/*
+
+              1+LISS[root->left->left]+LISS[root->left->right] + LISS[root->right->left] + LISS[root->right->right]
+LISS[root] = Max
+             LISS[root->Left] + LISS[root->right]
+
 
 
 */
+
+#include<unordered_map>
+using namespace std;
+
+struct Node
+{
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+
+int postorderLISS(struct Node* root, unordered_map<struct Node*, int>& hashmapNode2Count)
+{
+    if(NULL == root)
+    {
+        return 0;
+    }
+    int ncount_exc = 0;
+    int ncount_inc = 1;
+    postorderLISS(root->left,hashmapNode2Count);
+    postorderLISS(root->right,hashmapNode2Count);
+
+
+    auto it = hashmapNode2Count.find(root->left);
+    ncount_exc += it->second;
+    it = hashmapNode2Count.find(root->right);
+    ncount_exc += it->second;
+
+    if(root->left)
+    {
+        it = hashmapNode2Count.find(root->left->left);
+        ncount_inc += it->second;
+        it = hashmapNode2Count.find(root->left->right);
+        ncount_inc += it->second;
+    }
+    if(root->right)
+    {
+        it = hashmapNode2Count.find(root->right->left);
+        ncount_inc += it->second;
+
+        it = hashmapNode2Count.find(root->right->right);
+        ncount_inc += it->second;
+    }
+
+    if(ncount_inc>ncount_exc)
+    {
+        hashmapNode2Count.insert(std::make_pair(root,ncount_inc));
+    }
+    else
+    {
+        hashmapNode2Count.insert(std::make_pair(root,ncount_exc));        
+    }
+
+    return 0;
+}
+
+int LISS(struct Node *root)
+{
+    unordered_map<struct Node*, int> hashmapNode2Count;
+    hashmapNode2Count.insert(pair<struct Node*,int>(NULL,0));
+
+    postorderLISS(root,hashmapNode2Count);
+    auto it = hashmapNode2Count.find(root);
+
+    return it->second;
+}
+
+
+int main()
+{
+
+
+
+    return 0;
+}
