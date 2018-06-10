@@ -2,6 +2,9 @@
 Wildcard Pattern Matching
 https://practice.geeksforgeeks.org/problems/wildcard-pattern-matching/1
 
+https://www.geeksforgeeks.org/dynamic-programming-wildcard-pattern-matching-linear-time-constant-space/
+
+
 Given a text 'str' and a wildcard pattern 'pattern',
 your task is to complete the function wildcard that returns '1' 
 if the  wildcard pattern is matched with text 

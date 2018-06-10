@@ -45,28 +45,48 @@ no such sub-sequence exist
 using namespace std;
 
 
-vector<int> find3Numbers(vector<int> A, int N)
+vector<int> find3Numbers(vector<int> a, int N)
 {
     vector<int > vt;
-    
-    for(int i = 0; i< N; ++i)
+    vector<int> vsmall(N, -1);
+    vector<int> vgreat(N,-1);
+    int min = 0;
+    for(int i = 1; i<N; ++i)
     {
-        for(int j = (i+1); j<N; ++j)
+        if(a[i]<a[min])
         {
-            for(int k = j+1; k<N; ++k)
-            {
-                if(A[i]<A[j] && A[j]<A[k])
-                {
-                    vt.push_back(A[i]);
-                    vt.push_back(A[j]);
-                    vt.push_back(A[k]);
-                }
-            }
+            min = i;
+        }
+        else
+        {
+            vsmall[i] = min; 
         }
     }
 
-    return vt;
-    
+    int max = N-1;
+    for(int i=N-2; i>=0; --i)
+    {
+        if(a[i]>a[max])
+        {
+            max = i;
+        }
+        else
+        {
+            vgreat[i] = max;
+        }
+    }
+
+    for(int i = 0; i<N; ++i)
+    {
+        if(vsmall[i] != -1 && vgreat[i] != -1)
+        {
+            vt.push_back(a[vsmall[i]]);
+            vt.push_back(a[i]);
+            vt.push_back(a[vgreat[i]]);
+            break;
+        }
+    }
+    return vt;    
 }
 
 int main()

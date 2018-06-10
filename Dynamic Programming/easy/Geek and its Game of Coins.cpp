@@ -2,7 +2,13 @@
 Geek and its Game of Coins 
 https://practice.geeksforgeeks.org/problems/geek-and-its-game-of-coins/0/?ref=self
 
-Geek and his friend are playing a coin game. At the beginning there are N coins. Given two numbers X and Y. In each move a player can pick X, Y or 1 coins. Geek always starts the game. The player who picks the last coin wins the game. For a given value of N, find whether Geek will win the game or not if both are playing optimally.
+Geek and his friend are playing a coin game. 
+At the beginning there are N coins. 
+Given two numbers X and Y. 
+In each move a player can pick X, Y or 1 coins. 
+Geek always starts the game. 
+The player who picks the last coin wins the game. 
+For a given value of N, find whether Geek will win the game or not if both are playing optimally.
 For Example:
 
 Input :  n = 5, x = 3, y = 4

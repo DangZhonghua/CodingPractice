@@ -81,7 +81,6 @@ int WordWrap(int*a, int N, int lineWide)
 {
 	vector<  vector<PW> > WL(N + 1, vector<PW>(N + 1, PW()));
 
-
 	WL[1][1].weight = (N == 1 ? 0 : CalcSquare(lineWide - a[1]));
 	WL[1][1].pos = 1;
 
@@ -93,11 +92,8 @@ int WordWrap(int*a, int N, int lineWide)
 			if (WL[w - 1][l].pos && WL[w - 1][l].pos + a[w - 1] + a[w] <= lineWide)
 			{
 				WL[w][l].pos = WL[w - 1][l].pos + a[w - 1] + 1/*for space*/;
-				WL[w][l].weight = CalcSquare(lineWide - (WL[w][l].pos + a[w]) + 1);
-			}
-			else
-			{
-				//WL[w][l].weight = WL[w - 1][l].weight;
+				WL[w][l].weight = WL[w-1][l] + CalcSquare(lineWide - (WL[w][l].pos + a[w]) + 1)-
+                                  CalcSquare(lineWide +1 -(WL[w-1][l].pos + a[w]-1));
 			}
 		}
 		WL[w][w].pos = 1;
