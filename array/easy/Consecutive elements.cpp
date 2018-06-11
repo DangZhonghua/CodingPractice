@@ -27,3 +27,51 @@ ababcd
 
 
 */
+
+
+#include <iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+int ConsecutiveElements(const string& strtext)
+{
+	char a[101] = { 0 };
+	strncpy(a, strtext.c_str(), sizeof(a) / sizeof(a[0]));
+
+	int j = 1;
+	int i = 0;
+
+	while (a[j] != '\0')
+	{
+		if (a[i] != a[j])
+		{
+			++i;
+			a[i] = a[j];
+		}
+		++j;
+	}
+	++i;
+	a[i] = '\0';
+	cout << a << endl;
+
+	return 0;
+}
+
+
+int main()
+{
+	int  t = 0;
+	string  sztext;
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> sztext;
+		ConsecutiveElements(sztext);
+	}
+
+
+	return 0;
+}
