@@ -13,7 +13,8 @@ For Example:
 
 Input :  n = 5, x = 3, y = 4
 Output : N
-There are 5 coins, every player can pick 1 or 3 or 4 coins on his/her turn. Geek can win by picking 3 coins in first chance. Now 2 coins will be left so his frined will pick one coin and now Geek can win by picking the last coin.
+There are 5 coins, every player can pick 1 or 3 or 4 coins on his/her turn. Geek can win by picking 3 coins in first chance. 
+Now 2 coins will be left so his frined will pick one coin and now Geek can win by picking the last coin.
 
 Input:
 First line of the input contains an integer T, denoting the number of test cases. Then T test case follows. The only line of the each test case contains three space separated integer denoting the values of N, X and Y, respectively.
@@ -36,3 +37,48 @@ N
 G
 
 */
+
+/*
+
+This is the extension of 0-1 knapsack problem.
+When the pick count is odd number, the Geek win this game.
+
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int pickCoins(int*a, int N)
+{
+    vector<int> pickunit;
+    vector< vector<int> > pc(N,vector<int>(a[0]+1, 0));
+    pickunit.push_back(1);
+    pickunit.push_back(a[1]);
+    pickunit.push_back(a[2]);
+    
+
+
+
+
+
+    return 0;
+}
+
+int main()
+{
+    int t = 0;
+    int a[3];
+    
+    cin>>t;
+
+    while(t--)
+    {
+        cin>>a[0];
+        cin>>a[1];
+        cin>>a[2];
+        pickCoins(a,3);
+    }   
+
+    return 0;
+}
