@@ -31,7 +31,80 @@ Output:
 
 */
 
+#include<iostream>
+#include<climits>
+using namespace std;
+
 int leastAverage(int* a, int N, int K)
 {
+    int sum = 0;  //Use sum directly, NOT use sum/K will cause losing digital
+    int i   = 0;
+    int s   = 0;
+    int e   = 0;
+    int min = INT_MAX;
+
+
+    for(int j = 0; j<N; ++j)
+    {
+        int l = j-i+1;
+        if(l == K)
+        {
+            sum += a[j];
+            if(sum < min)
+            {
+                s = i;
+                e = j;
+                min = sum;
+            }
+        }
+        else if(l > K)
+        {
+            sum -=a[i];
+            ++i;
+            sum += a[j];
+
+            if(sum < min)
+            {
+                s = i;
+                e = j;
+                min = sum;
+            }
+        }
+        else
+        {
+            sum += a[j];
+        }
+    }
+
+    cout<<(s+1)<<" "<<(e+1)<<endl;
+
+    return 0;
+
+}
+
+
+int main()
+{
+    int t = 0;
+    int a[1000];
+
+    int N = 0;
+    int K = 0;
+
+    cin>>t;
     
+    while(t--)
+    {
+        cin>>N>>K;
+        
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        leastAverage(a,N,K);
+    }
+
+
+    return 0;
 }
