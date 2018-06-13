@@ -42,11 +42,14 @@ G
 
 When the pick count is odd number, the Geek win this game.
 
-C[1][N][1] = C[1][N-1][1] + 1;
-C[1][N][X] = C[1][N-1][X] + 1;
-C[1][N][Y] = C[1][N-1][Y] + 1;
+Let us take few example values of n for x = 3, y = 4.
+n = 0 A can not pick any coin so he losses
+n = 1 A can pick 1 coin and win the game
+n = 2 A can pick only 1 coin. Now B will pick 1 coin and win the game
+n = 3 4 A will win the game by picking 3 or 4 coins
+n = 5, 6 A will choose 3 or 4 coins. Now B will have to choose from 2 coins so A will win.
 
-
+We can observe that A wins game for n coins only when it loses for coins n-1, n-x and n-y.
 */
 
 
@@ -56,39 +59,33 @@ using namespace std;
 
 int pickCoins_JudgeWin(int*a, int N)
 {
-	int nCapacity = a[0];
-	vector<int> unit;
-	unit.push_back(1);
-	unit.push_back(a[1]);
-	unit.push_back(a[2]);
-	vector< vector< vector<int> > >C(nCapacity + 1, vector< vector<int> >(3, vector<int>(3, -1)));
-	//C[N][unit][from which unit]
-	C[0][0][0] = 0;
-	C[0][1][0] = 0;
-	C[0][2][0] = 0;
+	vector<bool>  dp(a[0]+1, false);
+    dp[1] = true;
 
-
-	for (int i = 1; i <= nCapacity; ++i)
-	{
-		for (int j = 0; j < unit.size(); ++j)
-		{
-			for (int k = 0; k < unit.size(); ++k)
-			{
-                if( -1 != C[i - unit[j]][k][0])
-                {
-	                C[i][j][0] = 0;
-                    if(1 ==  C[i - unit[j]][k][1])
-                    {
-                        
-                    }
-                }		
-			}
-		}
-	}
-
-	
-
-
+    for(int i = 2; i<=a[0]; ++i)
+    {
+        if(i>1 && !dp[i-1])
+        {
+            dp[i] = true;
+        }
+        else if(i>=a[1] && !dp[i-a[1]])
+        {
+            dp[i] = true;
+        }
+        else if(i>=a[2] && !dp[i-a[2]])
+        {
+            dp[i] = true;
+        }
+    }
+    
+    if(dp[a[0]])
+    {
+        cout<<"G"<<endl;
+    }
+    else
+    {
+        cout<<"N"<<endl;
+    }
 
 	return 0;
 }

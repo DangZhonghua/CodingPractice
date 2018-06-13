@@ -1,7 +1,9 @@
 /*
 Amend The Sentence 
 https://practice.geeksforgeeks.org/problems/amend-the-sentence/0/?ref=self
-Given an array of characters which is basically a sentence. However there is no space between different words and the first letter of every word is in uppercase. You need to print this sentence after following amendments:
+Given an array of characters which is basically a sentence. 
+However there is no space between different words and the first letter of every word is in uppercase. 
+You need to print this sentence after following amendments:
 (i) Put a single space between these words
 (ii) Convert the uppercase letters to lowercase.
 
@@ -40,3 +42,24 @@ you
 
 
 */
+
+#include <string>
+#include<iostream>
+using namespace std;
+
+int AmendTheSentence(const string& strsen)
+{
+
+
+
+    return 0;
+} 
+
+
+int main()
+{
+
+
+
+    return 0;
+}
