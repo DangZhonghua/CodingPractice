@@ -40,45 +40,66 @@ G
 
 /*
 
-This is the extension of 0-1 knapsack problem.
 When the pick count is odd number, the Geek win this game.
 
+C[1][N][1] = C[1][N-1][1] + 1;
+C[1][N][X] = C[1][N-1][X] + 1;
+C[1][N][Y] = C[1][N-1][Y] + 1;
+
+
 */
+
 
 #include<iostream>
 #include<vector>
 using namespace std;
 
-int pickCoins(int*a, int N)
+int pickCoins_JudgeWin(int*a, int N)
 {
-    vector<int> pickunit;
-    vector< vector<int> > pc(N,vector<int>(a[0]+1, 0));
-    pickunit.push_back(1);
-    pickunit.push_back(a[1]);
-    pickunit.push_back(a[2]);
-    
+	int nCapacity = a[0];
+	vector<int> unit;
+	unit.push_back(1);
+	unit.push_back(a[1]);
+	unit.push_back(a[2]);
+	vector< vector< vector<int> > >C(nCapacity + 1, vector< vector<int> >(3, vector<int>(3, -1)));
+	//C[N][unit][from which unit]
+	C[0][0][0] = 0;
+	C[0][1][1] = 0;
+	C[0][2][2] = 0;
+
+
+	for (int i = 1; i <= nCapacity; ++i)
+	{
+		for (int j = 0; j < unit.size(); ++j)
+		{
+			for (int k = 0; k < unit.size(); ++k)
+			{
+				C[i][j][] = C[i - unit[j]][k][0];
+			}
+		}
+	}
+
+	
 
 
 
-
-
-    return 0;
+	return 0;
 }
 
 int main()
 {
-    int t = 0;
-    int a[3];
-    
-    cin>>t;
+	int t = 0;
+	int a[3];
 
-    while(t--)
-    {
-        cin>>a[0];
-        cin>>a[1];
-        cin>>a[2];
-        pickCoins(a,3);
-    }   
+	cin >> t;
 
-    return 0;
+	while (t--)
+	{
+		cin >> a[0];
+		cin >> a[1];
+		cin >> a[2];
+		pickCoins_JudgeWin(a, 3);
+	}
+
+	return 0;
 }
