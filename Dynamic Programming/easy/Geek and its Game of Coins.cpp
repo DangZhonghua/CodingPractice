@@ -64,8 +64,8 @@ int pickCoins_JudgeWin(int*a, int N)
 	vector< vector< vector<int> > >C(nCapacity + 1, vector< vector<int> >(3, vector<int>(3, -1)));
 	//C[N][unit][from which unit]
 	C[0][0][0] = 0;
-	C[0][1][1] = 0;
-	C[0][2][2] = 0;
+	C[0][1][0] = 0;
+	C[0][2][0] = 0;
 
 
 	for (int i = 1; i <= nCapacity; ++i)
@@ -74,7 +74,14 @@ int pickCoins_JudgeWin(int*a, int N)
 		{
 			for (int k = 0; k < unit.size(); ++k)
 			{
-				C[i][j][] = C[i - unit[j]][k][0];
+                if( -1 != C[i - unit[j]][k][0])
+                {
+	                C[i][j][0] = 0;
+                    if(1 ==  C[i - unit[j]][k][1])
+                    {
+                        
+                    }
+                }		
 			}
 		}
 	}
