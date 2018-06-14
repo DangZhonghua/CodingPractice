@@ -41,24 +41,23 @@ int FindNumberInBitonicArray(int*a, int N, int T)
     int index   = -1;
     int s       = 0;
     int e       = N-1;
-    
+
+    //Find the peak element which seperate the array.
+
+
     while(s<=e)
     {
         int m = (s+e)/2;
-        
-        if(a[m] == T)
-        {
-            index = m;
-            break;
-        }
-        else if(a[m]>T)
+        if(e-s+1>2)
         {
             
         }
         else
         {
-
+            
         }
+
+
     }
 
 
