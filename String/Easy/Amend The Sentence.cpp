@@ -49,7 +49,34 @@ using namespace std;
 
 int AmendTheSentence(const string& strsen)
 {
+    char sztext[300];
+    int  i  = 0;
+    int  j  = 0;
+    
+    if(strsen[j]>='A' && strsen[j]<='Z')
+    {
+        sztext[i++] = strsen[j] + 32;
+    }
+    else
+    {
+        sztext[i++] = strsen[j];
+    }
+    
+    for(int j = 1; j<strsen.size(); ++j)
+    {
+        if(strsen[j]>='A' && strsen[j]<='Z')
+        {
+            sztext[i++]= ' ';
+            sztext[i++] = strsen[j] + 32;
+        }
+        else
+        {
+            sztext[i++] =strsen[j];
+        }
+    }
+    sztext[i++] = '\0';
 
+    cout<<sztext<<endl;
 
 
     return 0;
@@ -59,7 +86,15 @@ int AmendTheSentence(const string& strsen)
 int main()
 {
 
+    int t = 0;
+    string strsen;
+    cin>>t;
 
+    while(t--)
+    {
+        cin>>strsen;
+        AmendTheSentence(strsen);
+    }
 
     return 0;
 }

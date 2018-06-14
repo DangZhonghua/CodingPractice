@@ -37,6 +37,11 @@ a sub-sequence 1 2 3 exist
 For second test case
 no such sub-sequence exist
 
+*/
+
+/*
+
+this is smartest way to slove this problem: use to buffer to record smaller and  larger element.
 
 */
 

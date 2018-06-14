@@ -40,5 +40,50 @@ Output:
 5
 4
 
-
 */
+
+/*
+ Increase then Decrease
+*/
+
+
+
+#include<iostream>
+using namespace std;
+
+int longestBitonicSubarray(int*a, int N)
+{
+    bool bIncreased = false;
+    
+
+
+
+
+    return 0;
+}
+
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[1000];
+
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        longestBitonicSubarray(a, N);
+    }
+
+    return 0;
+}
+
+
