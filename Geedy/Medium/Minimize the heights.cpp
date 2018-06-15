@@ -18,7 +18,10 @@ difference.
 
 
 Input
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. The first line of each test case contains a positive integer K. The second line of each test case contains a positive integer N, denoting number of towers. The third line of the test cases contains N integers denoting the heights of N towers.
+The first line of input contains an integer T denoting the number of test cases. 
+Then T test cases follow. The first line of each test case contains a positive integer K. 
+The second line of each test case contains a positive integer N, denoting number of towers. 
+The third line of the test cases contains N integers denoting the heights of N towers.
 
 Output
 For each test case in new line print out the minimum difference of heights possible.

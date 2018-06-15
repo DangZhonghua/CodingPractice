@@ -2,7 +2,8 @@
 
 https://practice.geeksforgeeks.org/problems/possible-paths/0/?ref=self
 
-Given a directed graph and two vertices ‘u’ and ‘v’ in it, count all the possible walks from ‘u’ to ‘v’ with exactly k edges on the walk.
+Given a directed graph and two vertices ‘u’ and ‘v’ in it, count all the possible walks from ‘u’ to ‘v’ 
+with exactly k edges on the walk.
 
 Input:
 

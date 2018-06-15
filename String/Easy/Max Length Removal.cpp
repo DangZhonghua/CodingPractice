@@ -68,8 +68,7 @@ int main()
     
     while(t--)
     {
-        cin>>sztext;
-        
+        cin>>sztext; 
     }
 
 
