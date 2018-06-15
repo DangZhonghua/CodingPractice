@@ -44,8 +44,11 @@ Output:
 
 /*
  Increase then Decrease
-*/
 
+先升后降
+先降后升
+ 
+*/
 
 
 #include<iostream>
@@ -53,15 +56,58 @@ using namespace std;
 
 int longestBitonicSubarray(int*a, int N)
 {
-    bool bIncreased = false;
+    bool bIncreased = false; //Current subarray trend.
+    int  maxlen = 1;
+    int  s      = 0;
+    int  e      = 0;
+    int  i      = 0;
+    // i is the subarray begin index
+    // j is the beyond of end index of subarray.
+    for(int j = 1; j<N; ++j)
+    {
+        if(a[j]>a[j-1])
+        {
+            if(!bIncreased)
+            {
+                if( j-1-i+1 > maxlen)
+                {
+                    maxlen = j-i;
+                    s = i;
+                    e = j-1;
+                }
+                i = j-1; //Update subarray begin index.
+                bIncreased = true; //update subarray trend.
+            }
+            else
+            {
+                if(maxlen<j-i+1)
+                {
+                    maxlen = j-i+1;
+                    e = j;
+                }
+            }
+        }
+        // First solution, the euqal case is not handled.
+        else if(a[j] == a[j-1]) //the equal case is the segment point
+        {
+            i = j; //Set subarray start point.
+            bIncreased = false;
+        }
+        else //a[j]<a[j-1]:decrease
+        {
+            bIncreased = false;
+            if(maxlen<j-i+1)
+            {
+                maxlen = j-i+1;
+                e = j;
+            }   
+        }
+    }
     
-
-
-
+    cout<<maxlen<<endl;
 
     return 0;
 }
-
 
 
 int main()
