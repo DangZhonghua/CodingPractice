@@ -33,8 +33,57 @@ Output:
 1
 
 */
+
 #include<iostream>
 using namespace std;
+
+int FindPeakInBitonicArray(int*a, int N)
+{
+    int peak    = -1;
+    int s       = 0;
+    int e       = N-1;
+
+    while(s<=e)
+    {
+        if(s == e)
+        {
+            peak = s;
+            break;
+        }
+        int m = (s+e)/2;
+        if(e-s+1>=3) //Use the peak character
+        {
+            if(a[m-1]<a[m] && a[m]>a[m+1])
+            {
+                peak = m;
+                break;
+            }
+            else if(a[m-1]<a[m] && a[m]<a[m+1])
+            {
+                s = m+1;
+            }
+            else if(a[m-1]>a[m] && a[m]>a[m+1])
+            {
+                e = m-1;
+            }
+        }
+        else
+        {
+            if(a[m]<a[e])
+            {
+                s = m+1;
+            }
+            else
+            {
+                e = m;
+            }   
+        }
+    }
+
+    return peak;
+}
+
+
 
 int FindNumberInBitonicArray(int*a, int N, int T)
 {
@@ -42,27 +91,61 @@ int FindNumberInBitonicArray(int*a, int N, int T)
     int s       = 0;
     int e       = N-1;
 
-    //Find the peak element which seperate the array.
-
-
+    //First: Find the peak element which seperate the array.
+    int peak = FindPeakInBitonicArray(a,N);    
+    //Find in the first half.
+    s = 0;
+    e = peak;
+    
     while(s<=e)
     {
         int m = (s+e)/2;
-        if(e-s+1>2)
+        if(a[m] == T)
         {
-            
+            index = m;
+            break;
+        }
+        else if(a[m]>T)
+        {
+            e = m-1;
         }
         else
         {
-            
+            s = m+1;
         }
-
-
     }
 
+    if(-1 == index && -1 != peak) //Now,we try to search in second half.
+    {
+        s = peak+1;
+        e = N-1;
+        while(s<=e)
+        {
+            int m = (s+e)/2;
+            if(a[m] == T)
+            {
+                index = m;
+                break;
+            }
+            else if(a[m]>T)
+            {
+                s = m+1;
+            }
+            else
+            {
+                e = m-1;
+            }
+        }
+    }
 
-
-
+    if(-1 == index)
+    {
+        cout<<"OOPS! NOT FOUND"<<endl;
+    }
+    else
+    {
+        cout<<index<<endl;
+    }
     return 0;
 }
 
