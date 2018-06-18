@@ -3,7 +3,8 @@
 Max absolute difference 
 https://practice.geeksforgeeks.org/problems/max-absolute-difference/0
 
-Given an array of integers, find two non-overlapping contiguous sub-arrays such that the absolute difference between the sum of two sub-arrays is maximum.
+Given an array of integers, find two non-overlapping contiguous sub-arrays such that the absolute difference 
+between the sum of two sub-arrays is maximum.
 
 For example,
 
@@ -17,7 +18,8 @@ Two subarrays are [-1, -2, 1, -4] and [2, 8]
 
 
 Input:
-The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. Each Test case contains an integer N denoting the size of the array. Then in the next line are N space separated values of the array.
+The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. 
+Each Test case contains an integer N denoting the size of the array. Then in the next line are N space separated values of the array.
 
 Output:
 For each test case in a new line print the required output.

@@ -30,6 +30,13 @@ Output:
 4
 */
 
+/*
+
+this is dynamic programming, But How to define the state transform.
+PG[][i][j] = max{a[i] + PG[][i+1][j], PG[][i][j] + a[j]}
+
+*/
+
 
 int maxCoins(int A[],int N)
 {

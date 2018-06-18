@@ -2,9 +2,11 @@
 Amicable Pair 
 https://practice.geeksforgeeks.org/problems/amicable-pair/0/?ref=self
 
-Amicable numbers are two different numbers so related that the sum of the proper divisors of each is equal to the other number. (A proper divisor of a number is a positive factor of that number other than the number itself.
+Amicable numbers are two different numbers so related that the sum of the proper divisors of each is equal to the other number. 
+(A proper divisor of a number is a positive factor of that number other than the number itself.
 
-INPUT: The first line consists of an integer T i.e. the number of test cases. First and the last line of each test case consists of two integers x and y.
+INPUT: The first line consists of an integer T i.e. the number of test cases. 
+First and the last line of each test case consists of two integers x and y.
 
 OUTPUT: Print '1' if the following pair is amicable pair otherwise print '0'.
 
