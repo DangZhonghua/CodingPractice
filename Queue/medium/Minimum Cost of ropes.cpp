@@ -45,3 +45,65 @@ if we connect 4 and 6 first (we get three strings of 3, 2 and 10), then connect 
 Finally we connect 13 and 2. Total cost in this way is 10 + 13 + 15 = 38.
 
 */
+
+/*
+
+This is Geedy algorithm: use min-heap to store the rops, add them, remove them, add the sum into the min-heap.
+min-heap is priority queue.
+
+*/
+
+
+#include<iostream>
+#include<queue>
+#include<algorithm>
+#include<functional>
+using namespace std;
+
+
+int MinimumCostOfRops(int*a, int N)
+{
+    int mincost = 0;
+    priority_queue<int, vector<int>, greater<int> > minHeap;
+    
+    for(int i = 0; i<N; ++i)
+    {
+        minHeap.push(a[i]);
+    }
+    
+    while(minHeap.size()>=2)
+    {
+        int a = minHeap.top();
+        minHeap.pop();
+        int b = minHeap.top();
+        minHeap.pop();
+        mincost += (a+b);
+        minHeap.push((a+b));
+    }
+
+    cout<<mincost<<endl;
+    
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[1000];
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        MinimumCostOfRops(a,N);
+    }
+
+}

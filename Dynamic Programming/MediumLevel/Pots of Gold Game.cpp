@@ -37,10 +37,20 @@ PG[][i][j] = max{a[i] + PG[][i+1][j], PG[][i][j] + a[j]}
 
 */
 
+#include<iostream>
+#include<vector>
+using namespace std;
 
-int maxCoins(int A[],int N)
+
+int maxCoins(int a[],int N)
 {
-   //Your code here
+    vector< vector<int> > pg(N, vector<int>(N,0));
+    
+    for(int i = 0; i<N; ++i)
+    {
+        pg[i][i] = a[i];
+    }
+
 
 
    return 0;
