@@ -24,3 +24,62 @@ aaaa abaa baaa
 a
 
 */
+
+
+/*                1+LCS[i-1, j-1] if szx[i] == szy[j]
+
+    LCS[i,j] =    max{LCS[i-1,j], LCS[i,j-1]} if(sz[i] ! = sz[j])
+
+                  0 if i = 0 or j = 0;
+
+
+*/
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+int printLCS(char* szx, char* szy)
+{
+    int m = strlen(szx+1);
+    int n = strlen(szy+1);
+
+
+
+
+
+    //1. Calculate the LCS first.
+    
+
+    return 0;
+}
+
+int LCS(char* szx, char* szy)
+{
+    
+
+    return 0;
+}
+
+
+
+
+int main()
+{
+    int t = 0;
+    char szx[200];
+    char szy[200];
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>szx+1;
+        cin>>szy+1;
+        printLCS(szx,szy);
+    }
+
+    return 0;
+}
