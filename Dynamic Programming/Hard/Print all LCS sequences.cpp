@@ -41,29 +41,93 @@ a
 using namespace std;
 
 
+enum en_td 
+{
+    INVALID,
+    DIG,
+    LEFT,
+    UPPER
+};
+
+
+
+int LCS(char* szx, char* szy,vector< vector<int> >& lcs,vector< vector<int> >& lds)
+{
+    //Init the lcs according to the formula.
+    for(int r = 0; r<lcs.size(); ++r)
+    {
+        lcs[r][0] = 0;
+    }
+    for(int c = 0; c<lcs[0].size(); ++c)
+    {
+        lcs[0][c] = 0;
+    }
+
+    int m  = lcs.size();
+    int n  = lcs[0].size();
+    
+    //Calc the lcs length.
+    
+    for(int i = 1; i<m; ++i)
+    {
+        for(int j = 1; j<n; ++j)
+        {
+            if(szx[i] == szy[j])
+            {
+                lcs[i][j] = lcs[i-1][j-1] + 1;
+                lds[i][j] = DIG;
+            }
+            else
+            {
+                if(lcs[i-1][j]>lcs[i][j-1])
+                {
+                    lds[i][j] = UPPER;
+                    lcs[i][j] = lcs[i-1][j];
+                }
+                else
+                {
+                    lds[i][j] = LEFT;
+                    lcs[i][j] = lcs[i][j-1];
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+int formlcs(char* szx, vector< vector<int> >& lds)
+{
+    int m  = lds.size()-1;
+    int n  = lds[0].size()-1;
+    
+    
+
+
+
+
+
+    return  0;
+}
+
+
+
 int printLCS(char* szx, char* szy)
 {
     int m = strlen(szx+1);
     int n = strlen(szy+1);
-
-
-
-
-
+    
+    vector< vector<int> > lcs(m+1, vector<int>(n+1, 0) ); 
+    vector< vector<int> > lds(m+1, vector<int>(n+1, 0) );
     //1. Calculate the LCS first.
+    LCS(szx, szy, lcs, lds);
     
+    //cout<<lcs[m][n]<<endl;
+
 
     return 0;
 }
-
-int LCS(char* szx, char* szy)
-{
-    
-
-    return 0;
-}
-
-
 
 
 int main()

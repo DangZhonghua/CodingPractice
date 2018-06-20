@@ -41,14 +41,43 @@ PG[][i][j] = max{a[i] + PG[][i+1][j], PG[][i][j] + a[j]}
 #include<vector>
 using namespace std;
 
+struct selector
+{
+    int val;
+    int select;
+    selector()
+    {
+        val     = 0;
+        select  = 0;
+    }
+};
+
 
 int maxCoins(int a[],int N)
 {
     vector< vector<int> > pg(N, vector<int>(N,0));
+    vector< vector<int> > ps(N, vector<int>(N,0));
     
     for(int i = 0; i<N; ++i)
     {
         pg[i][i] = a[i];
+    }
+
+    for(int l = 2; l<=N; ++l)
+    {
+        for(int i = 0; i<=N-l; ++i)
+        {
+            //The two sides both play in optimal manner.
+            int j = i+l-1;
+            int leftvalue = a[i]; //means select a[i]
+            if(i+1 < j)
+            {
+                
+            }
+
+            
+            
+        }
     }
 
 
