@@ -47,7 +47,7 @@ But what is the formula.
 #include<iostream>
 #include<string>
 #include<vector>
-using namespace std;
+using namespace std;git
 
 
 
