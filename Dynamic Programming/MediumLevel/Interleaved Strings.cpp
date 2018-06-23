@@ -1,6 +1,7 @@
 /*
 Interleaved Strings
 https://practice.geeksforgeeks.org/problems/interleaved-strings/1/?ref=self
+https://www.geeksforgeeks.org/check-whether-a-given-string-is-an-interleaving-of-two-other-given-strings-set-2/
 
 Given three strings A, B and C your task is to complete the function isInterleave which returns true 
 if C is an interleaving of A and B else returns false. 
@@ -37,19 +38,19 @@ Explanation:
 /*
 
 Dynamic Programming: Optimal sub-structure and overlapped sub-problem.
-C[i] can be interlaved by A[j],B[k], then check C[i+1] can be interleaved by A[j+1], B[k]
-or A[j],B[k+1]
 
-But what is the formula.
+a) If first character of C matches with first character of A, we move one character ahead in A and C and recursively check.
+
+b) If first character of C matches with first character of B, we move one character ahead in B and C and recursively check.
+
+If any of the above two cases is true, we return true, else false. Following is simple recursive implementation of this approach
 
 */
 
 #include<iostream>
 #include<string>
 #include<vector>
-using namespace std;git
-
-
+using namespace std;
 
 bool isInterleave(string A, string B, string C)
 {
@@ -57,21 +58,49 @@ bool isInterleave(string A, string B, string C)
     int na = A.size();
     int nb = B.size();
     int nc = C.size();
-
-    vector<int>  mca(nc,-1);
-    vector<int>  mcb(nc,-1);
-
-    for(int i = 0; i<nc; ++i)
+    
+    vector<vector<bool> > IS(na+1, vector<bool>(nb+1,false));
+    IS[0][0] = true; // for empty string can be considered as interleaved.
+    
+    if(nc != (na+nb))
     {
+        return false;
+    }
+    
+    for(int i = 0; i<=na; ++i)
+    {
+        for(int j = 0; j<=nb; ++j)
+        {
+            if(0 ==i && 0 == j)
+            {
+                IS[0][0] = true;
+                continue;
+            }
+
+            if(0 == i && C[j-1] == B[j-1])  //when A is zero length substring
+            {
+                IS[i][j] = IS[i][j-1];
+            }
+            else if (0 == j && C[i-1] == A[i-1])
+            {
+                IS[i][j] = IS[i-1][j];
+            }
+            else if(A[i-1] == C[i+j-1] && B[j-1] != C[i+j-1])
+            {
+                IS[i][j] = IS[i-1][j];
+            }
+            else if( B[j-1] == C[i+j-1] && A[i-1] != C[i+j-1])
+            {
+                IS[i][j] = IS[i][j-1];
+            }
+            else if(B[j-1] == C[i+j-1] && A[i-1] == C[i+j-1] )
+            {
+                IS[i][j] = (IS[i][j-1] | IS[i-1][j]);
+            }
+        }
     }
 
-
-
-
-
-
-
-
+    bInterleave = IS[na][nb];
 
     return bInterleave;    
 }
