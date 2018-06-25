@@ -53,25 +53,78 @@ using namespace std;
 
 int CalcLenOfLcs(const string& strx, const string& stry)
 {
-    int R = strx.length();
-    int C = stry.length();
-    vector< vector<int> > lcs(R+1, vector<int>(C,0));
-    
-    for(int r = 0; r<=R; ++r)
-    {
+	int R = strx.length();
+	int C = stry.length();
 
-    }
+	vector< vector<int> > lcs(R + 1, vector<int>(C + 1, 0));
 
-    
-    return 0;
+	for (int r = 1; r <= R; ++r)
+	{
+		for (int c = 1; c <= C; ++c)
+		{
+			if (strx[r - 1] == stry[c - 1])
+			{
+				lcs[r][c] = lcs[r - 1][c - 1]+1;
+			}
+			else
+			{
+				lcs[r][c] = lcs[r - 1][c];
+				if (lcs[r][c]< lcs[r][c - 1])
+				{
+					lcs[r][c] = lcs[r][c - 1];
+				}
+			}
+		}
+	}
+
+
+	return lcs[R][C];
 }
 
+int FindLargestWord(vector<string>& dict, const string& strword)
+{
+	int maxlen = 0;
+	int t = 0;
+	for (int i = 0; i<dict.size(); ++i)
+	{
+		int nlcs = CalcLenOfLcs(strword, dict[i]);
+		if (nlcs == dict[i].size() && nlcs>maxlen)
+		{
+			maxlen = nlcs;
+			t = i;
+		}
+	}
 
+	cout << dict[t].c_str() << endl;
+
+	return 0;
+}
 
 int main()
 {
+	int t = 0;
+	vector<string> dict;
 
+	cin >> t;
 
+	while (t--)
+	{
+		int N = 0;
+		cin >> N;
+		int i = 0;
+		string strdict;
+		while (i<N)
+		{
+			cin >> strdict;
+			dict.push_back(strdict);
+			strdict.clear();
+			++i;
+		}
+		string strword;
+		cin >> strword;
+		FindLargestWord(dict, strword);
+		dict.clear();
+	}
 
-    return 0;
+	return 0;
 }
