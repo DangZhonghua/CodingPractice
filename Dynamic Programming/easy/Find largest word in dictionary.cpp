@@ -18,7 +18,10 @@ Output : geeksgeeks
 
 
 Input:
-The first line of input contains an integer T denoting the no of test cases . Then T test cases follow. Each test case contains an integer x denoting the no of words in the dictionary. Then in the next line are x space separated strings denoting the contents of the dictionary.  Then in the next line is a string 'str'.
+The first line of input contains an integer T denoting the no of test cases . Then T test cases follow. 
+Each test case contains an integer x denoting the no of words in the dictionary. 
+Then in the next line are x space separated strings denoting the contents of the dictionary.  
+Then in the next line is a string 'str'.
 
 Output:
 For each test case in a new line print the required output.
@@ -50,7 +53,25 @@ using namespace std;
 
 int CalcLenOfLcs(const string& strx, const string& stry)
 {
+    int R = strx.length();
+    int C = stry.length();
+    vector< vector<int> > lcs(R+1, vector<int>(C,0));
+    
+    for(int r = 0; r<=R; ++r)
+    {
+
+    }
+
     
     return 0;
 }
 
+
+
+int main()
+{
+
+
+
+    return 0;
+}
