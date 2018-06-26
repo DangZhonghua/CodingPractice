@@ -40,5 +40,67 @@ Output:
 
 3
 
+*/
+
+/*
+
+            LCS[i-1,j-1]  if x[i] == y[j]
+LCS[i,j] =  max(LCS[i-1,j],LCS[i,j-1]) if x[i] != y[j]
+            0 if i == 0 or j = 0;
+
 
 */
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+
+int CountLCSIncreaseingWay(const string& x, const string& y)
+{
+    int R =  x.size();
+    int C =  y.size();
+    int nway = 0;
+    vector< vector<int> > lcs(R+1, vector<int>(C+1,0) );
+    
+    for(int i = 1; i<=R; ++i)
+    {
+        for(int j = 1; j<=C; ++j)
+        {
+            if(x[i-1] == y[j-1])
+            {
+                lcs[i][j] = lcs[i-1][j-1]+1;
+            }
+            else
+            {
+                
+            }
+        }
+    }
+    
+    
+    return 0;
+}
+
+
+
+int main()
+{
+    int t = 0;
+    string x,y;
+    int M,N;
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>M>>N;
+        cin>>x;
+        cin>>y;
+        CountLCSIncreaseingWay(x,y);
+        x.clear();
+        y.clear();
+    }
+
+    return 0;
+}
