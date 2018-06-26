@@ -1,6 +1,7 @@
 /*
 Knapsack with Duplicate Items
 https://practice.geeksforgeeks.org/problems/knapsack-with-duplicate-items/0
+https://www.geeksforgeeks.org/unbounded-knapsack-repetition-items-allowed/
 
 Given weights and values related to n items and the maximum capacity allowed for these items.
 What is the maximum value we can achieve if we can pick any weights any number of times for a total allowed weight of W?

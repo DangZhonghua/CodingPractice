@@ -1,6 +1,7 @@
 /*
-Form a palindrome
-https://practice.geeksforgeeks.org/problems/form-a-palindrome/0/?ref=self
+Form a palindrome 
+https://practice.geeksforgeeks.org/problems/form-a-palindrome/0
+https://www.geeksforgeeks.org/dynamic-programming-set-28-minimum-insertions-to-form-a-palindrome/
 
 Given a string, find the minimum number of characters to be inserted to convert it to palindrome.
 For Example:
@@ -34,6 +35,7 @@ Output:
 3
 0
 3
+
 
 
 */

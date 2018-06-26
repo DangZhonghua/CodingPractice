@@ -1,6 +1,8 @@
 /*
 Tom and Jerry 
 https://practice.geeksforgeeks.org/problems/tom-and-jerry/0
+https://www.geeksforgeeks.org/dynamic-programming-set-31-optimal-strategy-for-a-game/
+
 Since very long time Tom and Jerry have been fighting with each other for a piece of Cheese. 
 So finally you came to rescue and decided that the result of the fight will be decided by a mathematical game , 
 in which you will write a number N . Tom and Jerry will play the game alternatively 
@@ -44,20 +46,21 @@ using namespace std;
 
 int TomCat(int N)
 {
-	vector<bool>  vwin(N + 1, false);
+	//vector<bool>  vwin(N + 1, false);
+	bool vwin[100001] = {false};
+
+    
 
 	for (int i = 2; i <= N; ++i)
 	{
-		bool bWin = true;
-        
-		for (int j = 1; j < i; ++j)
+		for (int j = 1; j <= i/2; ++j)
 		{
-			if (0 == (i%j))
+			if (0 == (i%j) && !vwin[i - j])
 			{
-				bWin &= vwin[i - j];
+				vwin[i] = true;
+				break;
 			}
 		}
-		vwin[i] = !bWin;
 	}
 
 	cout << (vwin[N] ? 1 : 0) << endl;
