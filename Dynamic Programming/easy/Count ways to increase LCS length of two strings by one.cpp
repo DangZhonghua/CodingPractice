@@ -57,12 +57,22 @@ LCS[i,j] =  max(LCS[i-1,j],LCS[i,j-1]) if x[i] != y[j]
 using namespace std;
 
 
+enum LCSChoice
+{
+    choice_invalid,
+    choice_middle,
+    choice_left,
+    choice_upper
+};
+
 int CountLCSIncreaseingWay(const string& x, const string& y)
 {
     int R =  x.size();
     int C =  y.size();
     int nway = 0;
     vector< vector<int> > lcs(R+1, vector<int>(C+1,0) );
+    vector< vector<int> > m(R+1, vector<int>(C+1,0));
+    
     
     for(int i = 1; i<=R; ++i)
     {
@@ -71,14 +81,26 @@ int CountLCSIncreaseingWay(const string& x, const string& y)
             if(x[i-1] == y[j-1])
             {
                 lcs[i][j] = lcs[i-1][j-1]+1;
+                m[i][j] = choice_middle;
             }
             else
             {
-                
+                lcs[i][j] = lcs[i-1][j];
+                m[i][j] = choice_upper;
+                if(lcs[i][j-1]>lcs[i][j])
+                {
+                    lcs[i][j] = lcs[i][j-1];
+                    m[i][j] = choice_left;
+                }
+                if(lcs[i][j-1] == lcs[i][j])
+                {
+                    ++nway;
+                }
             }
         }
     }
     
+    cout<<nway<<endl;
     
     return 0;
 }
