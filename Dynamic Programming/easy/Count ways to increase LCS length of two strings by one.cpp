@@ -1,6 +1,7 @@
 /*
 Count ways to increase LCS length of two strings by one 
 https://practice.geeksforgeeks.org/problems/count-ways-to-increase-lcs-length-of-two-strings-by-one/0
+https://www.geeksforgeeks.org/count-ways-increase-lcs-length-two-strings-one/
 
 Given two strings of lower alphabet characters, we need to find the number of ways to insert a character 
 in the first string such that length of LCS of both strings increases by one.
@@ -74,6 +75,8 @@ int CountLCSIncreaseingWay(const string& x, const string& y)
 
 	for (int i = 1; i <= R; ++i)
 	{
+		bool bMatch = false;
+		bool bCheck = false;
 		for (int j = 1; j <= C; ++j)
 		{
 			if (x[i - 1] == y[j - 1])
@@ -91,6 +94,10 @@ int CountLCSIncreaseingWay(const string& x, const string& y)
 				{
 					++nway;
 				}
+				if(bCheck)
+				{
+					bMatch = true;
+				}
 			}
 			else
 			{
@@ -101,7 +108,13 @@ int CountLCSIncreaseingWay(const string& x, const string& y)
 					lcs[i][j] = lcs[i][j - 1];
 					m[i][j] = choice_left;
 				}
+				bCheck = true;
 			}
+		}
+
+		if(bCheck && !bMatch)
+		{
+			++nway;
 		}
 	}
 

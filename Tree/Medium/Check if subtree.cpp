@@ -54,7 +54,11 @@ Output:
 0
 
 Explanation:
-First line of input represents number of test cases. Each test case contains four line. First line of each test case represents number of nodes in tree T2. Second line of each test case represents structure of tree T2. Third line of each test case represents number of nodes in tree T1. Fourth line of each test case represents structure of tree T1.
+First line of input represents number of test cases. Each test case contains four line. 
+First line of each test case represents number of nodes in tree T2. 
+Second line of each test case represents structure of tree T2. 
+Third line of each test case represents number of nodes in tree T1. 
+Fourth line of each test case represents structure of tree T1.
 Structure of tree:
 10 4 L 10 6 R 4 30 R
 10 is root node of tree. Left child of 10 is 4 and right child of 10 is 6. Right child of 4 is 30.
