@@ -107,5 +107,5 @@ bool isSubtree(Node*  T1 ,Node * T2)
 {
      //Your code here 
      //return 1 if T2 is subtree of T1 else 0
-
+    return JudgeSubTree(T1,T2);
 }
