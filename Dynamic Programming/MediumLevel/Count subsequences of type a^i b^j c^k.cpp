@@ -42,4 +42,36 @@ Output:
 
 */
 
+#include<iostream>
+#include<string>
+using namespace std;
+
+int CountSubSequence(const string& strtxt)
+{
+    int N = strtxt.size();
+
+
+    
+
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;    
+    string strtxt;
+
+
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>strtxt;
+        CountSubSequence(strtxt);
+    }
+
+    return 0;
+}
 
