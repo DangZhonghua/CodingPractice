@@ -36,7 +36,11 @@ Sample Output
 
 1 
 1
+*/
 
+/*
+
+ win[i] = !(win[i-j]& win[i-k]...) j and k are these number that can divide by i and thess than i. 
 
 */
 
