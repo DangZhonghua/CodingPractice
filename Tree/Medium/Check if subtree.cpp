@@ -68,3 +68,44 @@ Structure of tree:
 Note:The Input/Output format and Example given above are used for system's internal purpose, and should be used by a user for Expected Output only. As it is a function problem, hence a user should not read any input from stdin/console. The task is to complete the function specified, and not to write the full code.
 
 */
+
+/* A binary tree node
+struct Node
+{
+    int key;
+    Node* left, * right;
+}; */
+/*you are required to 
+complete this function */
+
+bool JudgeSubTree(Node* T1, Node* T2)
+{
+  
+    if(T1 == NULL && NULL == T2)
+    {
+      return true;
+    }
+    else if(NULL == T2 || NULL == T1)
+    {
+      return false;
+    }
+    else if( T1->key == T2->key)
+    {
+      return (JudgeSubTree(T1->left,T2->left) && JudgeSubTree(T1->right, T2->right) );
+    }
+    else
+    {
+      return JudgeSubTree(T1->left, T2) || JudgeSubTree(T1->right,T2);
+    }
+
+    return false;
+
+}
+
+
+bool isSubtree(Node*  T1 ,Node * T2)
+{
+     //Your code here 
+     //return 1 if T2 is subtree of T1 else 0
+
+}
