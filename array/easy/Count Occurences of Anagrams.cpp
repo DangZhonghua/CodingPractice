@@ -38,7 +38,77 @@ use slide window to do this. the slide window size is the target word.
 
 */
 
+
 #include<iostream>
 #include<string>
-#include<vector>
 using namespace std;
+
+int CountOccurencesofAnagrams(const string& strtext, const string& strword)
+{
+    int wordFreq[26] = {0};
+    int textFreq[26] = {0};
+    int vindex[26]   = {0};
+    int letterCount  = 0;
+    int count        = 0;
+    int W = strword.size();
+
+    for(int i = 0; i<strword.size(); ++i)
+    {
+        wordFreq[strword[i]-'a'] +=1;
+        if(1 == wordFreq[strword[i]-'a'])
+        {
+            vindex[letterCount] = strword[i]-'a';
+             ++letterCount;
+        }
+    }
+    
+    int i = 0;
+    int j = 0;
+
+    for(int j = 0; j<strtext.size(); ++j)
+    {
+        textFreq[strtext[j]-'a'] += 1;
+        if(j-i+1 == W)
+        {
+          //Now, let's check the Anagram.
+          bool bFind = true;
+          for(int l = 0; l<letterCount; ++l)
+          {
+            if(wordFreq[vindex[l]] != textFreq[vindex[l]])
+            {
+                bFind = false;
+                break;    
+            }
+          }
+          if(bFind)
+          {
+              ++count;
+          }
+          textFreq[strtext[i]-'a'] -= 1;
+          ++i;
+        }
+    }
+    
+    cout<<count<<endl;
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    string strtext;
+    string strword;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>strtext;
+        cin>>strword;
+        CountOccurencesofAnagrams(strtext,strword);
+    }
+    
+    return 0;
+}
