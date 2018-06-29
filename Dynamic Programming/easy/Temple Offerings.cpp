@@ -2,7 +2,8 @@
 Temple Offerings
 https://practice.geeksforgeeks.org/problems/temple-offerings/0
 
-Consider a devotee wishing to give offerings to temples along a mountain range. The temples are located in a row at different heights. 
+Consider a devotee wishing to give offerings to temples along a mountain range. 
+The temples are located in a row at different heights. 
 Devotee is very religious and wants to offer each temple at least one offering. 
 If two adjacent temples are at different altitudes, 
 then the temple that is higher up should receive more offerings than the one that is lower down. 
@@ -49,3 +50,104 @@ The second temple has to receive more offerings than the first due to its height
 The fourth must receive more than the fifth, which in turn must receive more than the sixth. Thus the total becomes 10.
 
 */
+
+/*
+Sub-problem: the lower altitude offer can be used to calculate higher altitude offer.
+this is bottom style
+some test case:
+
+2
+11
+165 647 1117 743 1060 357 1053 816 387 924 281 
+2
+473 145
+
+*/
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int a[1000000] = { 0 };
+
+int MinTempleOffering(int*a, int N)
+{
+	vector<int>   vf(N + 1, 0);
+	int minimumOffer = 0;
+
+	//Initialize the lowest altitude temple offer
+    int minlevel  = 10001;
+    int maxlevel  = 0;
+
+    for(int i  = 0; i< N; ++i)
+    {
+        if(minlevel>a[i])
+        {
+            minlevel = a[i];
+        }
+        if(maxlevel<a[i])
+        {
+            maxlevel = a[i];
+        }
+    }
+
+
+	for (int i = 0; i <N; ++i)
+	{
+		if (minlevel == a[i])
+		{
+			vf[i] = 1;
+			++minimumOffer;
+		}
+	}
+
+	for (int h = minlevel + 1; h <= maxlevel; ++h)
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			if (h != a[i])
+			{
+				continue;
+			}
+			//Find the current iteration target.
+			vf[i] = 1;
+			if (i - 1 >= 0 && a[i] > a[i - 1] && vf[i] < vf[i - 1] + 1)
+			{
+				vf[i] = vf[i - 1] + 1;
+			}
+			if (i + 1 < N && a[i] > a[i + 1] && vf[i] < vf[i + 1] + 1)
+			{
+				vf[i] = vf[i + 1] + 1;
+			}
+			minimumOffer += vf[i];
+		}
+	}
+
+	cout << minimumOffer << endl;
+
+	return 0;
+}
+
+
+
+int main()
+{
+	int t = 0;
+	int N = 0;
+
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> N;
+		int i = 0;
+		while (i < N)
+		{
+			cin >> a[i++];
+		}
+		MinTempleOffering(a, N);
+	}
+	return 0;
+}
