@@ -55,6 +55,40 @@ The above tree should be modified to following
 
 /*
 
-Use in-order traversal, but right side first.
+Use in-order traversal, but right side first since this tree BST.
+
+return the previous nodes's sum by using recursive manner.
 
 */
+
+/* BST Node structure  used in the program*/
+
+ struct Node
+ {
+     int data;
+     Node* left, *right;
+}; 
+
+#include<iostream>
+using namespace std;
+
+int addGreater2Node(Node* node,int sum)
+{
+    if(NULL == node)
+    {
+      return sum;  // we must return sum, not zero since we need keep the sum of all traversed nodes.
+    }
+    int rightsum = addGreater2Node(node->right,sum);
+    node->data += rightsum;
+    rightsum = node->data;
+    int leftsum = addGreater2Node(node->left,rightsum);
+    
+    return  leftsum;
+}
+
+void modify(Node **root)
+{
+  // Your code here
+  addGreater2Node(*root,0);
+
+}
