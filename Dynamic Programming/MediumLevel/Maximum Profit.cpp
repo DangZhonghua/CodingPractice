@@ -5,15 +5,16 @@ https://www.geeksforgeeks.org/maximum-profit-by-buying-and-selling-a-share-at-mo
 
 In stock market , a person buys a stock and sells it on some future date. 
 Given the stock prices of N days in an form of an array A[ ] and a positive integer K, 
-find out the maximum profit a person can make in atmost K transactions. 
-A transaction is equivalent to (buying + selling) of a stock and new transaction can start only 
-when the previous transaction has been completed.
+find out the maximum profit a person can make in at most K transactions. 
+A transaction is equivalent to (buying + selling) of a stock and 
+new transaction can start only when the previous transaction has been completed.
 
 Input
 The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. 
 The first line of each test case contains a positve integer K, denoting the number of transactions.
 The second line of each test case contains a positve integer N, denoting the length of the array A[ ].
-The third line of each test case contains a N space separated positive integers, denoting the prices of each day in the array A[ ].
+The third line of each test case contains a N space separated positive integers, 
+denoting the prices of each day in the array A[ ].
 
 
 Output
@@ -55,3 +56,51 @@ Output 3: Trader cannot make any profit as selling price is decreasing day by da
 
 
 */
+
+/*
+
+P[i,j] = max{P[i,e], P[e+1,j]} for i<e<j
+P[1,N] is the maximum value.
+
+*/
+
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int MaximumProfit(int*a, int N, int K )
+{
+    vector< vector<int> > p(N+1, vector<int>(N+1,0));
+    
+
+
+
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int K, N;
+    int a[100] = {0};
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>K>>N;
+        
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        MaximumProfit(a,N,K);
+    }
+
+    return 0;    
+}
