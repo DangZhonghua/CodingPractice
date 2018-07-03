@@ -21,7 +21,8 @@ abcc, abc and abc
 
 
 Input:
-The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. Each test case contains a string s.
+The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. 
+Each test case contains a string s.
 
 Output:
 For each test case in a new line print the required output.
@@ -53,6 +54,8 @@ We traverse given string. For every character encounter, we do following:
 4) Traverse all characters of given string. Do following for current character s[i]
     If current character is ‘a’, then there are following possibilities :
     a) Current character begins a new subsequence.
+
+     2*aCount
     b) Current character is part of aCount subsequences.
     c) Current character is not part of aCount subsequences.
     Therefore we do aCount = (1 + 2 * aCount);
@@ -77,12 +80,30 @@ We traverse given string. For every character encounter, we do following:
 #include<string>
 using namespace std;
 
-int CountSubSequence(const string& strtxt)
+int CountSubSequence(const string& strtext)
 {
-    int N = strtxt.size();
-
-
+    int N = strtext.size();
+    int aCount = 0;
+    int bCount = 0;
+    int cCount = 0;
     
+    for(int i = 0; i<N; ++i)
+    {
+       if('a' == strtext[i])
+       {
+           aCount = 1 + 2*aCount;
+       }
+       else if('b' == strtext[i])
+       {
+           bCount = aCount + 2*bCount;
+       }
+       else if ('c' == strtext[i])
+       {
+           cCount = bCount + 2*cCount;
+       }
+    }
+
+    cout<<cCount<<endl;  
 
 
     return 0;
