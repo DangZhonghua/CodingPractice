@@ -56,3 +56,51 @@ Output 3: Trader cannot make any profit as selling price is decreasing day by da
 
 
 */
+
+/*
+
+P[i,j] = max{P[i,e], P[e+1,j]} for i<e<j
+P[1,N] is the maximum value.
+
+*/
+
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int MaximumProfit(int*a, int N, int K )
+{
+    vector< vector<int> > p(N+1, vector<int>(N+1,0));
+    
+
+
+
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int K, N;
+    int a[100] = {0};
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>K>>N;
+        
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        MaximumProfit(a,N,K);
+    }
+
+    return 0;    
+}
