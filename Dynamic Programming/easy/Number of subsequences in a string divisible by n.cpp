@@ -8,7 +8,8 @@ Given a string consisting of digits 0-9, count the number of subsequences in it 
  
 Input:
 
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. 
+The first line of input contains an integer T denoting the number of test cases. 
+Then T test cases follow. 
 The first line of each test case contains an integer M and N where M denotes the length of the numeric string.
 
 The second line of each test case contains the numeric string.
@@ -48,5 +49,17 @@ Output:
 
 4
 
+*/
+
+/*
+
+This problem can be recursively defined. Let remainder of a string with value x be ‘r’ when divided with n. 
+Adding one more character to this string changes its remainder to (r*10 + newdigit) % n. 
+For every new character, we have two choices, either add it in all current subsequences or ignore it. 
+Thus, we have an optimal substructure. Following shows the brute force version of this.
+
+
+C[N] = C[N-1][nth selected] + C[N-1][nth not selected]
+C[N][reminder]
 
 */
