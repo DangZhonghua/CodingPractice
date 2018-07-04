@@ -6,17 +6,17 @@ https://www.geeksforgeeks.org/number-subsequences-string-divisible-n/
 Given a string consisting of digits 0-9, count the number of subsequences in it divisible by n.
 
  
-
 Input:
 
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. The first line of each test case contains an integer M and N where M denotes the length of the numeric string.
+The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. 
+The first line of each test case contains an integer M and N where M denotes the length of the numeric string.
 
 The second line of each test case contains the numeric string.
 
 
 Output:
 
-Output the number of subsequences dicisible by N. Since the number can be quite large print the answer modulo 109+7.
+Output the number of subsequences dicisible by N. Since the number can be quite large print the answer modulo 10^9+7.
 
 
 Constraints:

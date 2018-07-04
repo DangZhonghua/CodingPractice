@@ -3,10 +3,17 @@ https://practice.geeksforgeeks.org/problems/max-rectangle/1
 
 https://www.geeksforgeeks.org/maximum-size-rectangle-binary-sub-matrix-1s/
 
-Given a binary matrix, Your task is to complete the function maxArea which the maximum size rectangle area in a binary-sub-matrix with all 1’s. The function takes 3 arguments the first argument is the Matrix M[ ] [ ] and the next two are two  integers n and m which denotes the size of the matrix M. Your function should return an integer denoting the area of the maximum rectangle .
+Given a binary matrix, Your task is to complete the function maxArea which the maximum size rectangle 
+area in a binary-sub-matrix with all 1’s. 
+The function takes 3 arguments the first argument is the Matrix M[ ] [ ] and 
+the next two are two  integers n and m which denotes the size of the matrix M. 
+Your function should return an integer denoting the area of the maximum rectangle .
 
 Input:
-The first line of input is an integer T denoting the no of test cases . Then T test cases follow. The first line of each test case are 2 integers n and m denoting the size of the matrix M . Then in the next line are n*m space separated values of the matrix M.
+The first line of input is an integer T denoting the no of test cases . 
+Then T test cases follow. The first line of each test case are 2 integers n and m 
+denoting the size of the matrix M . 
+Then in the next line are n*m space separated values of the matrix M.
 
 Output:
 For each test case output will be the area of the maximum rectangle .
