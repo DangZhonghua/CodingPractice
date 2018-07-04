@@ -61,12 +61,16 @@ Output 3: Trader cannot make any profit as selling price is decreasing day by da
 25
 604 902 153 292 382 421 716 718 895 447 726 771 538 869 912 667 299 35 894 703 811 322 333 673 664
 
+
+604 902 153 292 382 421 716 718 895 447 726 771 538 869 912 667 299 35 894 703 811 322 333 673 664
+
 */
 
 /*
 
-P[i,j] = max{P[i,e], P[e+1,j]} for i<e<j
-P[1,N] is the maximum value.
+p[k][i][j] = max{ p[1][i][m] + max{p[k-1][n][j]: for n>m } } : i< m < n < j
+
+record the maximum p[k][i][j], it is the result.
 
 */
 
@@ -80,53 +84,76 @@ int MaximumProfit(int*a, int N, int K)
 {
 	vector< vector< vector<int> > > p(K + 1, vector< vector<int> >(N + 1, vector<int>(N + 1, 0)));
 	int max = 0;
+	int gmax = 0;
 
-	// Init one time transcation.
-	for (int i = 0; i<N; ++i)
+	// Init one time transaction.
+	for (int i = 0; i < N; ++i)
 	{
-		for (int j = i + 1; j<N; ++j)
+		max = 0;
+		for (int j = i + 1; j < N; ++j)
 		{
-			if (a[j] - a[i]>0)
+			if (a[j] - a[i] > 0)
 			{
-				p[1][i][j] = (a[j] - a[i]);
-				if (p[1][i][j]>max)
+				if (a[j]-a[i] > max)
 				{
-					max = p[1][i][j];
+					max = a[j] - a[i];
 				}
+			}
+			p[1][i][j] = max;
+			if (max > gmax)
+			{
+				gmax = max;
 			}
 		}
 	}
-	
-	for (int i = 0; i < N; ++i)
-	{
-		for (int j = 0; j < N; ++j)
-		{
-			cout << p[1][i][j] << " ";
-		}
-		cout << endl;
-	}
-	cout << endl;
+
+	//for (int i = 0; i < N; ++i)
+	//{
+	//	for (int j = 0; j < N; ++j)
+	//	{
+	//		cout << p[1][i][j] << " ";
+	//	}
+	//	cout << endl;
+	//}
+	//cout << endl;
 
 
 	for (int k = 2; k <= K; ++k)
 	{
-		for (int i = 0; i<N; ++i)
+		for (int i = 0; i < N; ++i)
 		{
-			for (int j = i + 1; j<N; ++j)
+			for (int j = i + 1; j < N; ++j)
 			{
-				for (int l = j + 2; l<N; ++l)
+				p[k][i][j] = p[k - 1][i][j];
+
+				for (int l = i + 1; l < j-1; ++l)
 				{
-					p[k][i][l] = p[1][i][j] + p[k - 1][j + 1][l];
-					if (p[k][i][l]>max)
+					if (p[k][i][j] < p[1][i][l] + p[k - 1][l + 1][j])
 					{
-						max = p[k][i][l];
+						p[k][i][j] = (p[1][i][l] + p[k - 1][l + 1][j]);
+					}
+					if (p[k][i][j] > gmax)
+					{
+						gmax = p[k][i][j];
 					}
 				}
 			}
 		}
+
+
+		//for (int ia = 0; ia < N; ++ia)
+		//{
+		//	for (int ja = 0; ja < N; ++ja)
+		//	{
+		//		cout << p[k][ia][ja] << " ";
+		//	}
+		//	cout << endl;
+		//}
+		//cout << endl;
+
 	}
 
-	cout << max << endl;
+	cout << gmax << endl;
 
 	return 0;
 }
@@ -145,7 +172,7 @@ int main()
 		cin >> K >> N;
 
 		int i = 0;
-		while (i<N)
+		while (i < N)
 		{
 			cin >> a[i++];
 		}
