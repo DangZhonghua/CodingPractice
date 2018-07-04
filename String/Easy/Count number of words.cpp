@@ -23,3 +23,59 @@ Output:
 4
 
 */
+
+
+#include<string>
+#include<iostream>
+using namespace std;
+
+int CountWordsOfString(const string& strtext)
+{
+	int s = -1;
+	int count = 0;
+
+	for (int i = 0; i < strtext.size(); ++i)
+	{
+		if (strtext[i] == '\t' || strtext[i] == '\n' || strtext[i] == ' ')
+		{
+			if (-1 != s)
+			{
+				++count;
+			}
+			s = -1;
+		}
+		else
+		{
+			if (-1 == s)
+			{
+				s = i;
+			}
+		}
+	}
+	if (-1 != s)
+	{
+		++count;
+	}
+
+	cout<<count<<endl;
+
+	return 0;
+}
+
+
+int main(int argc, char const *argv[])
+{
+	int t = 0;
+	string strtext;
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> strtext;
+
+		CountWordsOfString(strtext);
+	}
+
+	return 0;
+}
