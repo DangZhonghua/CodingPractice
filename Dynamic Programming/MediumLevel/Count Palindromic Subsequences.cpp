@@ -44,7 +44,7 @@ palindromic subsequence are :"a", "a", "b", "aa"
             
 ps[i][i] = 1 for i = 0 ...N-1
 
-            ps[i+1][j] + ps[i][j-1] + 1
+            ps[i+1][j] + ps[i][j-1] + 1 // 1 for the X[i] == X[j], the two char consist a plaindrome sequence.
 ps[i][j] = 
             ps[i+1][j] + ps[i][j-1] -ps[i+1][j-1]
 
