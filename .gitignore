@@ -10,6 +10,10 @@ harvest.sig
 *.user
 *.userosscache
 *.sln.docstates
+*.exe
+*.dll
+*.bat
+*.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -316,11 +320,8 @@ ARCserve/D2D/Native/Exchange.GRT/packages/
 ARCserve/D2D/Native/Exchange.GRT/Dlls
 !ARCserve/D2D/Native/Exchange.GRT/Arcserve.Office365.Exchange.Com/tlb/Arcserve.Office365.Exchange.Com.tlb
 !ARCserve/D2D/Native/SharePointGRT/SharePointCom/SharePointCom.tlb
-kw.exe
-.vscode/settings.json
-.vscode/settings.json
 .vscode/tasks.json
-build.bat
+.vscode/settings.json
+.vscode/launch.json
 .vscode/c_cpp_properties.json
-.vscode/settings.json
-.vscode/tasks.json
+build.bat
