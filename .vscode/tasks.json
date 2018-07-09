@@ -6,9 +6,10 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "msbuild",
+            "command": "build.bat",
             "args": [
-                // Ask msbuild to generate full paths for file names.
+                // Ask msbuild to generate full p
+                aths for file names.
                 "/property:GenerateFullPaths=true",
                 "/t:build"
             ],

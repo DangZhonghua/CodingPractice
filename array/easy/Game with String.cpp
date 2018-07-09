@@ -9,7 +9,8 @@ Output : 6
 We remove c to get the value as 1^1 + 1^1 + 2^2
 
 Input:
-First line consists of T test cases. First line of every test case consists of String s. Second line of every test case consists of a integer K.
+First line consists of T test cases. First line of every test case consists of String s. 
+Second line of every test case consists of a integer K.
 
 Output:
 Single line output, Print the minimum square sum.

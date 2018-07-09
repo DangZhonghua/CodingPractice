@@ -2,7 +2,12 @@
 Length of largest region of 1's 
 https://practice.geeksforgeeks.org/problems/length-of-largest-region-of-1s/0
 
-Consider a matrix with rows and columns (n,m), where each cell contains either a ‘0’ or a ‘1’ and any cell containing a 1 is called a filled cell. Two cells are said to be connected if they are adjacent to each other horizontally, vertically, or diagonally .If one or more filled cells are connected, they form a region. Your task is to  find the length of the largest region.
+Consider a matrix with rows and columns (n,m), where each cell contains either a ‘0’ or a ‘1’ and 
+any cell containing a 1 is called a filled cell. 
+Two cells are said to be connected if they are adjacent to 
+each other horizontally, vertically, or diagonally .
+If one or more filled cells are connected, they form a region. 
+Your task is to  find the length of the largest region.
 
 Examples:
 
