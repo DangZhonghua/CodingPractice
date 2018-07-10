@@ -15,7 +15,8 @@ The second line of each test case contains the elements of the first array.
 The final line of each test case contains the elements of the second array.
 
 Output:
-Print the maximum elements giving second array higher priority. The order of appearance of elements is kept same in output as in input (See Example for better Understanding).
+Print the maximum elements giving second array higher priority. 
+The order of appearance of elements is kept same in output as in input (See Example for better Understanding).
 
 
 Constraints:
@@ -41,6 +42,5 @@ Output:
 
 9 7 6 4 8
 5 6 9 7
-
 
 */
