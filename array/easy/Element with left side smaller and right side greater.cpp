@@ -18,8 +18,8 @@ For each test case, in a new line print the required element. If no such element
 
 Constraints:
 1<=T<=100
-3<=N<=106
-1<=A[i]<=106
+3<=N<=10^6
+1<=A[i]<=10^6
 
 Example:
 Input:
@@ -36,5 +36,80 @@ Output:
 -1
 7
 
+2
+4
+7 14 16 18 
+12
+7 13 10 2 3 8 11 12 17 18 19  20
 
+out:
+14
+17
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int WatchDog(int*a, int N)
+{
+    vector<bool> vbs(N+1, false);
+    int max = a[0];
+    int min = a[N-1];
+    int index = -1;
+    
+    for(int i = 1; i<N; ++i)
+    {
+        if(a[i]>=max)
+        {
+            vbs[i] = true;
+            max = a[i];
+        }
+    }
+
+    for(int j = N-2; j>=0; --j)
+    {
+        if(a[j]<=min)
+        {
+            if(vbs[j])
+            {
+                index = j;
+            }
+            min = a[j];
+        }
+    }
+    if( -1 != index)
+    {
+        cout<<a[index]<<endl;
+    }
+    else
+    {
+        cout<<-1<<endl;
+    }
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int a[1000001];
+    int N = 0;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        WatchDog(a,N);
+    }
+    
+    return 0;
+}
