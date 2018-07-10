@@ -1,7 +1,8 @@
 /*
 Longest Zig-Zag Sub Sequence 
 https://practice.geeksforgeeks.org/problems/longest-zig-zag-sub-sequence/0/?ref=self
-The longest Zig-Zag subsequence problem is to find the length of the longest subsequence of given sequence such that all elements of this are alternating.
+The longest Zig-Zag subsequence problem is to find the length of the longest subsequence of 
+given sequence such that all elements of this are alternating.
 If a sequence {x1, x2, .. xn} is alternating sequence then its element satisfy one of the following relation:
 
   x1 < x2 > x3 < x4 > x5 < …. xn or 

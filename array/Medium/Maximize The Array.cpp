@@ -2,7 +2,11 @@
 Maximize The Array
 https://practice.geeksforgeeks.org/problems/maximize-the-array/0
 
-You are given two arrays of numbers. You have to maximize the first array by using the elements from the second array such that the new array formed contains unique elements. For example, let the size of array be 'n'. Then the output should be n greatest but unique elements of both the arrays. The order of elements should be as explained in example below, i.e., giving the second array priority.
+You are given two arrays of numbers. You have to maximize the first array by using the elements 
+from the second array such that the new array formed contains unique elements. 
+For example, let the size of array be 'n'. 
+Then the output should be n greatest but unique elements of both the arrays. 
+The order of elements should be as explained in example below, i.e., giving the second array priority.
 
 Input:
 The first line of each input contains the number of test cases . The description of T test cases follows:
