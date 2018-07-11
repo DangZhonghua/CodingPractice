@@ -34,14 +34,14 @@ Test Case 2: We are unable to form contiguous set of integers using elements of 
 */
 
 #include<iostream>
-#include<unorderedset>
+#include<unordered_set>
 using namespace std;
 
 int CheckContiguous(int*a, int N)
 {
     int nMin = 0;
     int nMax = 0;
-    unorderedset<int> c;
+    unordered_set<int> c;
 
     nMin = a[0];
     nMax = a[0];
