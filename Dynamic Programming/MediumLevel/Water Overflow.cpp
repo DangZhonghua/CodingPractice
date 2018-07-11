@@ -12,6 +12,7 @@ Now the pours K units of water in the topmost glass and wants to know how much w
 there in the jth glass of the ith row.
 
 Assume that there are enough glasses in the triangle till no glass overflows. 
+
 Input:   First line of the input contains an integer T denoting the number of test cases and 
 each test case consists of three lines. First line contain an integer K, 
 second line contains an integer i and third line contains an integer j.
