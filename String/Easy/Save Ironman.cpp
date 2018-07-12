@@ -28,5 +28,86 @@ Output:
 YES
 YES
 
-
 */
+
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+int SaveIronMan(const string& strtext)
+{
+	int i = 0;
+	int j = strtext.length() - 1;
+	bool bPlaindromic = true;
+
+	while (i<j)
+	{
+		if (!(('A' <= strtext[i] && 'Z' >= strtext[i]) || ('0' <= strtext[i] && '9' >= strtext[i]) || ('a' <= strtext[i] && 'z' >= strtext[i])))
+		{
+			++i;
+			continue;
+		}
+		if (!(('A' <= strtext[j] && 'Z' >= strtext[j]) || ('0' <= strtext[j] && '9' >= strtext[j]) || ('a' <= strtext[j] && 'z' >= strtext[j])))
+		{
+			--j;
+			continue;
+		}
+		char l = strtext[i];
+		if ('a' <= l && 'z' >= l)
+		{
+			l -= 32;
+		}
+		char r = strtext[j];
+
+		if ('a' <= r && 'z' >= r)
+		{
+			r -= 32;
+		}
+
+		if (l != r)
+		{
+			bPlaindromic = false;
+			break;
+		}
+		else
+		{
+			++i;
+			--j;
+		}
+	}
+
+	if (bPlaindromic)
+	{
+		cout << "YES" << endl;
+	}
+	else
+	{
+		cout << "NO" << endl;
+	}
+
+	return 0;
+}
+
+int main()
+{
+	int t = 0;
+	string strtext;
+
+	cin >> t;
+	cin.get();
+	char ch;
+	while (t--)
+	{
+
+		getline(cin, strtext);
+		//while ((ch = cin.get()) != '\n')
+		//{
+		//	strtext.push_back(ch);
+		//}
+	
+		SaveIronMan(strtext);
+		strtext.clear();
+	}
+	return 0;
+}
