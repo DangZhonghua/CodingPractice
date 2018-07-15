@@ -27,3 +27,22 @@ Explanation :
 The given string is 3 times repetition of "abc"
 
 */
+
+#include<string>
+#include<iostream>
+using namespace std;1
+
+int PattarnFormString(const string& strtext)
+{
+
+
+    return 0;
+}
+
+
+
+int main(int argc, char const *argv[])
+{
+    /* code */
+    return 0;
+}

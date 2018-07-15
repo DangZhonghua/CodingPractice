@@ -1,7 +1,7 @@
 /*
 Longest Prefix Suffix 
 https://practice.geeksforgeeks.org/problems/longest-prefix-suffix/0
-
+https://www.youtube.com/watch?v=GTJr8OvyEVQ
 Given a string of character, find the length of longest proper prefix which is also a proper suffix.
 Example:
 S = abab
