@@ -1,5 +1,5 @@
 /*
-Stack using two queues
+Stack using two queues 
 https://practice.geeksforgeeks.org/problems/stack-using-two-queues/1
 
 Implement a Stack using 2 queue q1 and q2 .
@@ -40,5 +40,6 @@ In the first test case for query
 2       poped element will be 3 the stack will be {2}
 1 4    the stack will be {2 4}
 2       poped element will be 4  
+
 
 */

@@ -33,3 +33,64 @@ wrwbwrqwhwrwbw
 5
 
 */
+
+/*
+this is the KMP pattarn prefix array
+This is the dynamic programming style.
+
+         j+1 if x[i] = x[j]
+lps[i] = 
+         lps[lps[ j-1] ]
+*/
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+int longestPefixPostfix(const string& strtext)
+{
+    vector<int> lps(strtext.length()+1,0);
+    int i = 1;
+    int j = 0;
+    
+    for(i = 1; i<strtext.size(); ++i)
+    {  
+        while(j>0 && strtext[j] != strtext[i])
+        {
+            j = lps[j-1];
+        }
+
+        if(strtext[j] == strtext[i])
+        {
+            lps[i] = j+1;
+            ++j;
+        }
+   
+    }
+
+
+    cout<<lps[strtext.length()-1]<<endl;
+
+
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    string strtext;
+
+    cin>>t;
+
+    while(t--)
+    {
+        cin>>strtext;
+        longestPefixPostfix(strtext);
+    }
+    
+    return 0;
+}
+
