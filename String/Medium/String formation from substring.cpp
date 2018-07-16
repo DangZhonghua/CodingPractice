@@ -41,6 +41,9 @@ The given string is 3 times repetition of "abc"
 Initially, the pattarn  range is [s,e] s =0 & e = 0
 How to build the pattarn: i is the forward index, j is the forward index for the pattarn.
 
+// the basic idea is: if there is mismatched pointed. reset the pattatn to the start index.
+
+
 if(X[i] == X[j]): { ++i; ++j}  if(j > e) j = s(0);
 if(X[i] != X[j]): 
 { 
