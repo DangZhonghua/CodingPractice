@@ -39,6 +39,11 @@ found
 This obvious can be done by KMP. The hardest part of KMP is the prefix array compution.
 [prefix] ... [postfix] which prefix the same as postfix.
 
+// How to understand j = lps[j - 1];  x[i] != [j] current matching processing must be stopped.
+
+For restart, which index is the optimal, since x[j-1] = x[i-1], according to the KMP,
+we can restart from lps[j-1] since prefix = postfix.
+
 */
 
 #include<iostream>
