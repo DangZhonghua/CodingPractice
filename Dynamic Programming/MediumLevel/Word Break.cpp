@@ -42,3 +42,93 @@ Output:
 0
 
 */
+
+#include<unordered_set>
+#include<string>
+#include<iostream>
+using namespace std;
+
+
+int decodePassword( unordered_set<string>& dict,char* szPassword);
+
+int main()
+ {
+    int t = 0;
+    int N = 0;
+    unordered_set<string> dict;   
+    string  strPassword;
+    char  szPassword[1001];
+    string  strword;
+    cin>>t;
+    
+    while(t>0)
+    {
+        dict.clear();
+        --t;
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>strword;
+            dict.insert(strword);
+            strword.clear();
+            ++i;
+        }
+        cin>>szPassword;
+        decodePassword(dict,szPassword);
+    }
+
+
+	return 0;
+}
+
+int decodePassword( unordered_set<string>& dict,char* szPassword)
+{
+    bool bDecode = true;
+    char flag[1001];
+    
+    for(int i = 0; i<1001; ++i)
+    {
+        flag[i] = 0;
+    }
+    
+    int i = 0;
+    for(i = 0; szPassword[i] != '\0'; ++i)
+    {
+        int j = i-1;
+        char t = szPassword[i+1];
+        szPassword[i+1] = '\0';
+        
+        while(j >= 0)
+        {
+            if( 1 == flag[j] )
+            {
+               if( dict.find( szPassword+j+1 ) != dict.end() )
+               {
+                   flag[i] = 1;
+               }
+            }
+            --j;
+        }
+        
+        if( dict.find( szPassword+j+1 ) != dict.end() )
+        {
+            flag[i] = 1;
+        }
+        
+        szPassword[i+1]  = t;
+        
+    }
+    
+    cout<<(bool)flag[i-1]<<endl;
+    
+    
+    return 0;
+}
+
+
+
+
+
+
+
