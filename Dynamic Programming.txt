@@ -4,15 +4,21 @@ Dynamic Programming
    to figure out which/what are sub-problems of original problem.
    This is why one hallmark of DP is overlapped sub-problem, sub-problem can be overlapped but should be Independent.
    This is basis/most important step.
+   Sub-problem: define how to do the task described by the original problem. for this, doing generic thinking from bottom to up:
+   from small scale to large scale.
 
 2) Now, since various, multiple sub-problem can reach/converted to original problem, this means choice selection:
    Choose one sub-problem to slove the original which yield global Optimal.
    This is the meanings of optimal-Substructure.
+   guess: choice which subproblem can optimally sloved the original problem.
 
 3) The subproblem and its parent-sub-problem should be/can be characterized as DAG.
 
 4) the aboves can be used to calculate the optimal value. NOT the optimal value  solution, But we can use parent pointer
    to construct the final optimal solution. image DAG.
+
+
+
 
 
 
