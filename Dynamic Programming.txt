@@ -1,4 +1,27 @@
 Dynamic Programming
+
+1) Characterize the problem, this step is case by case according to the purpose of the problem. The main object this step is:
+   to figure out which/what are sub-problems of original problem.
+   This is why one hallmark of DP is overlapped sub-problem, sub-problem can be overlapped but should be Independent.
+   This is basis/most important step.
+
+2) Now, since various, multiple sub-problem can reach/converted to original problem, this means choice selection:
+   Choose one sub-problem to slove the original which yield global Optimal.
+   This is the meanings of optimal-Substructure.
+
+3) The subproblem and its parent-sub-problem should be/can be characterized as DAG.
+
+4) the aboves can be used to calculate the optimal value. NOT the optimal value  solution, But we can use parent pointer
+   to construct the final optimal solution. image DAG.
+
+
+
+
+
+
+
+
+
 https://www.geeksforgeeks.org/dynamic-programming/#hardProblems
 Recent Articles on Dynamic Programming
 
