@@ -46,6 +46,12 @@ Line number 3: From word no. 4 to 4
 3 2 2 5
 6
 
+
+1
+77
+9 10 3 7 7 5 10 6 1 5 9 8 2 8 3 8 3 3 7 2 1 7 2 6 10 5 10 1 10 2 8 8 2 2 6 10 8 8 7 8 4 7 6 7 4 10 5 9 2 3 10 4 10 1 9 9 6 1 10 7 4 9 6 7 2 2 6 10 9 5 9 2 1 4 1 5 5
+14
+
 */
 
 /*
@@ -68,50 +74,6 @@ WW[i] = min{ WW[j] + cost[i,j]: for j = i+1,.... N} this is the iteration.
 #include<climits>
 using namespace std;
 
-
-// int CalcSquare(int a)
-// {
-// 	return a*a;
-// }
-// struct  PW
-// {
-// 	int pos;
-// 	int weight;
-// 	PW()
-// 	{
-// 		pos = 0;
-// 		weight = INT_MAX;
-// 	}
-// };
-
-// int WordWrap(int*a, int N, int lineWide)
-// {
-// 	vector<  vector<PW> > WL(N + 1, vector<PW>(N + 1, PW()));
-
-// 	WL[1][1].weight = (N == 1 ? 0 : CalcSquare(lineWide - a[1]));
-// 	WL[1][1].pos = 1;
-
-// 	for (int w = 2; w <= N; ++w)
-// 	{
-// 		for (int l = 1; l < w; ++l)
-// 		{
-// 			// In the same line with w-1 case.
-// 			if (WL[w - 1][l].pos && WL[w - 1][l].pos + a[w - 1] + a[w] <= lineWide)
-// 			{
-// 				WL[w][l].pos = WL[w - 1][l].pos + a[w - 1] + 1/*for space*/;
-// 				WL[w][l].weight = WL[w-1][l] + CalcSquare(lineWide - (WL[w][l].pos + a[w]) + 1)-
-//                                   CalcSquare(lineWide +1 -(WL[w-1][l].pos + a[w]-1));
-// 			}
-// 		}
-// 		WL[w][w].pos = 1;
-// 		WL[w][w].weight = WL[w - 1][w - 1].weight + CalcSquare(lineWide - a[w]);
-// 		//New line case.
-// 	}
-
-// 	return 0;
-// }
-
-
 //line start from ith word and end with jth word
 int CalcCost(int*a, int i, int j, int pw)
 {
@@ -126,7 +88,7 @@ int CalcCost(int*a, int i, int j, int pw)
 
 	if (nLine <= pw)
 	{
-		cost = (pw - nLine)*(pw - nLine);
+		cost = (pw - nLine)*(pw - nLine)*(pw-nLine);
 	}
 
 	return cost;
@@ -137,8 +99,16 @@ int CalcCost(int*a, int i, int j, int pw)
 //suffix method DAG sub-problems.
 int WordWrap(int*a, int N, int lineWide)
 {
-	vector<int> WW(N + 1, INT_MAX);
+	vector<long long > WW(N + 1, LLONG_MAX);
+	vector<int> parent(N + 1, -1);
+	vector< pair<int, int> > lines;
+
 	WW[N] = 0;
+
+	for (int i = 0; i<N; ++i)
+	{
+		parent[i] = i;
+	}
 
 	for (int i = N - 1; i >= 0; --i)
 	{
@@ -147,21 +117,36 @@ int WordWrap(int*a, int N, int lineWide)
 		{
 			int lineCost = CalcCost(a, i, j - 1, lineWide);
 
-			if (INT_MAX != lineCost && WW[i] > WW[j] + lineCost)
+			if (INT_MAX != lineCost && WW[i] >= (WW[j] + lineCost) )
 			{
 				WW[i] = WW[j] + lineCost;
+				parent[i] = j-1;
 			}
 		}
 	}
-	cout << WW[0] << endl;
+
+	//cout << WW[0] << endl;
+
+	int k = 0;
+	while (k < N)
+	{
+		pair<int, int>  a;
+		a.first = k+1;
+		a.second = parent[k] + 1;
+		lines.push_back(a);
+		k = a.second;
+	}
+
+	for (int i = 0; i < lines.size(); ++i)
+	{
+		cout << lines[i].first << " " << lines[i].second << " ";
+	}
+	cout << endl;
+
+
 
 	return 0;
 }
-
-
-
-
-
 
 
 
@@ -188,3 +173,126 @@ int main()
 
 	return 0;
 }
+
+
+/*
+
+The following is the accepted solution but it should not correct
+
+
+#include <limits.h>
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+#define INF INT_MAX
+
+// A utility function to print the solution
+int printSolution (int p[], int n);
+
+// l[] represents lengths of different words in input sequence. For example,
+// l[] = {3, 2, 2, 5} is for a sentence like "aaa bb cc ddddd".  n is size of
+// l[] and M is line width (maximum no. of characters that can fit in a line)
+void solveWordWrap (int l[], int n, int M)
+{
+// For simplicity, 1 extra space is used in all below arrays
+
+// extras[i][j] will have number of extra spaces if words from i
+// to j are put in a single line
+int extras[n+1][n+1];
+
+// lc[i][j] will have cost of a line which has words from
+// i to j
+int lc[n+1][n+1];
+
+// c[i] will have total cost of optimal arrangement of words
+// from 1 to i
+int c[n+1];
+
+// p[] is used to print the solution.
+int p[n+1];
+
+int i, j;
+
+// calculate extra spaces in a single line.  The value extra[i][j]
+// indicates extra spaces if words from word number i to j are
+// placed in a single line
+for (i = 1; i <= n; i++)
+{
+extras[i][i] = M - l[i-1];
+for (j = i+1; j <= n; j++)
+extras[i][j] = extras[i][j-1] - l[j-1] - 1;
+}
+
+// Calculate line cost corresponding to the above calculated extra
+// spaces. The value lc[i][j] indicates cost of putting words from
+// word number i to j in a single line
+for (i = 1; i <= n; i++)
+{
+for (j = i; j <= n; j++)
+{
+if (extras[i][j] < 0)
+lc[i][j] = INF;
+else if (j == n && extras[i][j] >= 0)
+lc[i][j] = 0;
+else
+lc[i][j] = extras[i][j]*extras[i][j];
+}
+}
+
+// Calculate minimum cost and find minimum cost arrangement.
+//  The value c[j] indicates optimized cost to arrange words
+// from word number 1 to j.
+c[0] = 0;
+for (j = 1; j <= n; j++)
+{
+c[j] = INF;
+for (i = 1; i <= j; i++)
+{
+if (c[i-1] != INF && lc[i][j] != INF && (c[i-1] + lc[i][j] < c[j]))
+{
+c[j] = c[i-1] + lc[i][j];
+p[j] = i;
+}
+}
+}
+
+printSolution(p, n);
+cout<<endl;
+}
+
+int printSolution (int p[], int n)
+{
+int k;
+if (p[n] == 1)
+k = 1;
+else
+k = printSolution (p, p[n]-1) + 1;
+printf ("%d %d ",p[n], n);
+return k;
+}
+
+int main()
+{
+int t = 0;
+int N = 0;
+int a[101];
+int LW = 0;
+
+cin >> t;
+
+while (t--)
+{
+cin >> N;
+int i = 0;
+while (i < N)
+{
+cin >> a[i++];
+}
+cin >> LW;
+solveWordWrap(a, N, LW);
+}
+
+return 0;
+}
+
+*/
