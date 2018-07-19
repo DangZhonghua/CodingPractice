@@ -55,3 +55,68 @@ A, A, A, Ctrl A, Ctrl C, Ctrl V, Ctrl V
 
 
 */
+
+/*
+                C[i-1] + 1  if presss A
+
+  C[i] =  Max   C[i-1]      if press Ctrl-A
+
+                C[i-1]      if press Ctrl-C
+            
+                C[i-3]*2    if press Ctrl-V
+
+                C[i-1]+ C[i-5] for press ctrl-V continously.
+
+
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int maximumSeq(int N)
+{
+	// according to the problem description
+	if (N > 75)
+	{
+		cout << "-1" << endl;
+		return 0;
+	}
+
+	vector<int> SK(N + 1, 0);
+	SK[1] = 1;
+
+	for (int i = 2; i <= N; ++i)
+	{
+		SK[i] = SK[i - 1] + 1;
+		if (i>3 && SK[i] < SK[i - 3] * 2)
+		{
+			SK[i] = SK[i - 3] * 2;
+		}
+		if (i>5 && SK[i] < SK[i - 1] + SK[i - 5])
+		{
+			SK[i] = SK[i - 1] + SK[i - 5];
+		}
+	}
+
+	cout << SK[N] << endl;
+
+	return 0;
+}
+
+
+int main()
+{
+	int t = 0;
+	int N = 0;
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> N;
+		maximumSeq(N);
+	}
+
+	return 0;
+}
