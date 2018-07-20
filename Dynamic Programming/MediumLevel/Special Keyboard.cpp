@@ -1,6 +1,7 @@
 /*
 Special Keyboard
 https://practice.geeksforgeeks.org/problems/special-keyboard/0/?ref=self
+https://www.geeksforgeeks.org/how-to-print-maximum-number-of-a-using-given-four-keys/
 
 Imagine you have a special keyboard with the following keys:
 Key 1:  Prints 'A' on screen
@@ -57,15 +58,24 @@ A, A, A, Ctrl A, Ctrl C, Ctrl V, Ctrl V
 */
 
 /*
-C[i-1] + 1  if presss A
 
-C[i] =  Max   C[i-1]      if press Ctrl-A
+Below are few important points to note.
+a) For N < 7, the output is N itself. b) Ctrl V can be used multiple times to print current buffer (See last two examples above). 
+The idea is to compute the optimal string length for N keystrokes by using a simple insight. 
+The sequence of N keystrokes which produces an optimal string length will end with a suffix of Ctrl-A, a Ctrl-C, 
+followed by only Ctrl-V's (For N > 6).
+The task is to find out the break=point after which we get the above suffix of keystrokes. 
+Definition of a breakpoint is that instance after which we need to only press Ctrl-A, Ctrl-C once and 
+the only Ctrl-V’s afterwards to generate the optimal length. If we loop from N-3 to 1 and choose each of these 
+values for the break-point, and compute that optimal string they would produce. Once the loop ends, 
+we will have the maximum of the optimal lengths for various breakpoints, thereby giving us the optimal length for N keystrokes.
 
-C[i-1]      if press Ctrl-C
-
-C[i-3]*2    if press Ctrl-V
-
-C[i-1]+ CountByCopied[i-1]
+Input:  N = 11
+Output: 27
+We can at most get 27 A's on screen by pressing 
+following key sequence.
+A, A, A, Ctrl A, Ctrl C, Ctrl V, Ctrl V, Ctrl A, 
+Ctrl C, Ctrl V, Ctrl V
 
 
 */
@@ -83,36 +93,31 @@ int maximumSeq(int N)
 		return 0;
 	}
 
-	vector<long long> SK(N + 1, 0);
-	vector<long long> BC(N + 1, 0);
-	SK[1] = 1;
-
-	for (int i = 1; i < N; ++i)
+	if(N<7)
 	{
-		if (SK[i + 1] < SK[i] + 1)
-		{
-			SK[i+1] = SK[i] + 1;
-			BC[i + 1] = BC[i];
-		}
-		
-		if (i + 3 <= N)
-		{
-			if (SK[i + 3] <= SK[i] * 2)
-			{
-				SK[i + 3] = SK[i] * 2;
-				BC[i + 3] = SK[i];
-			}
-		}
-		if (i + BC[i] <= N)
-		{
-			if (SK[i + BC[i]] <= SK[i] + BC[i])
-			{
-				SK[i + BC[i]] = SK[i] + BC[i];
-				BC[i + BC[i]] = BC[i];
-			}
-		}
+		cout<<N<<endl;
+		return 0;
+	}
+
+	vector<long long> SK(N + 1, 0);
+	for(int i = 1; i<7; ++i)
+	{
+		SK[i] = i;
+	}	
 
 
+	for (int i = 7; i <= N; ++i)
+	{
+		long long max = 0;
+		for(int b = i-3; b>=1; --b)
+		{
+			long long  cur = (i-b-1)*SK[b];
+			if(cur>max)
+			{
+				max = cur;
+			}
+		}
+		SK[i] = max;
 	}
 
 	cout << SK[N] << endl;
