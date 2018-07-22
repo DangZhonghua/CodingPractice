@@ -30,7 +30,8 @@ Output :
 2
 
 Explanation:
-Increasing sequence can be { 1, 2, 4, 5, 8 }. Decreasing sequence can be { 7, 6, 3, 2, 1 }. So, only 2 (8, 7) element is left which are not part of either of the subsequences.
+Increasing sequence can be { 1, 2, 4, 5, 8 }. Decreasing sequence can be { 7, 6, 3, 2, 1 }. 
+So, only 2 (8, 7) element is left which are not part of either of the subsequences.
 
 
 */

@@ -43,7 +43,7 @@ Output:
 Overlapped-subproblem and optimal substructure.
 This is palindrome string, so two endpoint is involved.
 
-          C[i+1,j-1] if s[i] == s[j]  since this is minimum insertion, so the equal, it must not need insert
+C[i+1,j-1] if s[i] == s[j]  since this is minimum insertion, so the equal, it must not need insert
 C[i,j] =  min{ C[i+1,j] + 1 ; C[i,j-1] + 1}  if s[i] != s[j], since at most need one insert for s[i] or s[j]
 
 */

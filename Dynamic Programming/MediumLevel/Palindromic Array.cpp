@@ -2,7 +2,8 @@
 Palindromic Array
 https://practice.geeksforgeeks.org/problems/palindromic-array/0
 
-You are given an array A of size N. Your task is to find the minimum number of operations needed to convert the given array to 'Palindromic Array'.
+You are given an array A of size N. Your task is to find the minimum number of operations needed 
+to convert the given array to 'Palindromic Array'.
 
 Palindromic Array:
 [23,15,23] is a ‘Palindromic Array’ but [2,0,1] is not.
