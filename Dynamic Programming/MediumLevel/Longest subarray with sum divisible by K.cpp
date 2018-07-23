@@ -1,10 +1,13 @@
 /*
 Longest subarray with sum divisible by K
 https://practice.geeksforgeeks.org/problems/longest-subarray-with-sum-divisible-by-k/0
-Given an array containing N integers and a positive integer K. The task is to find the length of the longest sub array with sum of the elements divisible by the given value K.
+Given an array containing N integers and a positive integer K. 
+The task is to find the length of the longest sub array with sum of the elements divisible by the given value K.
 
 Input:
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. Each test case consists of two lines. First line of each test case contains two Integers N and K and the second line contains N space separated elements.
+The first line of input contains an integer T denoting the number of test cases. 
+Then T test cases follow. Each test case consists of two lines. 
+First line of each test case contains two Integers N and K and the second line contains N space separated elements.
 
 Output:
 For each test case, print the required longest sub array length in new line.
@@ -35,3 +38,15 @@ which is divisible by 3.
 
 
 */
+
+int LSSDK()
+{
+    
+    return 0;
+}
+
+int main()
+{
+    
+    return 0;
+}

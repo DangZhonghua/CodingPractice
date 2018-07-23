@@ -1,10 +1,14 @@
 /*
 Nodes at given distance in binary tree 
 https://practice.geeksforgeeks.org/problems/nodes-at-given-distance-in-binary-tree/1
-Given a binary tree, a target node in the binary tree, and an integer value k, print all the nodes that are at distance k from the given target node. No parent pointers are available.
+Given a binary tree, a target node in the binary tree, and an integer value k, 
+print all the nodes that are at distance k from the given target node. No parent pointers are available.
 
 Input:
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. Each test case contains an integer n denoting the number of edges. Then the following line contains the edges as given in the example. The next line contains the target node. The last line of input contains the the value of distance k.
+The first line of input contains an integer T denoting the number of test cases. 
+Then T test cases follow. Each test case contains an integer n denoting the number of edges. T
+hen the following line contains the edges as given in the example. The next line contains the target node. 
+The last line of input contains the the value of distance k.
 
 Output:
 Print all the space separated nodes that are at distance k from the given target node.

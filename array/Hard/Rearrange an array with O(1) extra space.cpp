@@ -8,7 +8,8 @@ Rearrange the given array so that arr[i] becomes arr[arr[i]]. This should be don
 Input:
 
 First line contains an integer denoting the test cases 'T'. 
-Every test case contains an integer value depicting size of array 'N' and N integer elements are to be inserted in the next line with spaces between them.
+Every test case contains an integer value depicting size of array 'N' and N integer 
+elements are to be inserted in the next line with spaces between them.
 
 
 Output:
