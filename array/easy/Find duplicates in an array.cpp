@@ -95,73 +95,29 @@ using namespace std;
 
 // }
 
-
-
 void printDuplicates(int arr[], int n)
 {
 	//add code here.
-	bool bfind = false;
-	for (int i = 0; i<n; ++i)
+	bool ans = false;
+	for (int i = 0; i<n; i++)
 	{
-		int v = arr[i];
-		v &= 0X0000FFFF;
-		int index = v%n;
-
-		int hindex = arr[index];
-		hindex &= 0XFFFF0000;
-		if (0 == hindex)
+		int index = arr[i]%n;
+		if (arr[index] / n == 1)
 		{
-			hindex = i + 1;
-			hindex <<= 16;
+			ans = true;
+			cout << arr[i] % n << ' ';
 		}
-		v = arr[index];
-		v &= 0x0000FFFF;
-		v += n;
-		arr[index] = (v | hindex);
+		arr[index] += n;
 	}
-
-	
-
-	for (int i = 0; i<n; ++i)
-	{
-		int v = arr[i];
-		int index = (0XFFFF0000 & arr[i]);
-		index >>= 16;
-		v &= 0X0000FFFF;
-		v = (0X0000FFFF & arr[i]);
-		if (v / n>1)
-		{
-			arr[index - 1] = i;
-			bfind = true;
-		}
-		else
-		{
-			arr[index - 1] = n;
-		}
-	}
-
-	if (!bfind)
-	{
+	if (!ans)
 		cout << -1;
-	}
-	else
-	{
-		for (int i = 0; i<n; ++i)
-		{
-			if (arr[i] < n)
-			{
-				cout << arr[i] << " ";
-			}
-		}
-	}
-	//cout<<endl;
-
 }
 
 int main()
 {
 	//int a[] = { 0, 3, 1, 2 };
-	int a[] = { 2, 3, 1, 2, 3 };
+	//int a[] = { 2, 3, 1, 2, 3 };
+	int a[] = { 0, 3, 12, 27, 14, 6, 24, 8, 21, 34, 0, 33, 0, 33, 1, 20, 18, 14, 32, 2, 24, 33, 8, 8, 29, 16, 35, 19, 34, 32, 30, 0, 35, 36, 31, 2, 16 };
 	printDuplicates(a, _countof(a));
 	return 0;
 }
