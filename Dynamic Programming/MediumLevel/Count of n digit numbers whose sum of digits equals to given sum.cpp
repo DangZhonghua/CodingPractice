@@ -29,7 +29,6 @@ Explaination:
 
 */
 
-
 #include<iostream>
 #include<vector>
 using namespace std;
@@ -41,54 +40,54 @@ using namespace std;
 
 int CalcNoOfNDigitOfSum(int n, int sum)
 {
- unsigned long long M[maxsum][maxdigit];
+	unsigned long long M[maxsum][maxdigit];
 
-//Initialize the matrix to zero
-  for(int s = 0; s<=sum; ++s)
-  {
-    for(int d = 0; d<=n; ++d)
-    {
-      M[s][d] = 0;
-    }
-  }
-  for(int s = 1; s<10; ++s)
-  {
-    M[s][1] = 1;
-  }
+	//Initialize the matrix to zero
+	for (int s = 0; s <= sum; ++s)
+	{
+		for (int d = 0; d <= n; ++d)
+		{
+			M[s][d] = 0;
+		}
+	}
+	for (int s = 1; s<10; ++s)
+	{
+		M[s][1] = 1;
+	}
 
- for(int d = 2; d<=n;++d) //Digital num
- {
-   for(int s = 1;s<=sum; ++s)
-   {
-     int v = 0;
-     if(d == n)
-     {
-       v = 1;
-     }
-     for(v; v<10; ++v)
-     {
-        if(s>v)
-       {
-          M[s][d] += ((M[s-v][d-1])%num_mode);
-       }
-       if(s == v)
-       {
-           M[s][d] +=1;
-       }
-     }
-     M[s][d] %=num_mode;
-   }
- }
-if(M[sum][n])
-{
-   cout<<M[sum][n]<<endl; 
-}
-else
-{
-    cout<<-1<<endl;
-}
+	for (int d = 2; d <= n; ++d) //Digital num
+	{
+		for (int s = 1; s <= sum; ++s)
+		{
+			int v = 0;
+			if (d == n)
+			{
+				v = 1;
+			}
+			for (v; v<10; ++v)
+			{
+				if (s>v)
+				{
+					M[s][d] += ((M[s - v][d - 1]) % num_mode);
+				}
+				if (s == v)
+				{
+					M[s][d] += 1;
+				}
+			}
+			M[s][d] %= num_mode;
+		}
+	}
+	if (M[sum][n])
+	{
+		cout << M[sum][n] << endl;
+	}
+	else
+	{
+		cout << -1 << endl;
+	}
 
-  return 0;
+	return 0;
 }
 
 /*
@@ -99,51 +98,56 @@ ND[s][d+1] += ND[s+x][d]
 
 int CalcNoOfNDigitOfSumV2(int n, int sum)
 {
-  vector< vector<unsigned long long> > ND(sum+1, vector<unsigned long long>(n+1, 0));
+	unsigned long long ND[maxsum][maxdigit];
 
-  for(int i = 1; i<10; ++i)
-  {
-      ND[i][1] = 1;   //ND[1][1] = 1 ND[2][1] = 1 
-  }
-  
-  for(int i = 1; i<n; ++i)
-  {
-      for(int s = 1; s<=i*9; ++i)
-      {
-          for(int d = 0; d<10; ++d)
-          {
-              ND[s+d][i+1] += ND[s][i];
-              ND[s+d][i+1] %= num_mode;
-          }
-      } 
-  }
-  if(ND[sum][n])
-  {
-      cout<<ND[sum][n]<<endl;
-  }
-  else
-  {
-      cout<<-1<<endl;
-  }
+	memset(ND, 0, sizeof(ND));
+	for (int i = 1; i<10; ++i)
+	{
+		ND[i][1] = 1;   //ND[1][1] = 1 ND[2][1] = 1 
+	}
+	
 
-    return 0;
+	for (int i = 1; i<n; ++i)
+	{
+		for (int s = 1; s <= i * 9; ++s)
+		{
+			for (int d = 0; d<10; ++d)
+			{
+				if (s + d <= sum)
+				{
+					ND[s + d][i + 1] += ND[s][i];
+					ND[s + d][i + 1] %= num_mode;
+				}
+			}
+		}
+	}
+	if (ND[sum][n])
+	{
+		cout << ND[sum][n] << endl;
+	}
+	else
+	{
+		cout << -1 << endl;
+	}
+
+	return 0;
 }
 
 
 int main()
 {
-  int t = 0;
-  int sum = 0;
-  int n = 0;
- 
+	int t = 0;
+	int sum = 0;
+	int n = 0;
 
-  cin>>t;
 
-  while(t--)
-  {
-    cin>>n>>sum;
-    //CalcNoOfNDigitOfSum(n,sum);
-    CalcNoOfNDigitOfSumV2(n,sum);
-  }
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> n >> sum;
+		//CalcNoOfNDigitOfSum(n,sum);
+		CalcNoOfNDigitOfSumV2(n, sum); //This method is more clear.
+	}
 
 }
