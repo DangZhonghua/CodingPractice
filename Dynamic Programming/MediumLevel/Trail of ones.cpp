@@ -46,9 +46,13 @@ Time: O(N)
 
 /*
 
-To[N][1]    = TO[N-1][0]                        //end with only one 1
-TO[N][0]    = TO[N-1][1]+TO[N-1][0]+TO[N-1][2]  //end with 0
-TO[N][2]    = TO[N-1][2]+TO[N-1][1]            //end with at least two 1s
+We first calculate the non-consecutive 1's, suppose it is NC.
+the the consecutive 1's is: 2^n - NC.
+
+NC[N][0] = NC[N-1][1] + NC[N-1][0] // append 0
+NC[N][1] = NC[N-1][0]
+
+total =  NC[N][0] + NC[N][1]
 
 For Input:
 2
@@ -66,19 +70,21 @@ using namespace std;
 
 int TrailOnes(int N)
 {
-    vector<vector<long long> > TO(N+1,vector<long long>(3,0));
-    TO[1][0] = 1;
-    TO[1][1] = 1;
-    TO[1][2] = 0;
+    vector<vector<long long> > NC(N+1,vector<long long>(2,0));
     long long count = 0;
 
-    for(int i = 2; i<=N; ++i)
+    NC[1][0] = 1;  // only one  '0'
+    NC[1][1] = 1;  //only one '1'
+    
+    for(int i =  2; i<=N; ++i)
     {
-        TO[i][0] = TO[i-1][0] + TO[i-1][1] + TO[i-1][2];
-        TO[i][1] = TO[i-1][0];
-        TO[i][2] = TO[i-1][1] + TO[i-1][2];
-        count += TO[i][2];
+        NC[i][0] = NC[i-1][0] + NC[i-1][1];
+        NC[i][1] = NC[i-1][0];
     }
+    count = ( (1<<N) - (NC[N][0]+NC[N][1]) );
+    
+    cout<< count<<endl;
+    
     
     cout<<count<<endl;
 
