@@ -1,6 +1,7 @@
 /*
 Palindromic Array
 https://practice.geeksforgeeks.org/problems/palindromic-array/0
+https://www.geeksforgeeks.org/find-minimum-number-of-merge-operations-to-make-an-array-palindrome/
 
 You are given an array A of size N. Your task is to find the minimum number of operations needed 
 to convert the given array to 'Palindromic Array'.
@@ -40,5 +41,65 @@ we get the array as [5 3 3 5] which is a palindrome, hence only 1 operation is n
 
 */
 
+/*
 
+OP[i][j] = min{ OP[i+1][j]+1, OP[i][j-1] + 1 }
 
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int minimumOpPalindrom(int *a, int N)
+{
+    int nop = 0;
+    int i = 0;
+    int j = N-1;
+    
+    while(i<j)
+    {
+        if(a[i] == a[j])
+        {
+            ++i;
+            --j;
+        }
+       else if(a[i]>a[j])
+        {
+            a[j-1] = a[j-1] + a[j];
+            --j;
+            ++nop;
+        }
+        else
+        {
+            a[i+1] = a[i+1]+a[i];
+            ++i;
+            ++nop;
+        }
+    }
+
+    cout<<nop<<endl;
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    int N = 0;
+    int a[200];
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        minimumOpPalindrom(a,N);
+    }
+    return 0;
+}
