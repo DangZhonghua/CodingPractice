@@ -29,10 +29,84 @@ Output:
 Explaination :
 
 Input: arr1[] = {0, 1, 0, 0, 0, 0};
-       arr2[] = {1, 0, 1, 0, 0, 1};
+arr2[] = {1, 0, 1, 0, 0, 1};
 Output: 4
 The longest span with same sum is from index 1 to 4  (Zero indexing).
 
 
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int longestSpan(int*a, int* b, int N)
+{
+	vector<int> av(N + 1, 0);
+	vector<int> bv(N + 1, 0);
+	av[1] = a[0] ? 1 : 0;
+	bv[1] = b[0] ? 1 : 0;
+	for (int i = 2; i <= N; ++i)
+	{
+		av[i] = av[i - 1];
+		if (a[i - 1])
+		{
+			av[i] += 1;
+		}
+		bv[i] = bv[i - 1];
+		if (b[i - 1])
+		{
+			bv[i] += 1;
+		}
+	}
+	int max = 0;
+	for (int i = 1; i <= N; ++i)
+	{
+		for (int j = i; j <= N; ++j)
+		{
+			if (av[j] - av[i - 1] == bv[j] - bv[i - 1])
+			{
+				if (max<(j - i + 1))
+				{
+					max = (j - i + 1);
+				}
+			}
+		}
+	}
+
+	cout << max << endl;
+
+	return 0;
+}
+
+
+int main()
+{
+	int t = 0;
+	int N = 0;
+	int a[200];
+	int b[200];
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> N;
+		int i = 0;
+
+		while (i<N)
+		{
+			cin >> a[i++];
+		}
+		i = 0;
+		while (i < N)
+		{
+			cin >> b[i++];
+		}
+		longestSpan(a, b, N);
+	}
+
+	return 0;
+}
+
