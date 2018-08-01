@@ -35,3 +35,21 @@ So, only 2 (8, 7) element is left which are not part of either of the subsequenc
 
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int MinimumNumberOfElements(int*a, int N)
+{
+
+}
+
+int main()
+{
+    
+
+
+    return 0;
+}
+
