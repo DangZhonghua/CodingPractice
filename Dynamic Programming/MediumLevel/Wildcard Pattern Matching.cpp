@@ -50,6 +50,10 @@ Output
 0
 */
 
+              x[i] == p[j]
+
+wp[i][j] = 
+
 int main()
 {
 
