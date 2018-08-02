@@ -1,7 +1,8 @@
 /*
 https://practice.geeksforgeeks.org/problems/union-of-two-arrays/0/?ref=self
 Union of two arrays
-Given two arrays A and B, find union between these two array.  If there are repetitions, then only one occurrence of element should be printed in union.
+Given two arrays A and B, find union between these two array.  
+If there are repetitions, then only one occurrence of element should be printed in union.
 
 Input:
 
