@@ -59,9 +59,47 @@ int maxLen(int a[], int n)
     return max;
 }
 
-int Largestsubarray(int*a, int N)
+#include<unordered_map>
+using namespace std;
+
+int maxLen(int arr[], int n)
 {
-
-
-    return 0;
+//Your code here
+unordered_map<int, int> smap;
+  int sum       = 0;
+  int maxlen    = 0;
+  for(int i = 0; i<n; ++i)
+  {
+      if(0 == arr[i])
+      {
+          sum -= 1;
+      }
+      else
+      {
+          sum +=1;
+      }
+     
+     if(0 == sum && maxlen< (i+1) )
+     {
+         maxlen = i+1;
+     }
+     
+     unordered_map<int, int>::iterator it = smap.end();
+    
+     it = smap.find(sum);
+     if(it !=  smap.end() )
+     {
+         if(maxlen< (i-it->second) )
+         {
+             maxlen = i- it->second;
+         }
+     }
+     else
+     {
+         smap[sum] = i;
+     }
+  }
+  
+ 
+ return maxlen;
 }

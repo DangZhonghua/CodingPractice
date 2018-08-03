@@ -37,7 +37,81 @@ Output:
 
 /*
 
-
-
+Slide window counting: the enter number and leave number are counting 
 
 */
+
+
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+int maximumOverlap(int*in,int*out, int N)
+{
+    int max = INT_MIN;
+    
+    for(int i = 0; i<N; ++i)
+    {
+        if(max<in[i])
+        {
+            max = in[i];
+        }
+        if(max<out[i])
+        {
+            max  = out[i];
+        }
+    }
+    vector<int> wc(max + 2, 0);
+    
+    for(int i = 0; i< N; ++i)
+    {
+        wc[in[i]] +=1; // enter party
+        wc[out[i] +1 ] -=1; // leave the party
+    }
+    
+    int maxc = INT_MIN;
+    int t = 0;
+    int time = 0;
+    for(int i = 0; i<= max+1; ++i)
+    {
+        t += wc[i];
+        if(t>maxc)
+        {
+            maxc = t;
+            time = i;
+        }
+    }
+    
+    cout<<maxc<<" "<<time<<endl;
+
+    return 0;
+}
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+    int a[100000];
+    int b[100000];
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i++];
+        }
+        i = 0;
+        while(i<N)
+        {
+            cin>>b[i++];
+        }
+        maximumOverlap(a,b,N);
+    }
+
+    return 0;
+}
