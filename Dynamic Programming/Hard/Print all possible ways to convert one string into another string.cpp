@@ -42,3 +42,45 @@ Examples:
 
 
 */
+
+/*
+
+            ed[i-1][j-1]  if x[i] == y[j]
+
+ed[i][j] =  min     if x[i] != y[j]
+                {
+                    ed[i-1][j-1] + 1 //replace
+                    ed[i-1][j] + 1 // remove
+                    ed[i][j-1] + 1 // for insert
+                }
+
+*/
+
+/*
+
+after computing the minicost of transforming. We store the parent pointer to
+figure out the possible way.
+
+*/
+
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+
+
+int main()
+{
+    int t = 0;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        string x,y;
+        cin>>x>>y;
+    }
+    
+    return 0;
+}
