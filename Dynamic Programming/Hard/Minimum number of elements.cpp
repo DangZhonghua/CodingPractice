@@ -38,11 +38,31 @@ So, only 2 (8, 7) element is left which are not part of either of the subsequenc
 
 #include<iostream>
 #include<vector>
+#include<climits>
 using namespace std;
 
 int MinimumNumberOfElements(int*a, int N)
 {
-    for(int )
+    vector<int> va(N+2, 0);
+    vector< vector< vector<int > > > mne(N+2, vector< vector<int> >(N+2, vector<int>(N+2,0)));
+
+    for(int i = 0; i<N; ++i)
+    {
+        va[i+1] = a[i];
+    }
+    va[0] = INT_MAX;
+    va[1] = INT_MIN;
+
+    for(int i = 0; i<N; ++i)
+    {
+        for(int j = 0; j<N; ++j)
+        {
+            for(int k = 0; k<N; ++k)
+            {
+                
+            }
+        }
+    }
 
 }
 

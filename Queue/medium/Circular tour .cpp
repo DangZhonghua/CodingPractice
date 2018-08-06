@@ -71,7 +71,7 @@ int tour(petrolPump p[],int n)
 
    for(int i = 0; i<n; ++i )
    {
-       if(a)
+       
    }
 
 

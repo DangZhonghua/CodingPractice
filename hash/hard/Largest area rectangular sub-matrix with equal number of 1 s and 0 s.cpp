@@ -2,7 +2,8 @@
 https://www.geeksforgeeks.org/largest-area-rectangular-sub-matrix-equal-number-1s-0s/
 Largest area rectangular sub-matrix with equal number of 1’s and 0’s
 
-Given a binary matrix. The problem is to find the largest area rectangular sub-matrix with equal number of 1’s and 0’s.
+Given a binary matrix. The problem is to find the largest area 
+rectangular sub-matrix with equal number of 1’s and 0’s.
 
 Examples:
 
