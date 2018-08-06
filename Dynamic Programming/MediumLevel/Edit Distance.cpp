@@ -1,7 +1,8 @@
 /*
 Edit Distance
 https://practice.geeksforgeeks.org/problems/edit-distance/0/?ref=self
-Given two strings str1 and str2 and below operations that can performed on str1. Find minimum number of edits (operations) required to convert ‘str1′ into ‘str2′.
+Given two strings str1 and str2 and below operations that can performed on str1. 
+Find minimum number of edits (operations) required to convert ‘str1′ into ‘str2′.
 
     Insert
     Remove
@@ -11,7 +12,11 @@ All of the above operations are of cost=1.
 Both the strings are of lowercase.
 
 Input:
-The First line of the input contains an integer T denoting the number of test cases. Then T test cases follow. Each tese case consists of two lines. The first line of each test case consists of two space separated integers P and Q denoting the length of the strings str1 and str2 respectively. The second line of each test case coantains two space separated strings str1 and str2 in order.
+The First line of the input contains an integer T denoting the number of test cases. 
+Then T test cases follow. Each tese case consists of two lines. 
+The first line of each test case consists of two space separated integers P and Q denoting 
+the length of the strings str1 and str2 respectively. 
+The second line of each test case coantains two space separated strings str1 and str2 in order.
 
 
 Output:
@@ -34,3 +39,34 @@ Output:
 
 
 */
+
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+
+int editDistance(const string& x, const string& y)
+{
+
+
+ return 0;
+}
+
+
+int main()
+{
+    int t;
+    string x,y;
+
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>x>>y;
+        editDistance(x,y);
+    }
+    
+    return 0;
+}

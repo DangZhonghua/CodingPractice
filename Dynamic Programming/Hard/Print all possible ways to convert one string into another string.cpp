@@ -13,7 +13,10 @@ Below are the operations that can be performed on “str1”:
     Remove
     Replace
 
-All of the above operations are of equal cost. The task is to print all the various ways to convert ‘str1’ into ‘str2’ using the minimum number of edits (operations) required, where a “way” comprises of the series of all such operations required.
+All of the above operations are of equal cost. 
+The task is to print all the various ways to convert ‘str1’ into ‘str2’ 
+using the minimum number of edits (operations) required, where a “way” 
+comprises of the series of all such operations required.
 
 Examples:
 

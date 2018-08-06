@@ -64,6 +64,7 @@ int MinimumNumberOfElements(int*a, int N)
         }
     }
 
+    return 0;
 }
 
 int main()
