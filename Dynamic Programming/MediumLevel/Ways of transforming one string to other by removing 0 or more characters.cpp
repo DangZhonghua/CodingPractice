@@ -27,20 +27,29 @@ Asked in : Google
 /*
 
 
-he idea to solve this problem is using Dynamic Programming. Construct a 2D DP matrix of m*n size, 
+The idea to solve this problem is using Dynamic Programming. Construct a 2D DP matrix of m*n size, 
 where m is size of string B and n is size of string A.
 dp[i][j] gives the number of ways of transforming string A[0…j] to B[0…i].
 
-    Case 1 : dp[0][j] = 1, since placing B = “” with any substring of A would have only 1 solution which is to delete all characters in A.
+    Case 1 : dp[0][j] = 1, since placing B = “” with any substring of A would have 
+                            only 1 solution which is to delete all characters in A.
+
     Case 2 : when i > 0, dp[i][j] can be derived by two cases:
-        Case 2.a : if B[i] != A[j], then the solution would be to ignore the character A[j] and align substring B[0..i] 
-        with A[0..(j-1)]. Therefore, dp[i][j] = dp[i][j-1].
-        Case 2.b : if B[i] == A[j], then first we could have the solution in case a), 
+        Case 2.a : if B[i] != A[j], //SINCE 
+            then the solution would be to ignore the character A[j] and align substring B[0..i] 
+            with A[0..(j-1)]. Therefore, dp[i][j] = dp[i][j-1].
+            //the A[j] can be removed in batch with previous.
+        Case 2.b : if B[i] == A[j], 
+            then first we could have the solution in case a), 
             but also we could match the characters B[i] and A[j] and 
             place the rest of them (i.e. B[0..(i-1)] and A[0..(j-1)]. 
             As a result, dp[i][j] = dp[i][j-1] + dp[i-1][j-1].
 
+            //Actually, it should not be same as case 2a, the real meaning is: the A[j] has two 
+            choice: it can be remove it or not remove.
+
 */
+
 
 /*
 

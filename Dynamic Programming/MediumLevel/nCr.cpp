@@ -9,7 +9,7 @@ First line contains no of test cases T, for every test case 2 integers as inputs
 
 
 Output:
-Compute and print the value in seperate line. Modulus your output to 109+7. If n
+Compute and print the value in seperate line. Modulus your output to 10^9+7. If n
 
 
 Constraints:
