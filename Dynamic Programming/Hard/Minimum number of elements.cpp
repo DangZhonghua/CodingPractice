@@ -42,8 +42,10 @@ using namespace std;
 
 int MinimumNumberOfElements(int*a, int N)
 {
-    for(int )
+    
 
+
+    return 0;
 }
 
 int main()
