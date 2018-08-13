@@ -21,3 +21,18 @@ Output : 6 sq. units
 
 
 */
+
+#include<iostream>
+#include<unordered_map>
+#include<vector>
+using namespace std;
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+    /* code */
+    return 0;
+}
