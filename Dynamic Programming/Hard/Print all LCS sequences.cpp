@@ -49,6 +49,12 @@ enum en_td
     UPPER
 };
 
+struct CS
+{
+    int i = 0;
+    int j = 0;
+    bool bd[]{false};
+};
 
 
 int LCS(char* szx, char* szy,vector< vector<int> >& lcs,vector< vector<int> >& lds)

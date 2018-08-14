@@ -111,7 +111,7 @@ int LargestSubMatrixSumDivisbleByK( vector< vector<int> >& mat,int K)
   for(int leftc = 0; leftc<C; ++leftc)
   {
         vector<int> rowsum(R,0);
-        for(int rightc = 0; rightc<C; ++rightc) // the first two for loop used to form the start/end column
+        for(int rightc = leftc; rightc<C; ++rightc) // the first two for loop used to form the start/end column
         {
            //Noe let's build row sum.
            for(int i = 0; i<R; ++i)
