@@ -47,3 +47,34 @@ Examples:
 
 
 */
+
+/*
+        
+p[i] = min{p[i-1]+a[i]-b[i],C}
+if( p[i] >=0 ) can go ahead.
+
+          
+m[i][p] = true if p+a[i]-b[i]>=0
+
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int numberofCircularTours(int*a, int*b, int N,int C)
+{
+    vector< vector<bool> > ct(N,vector<bool>(C+1,false));
+
+    return 0;
+}
+
+
+int main()
+{
+    int a[] = { 3, 1, 2 };
+    int b[] = {2, 2, 1 };
+    int c = 3;
+
+    return 0;
+}
