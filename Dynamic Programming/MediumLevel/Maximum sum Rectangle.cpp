@@ -24,5 +24,33 @@ Input:
 Ouptut:
 29
 
+*/
+
+/*
+
+Compress the 2D into 1D problem. Use the 1D algorithm to handle this.
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int CalcMaximumSubarray(vector<int>& a, int& maxsum, int& start, int& end)
+{
+    
+    return 0;
+}
+
+int CalcMaximumRectangle(vector< vector<int> >&m, int R, int C)
+{
+
+    return 0;
+}
+
+int main()
+{
+
+
+    return 0;
+}
