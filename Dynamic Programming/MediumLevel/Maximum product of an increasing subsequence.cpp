@@ -21,3 +21,11 @@ increasing subsequence 10, 22, 33, 50, 60.
           
 
 */
+
+/*
+
+Just like LIS
+
+
+
+*/
