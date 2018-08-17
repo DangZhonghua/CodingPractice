@@ -52,14 +52,138 @@ Output
 2
 */
 
+/*
+
+if(a[i]>0) then
+    case 1:  sum < 0  sum=a[i]
+    case 2:  sum>=0   sum += a[i];
+else
+ sum = a[i];
+
+*/
+
+
 #include<iostream>
 #include<vector>
+#include<climits>
 using namespace std;
+
+int maximumSubArray(vector<int>&a)
+{
+	int max   = a[0];
+	int start = a.size();
+	int end   = a.size();
+
+
+	int sum = 0;
+	int s   = 0;
+	int e   = 0;
+	sum = a[0];
+
+	for (int i = 1; i<a.size(); ++i)
+	{
+		if (a[i] >= 0)
+		{
+			if (sum < 0)
+			{
+				sum = a[i];
+				s = i;
+			}
+			else
+			{
+				sum += a[i];
+			}
+			
+			e = i;
+		}
+		else
+		{
+			if (sum > max)
+			{
+				max = sum;
+				start = s;
+				end = e;
+			}
+			else if (sum == max)
+			{
+				if (end - start == e - s)
+				{
+					if (s<start)
+					{
+						start = s;
+						end = e;
+					}
+				}
+				else if (end - start < e - s)
+				{
+					start = s;
+					end = e;
+				}
+			}
+			sum = a[i];
+			s = i; //from next element
+			e = s;
+		}
+	}
+
+	if (sum > max)
+	{
+		max = sum;
+		start = s;
+		end = e;
+	}
+	else if (sum == max)
+	{
+		if (end - start == e - s)
+		{
+			if (s<start)
+			{
+				start = s;
+				end = e;
+			}
+		}
+		else if (end - start < e - s)
+		{
+			start = s;
+			end = e;
+		}
+	}
+
+	for (int i = start; i <= end; ++i)
+	{
+		cout << a[i] << " ";
+	}
+	cout << endl;
+
+
+
+
+	return 0;
+}
 
 
 
 int main(int argc, char const *argv[])
 {
-    
-    return 0;
+	int  t = 0;
+	int N = 0;
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> N;
+		vector<int> a(N, 0);
+
+		int i = 0;
+		while (i<N)
+		{
+			int d = 0;
+			cin >> d;
+			a[i++] = d;
+		}
+		maximumSubArray(a);
+	}
+
+	return 0;
 }
