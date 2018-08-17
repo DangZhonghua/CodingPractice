@@ -95,12 +95,38 @@ int CalcMaximumRectangle(vector< vector<int> >&m, int R, int C)
         }
     }
 
+    cout<<max<<endl;
 
     return 0;
 }
 
 int main()
 {
+    int t = 0;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        int R,C;
+        cin>>R>>C;
+        vector< vector<int> > m(R, vector<int>(C,0));
+        int i = 0;
+        int j = 0;
+        
+        while(i<R)
+        {
+            j = 0;
+            while(j<C)
+            {
+                int a = 0;
+                cin>>a;
+                m[i][j++] = a;
+            }
+            ++i;
+        }
+        CalcMaximumRectangle(m,R,C);
+    }
 
 
     return 0;
