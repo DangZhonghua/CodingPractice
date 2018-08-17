@@ -56,5 +56,92 @@ Output:
 ! # $ % & * @ ^ ~
 ​! # $ % & * @ ^ ~
 
-
 */
+
+#include<iostream>
+#include<unordered_map>
+#include<vector>
+using namespace std;
+
+
+int SortNutsBolts(const vector<char>& vn, const vector<char>& vb)
+{
+   // unordered_map<char,int> mdict{{'!',0}, {'#',1}, {'$',2}, {'%',3}, {'&',4}, {'*',5},{'@',6}, {'^',7}, {'~',8} };
+    vector<char> vdict{'!','#','$', '%','&','*','@','^', '~'};
+    unordered_map<char, int > chmapCount;
+    vector<char> vo;
+
+    for(auto c:vn)
+    {
+        if(chmapCount.find(c) == chmapCount.end())
+        {
+            chmapCount[c] = 1;
+        }
+    }
+    for(auto c:vb)
+    {
+        auto it = chmapCount.find(c);
+        if(it != chmapCount.end())
+        {
+            it->second += 1;
+        }
+    }
+    for(auto c:vdict)
+    {
+        auto it = chmapCount.find(c);
+        if(chmapCount.end() != it && it->second>=2)
+        {
+            vo.push_back(c);
+        }
+    }
+
+    //output
+    for(auto c:vo)
+    {
+        cout<<c<<" ";
+    }
+    cout<<endl;
+    for(auto c:vo)
+    {
+        cout<<c<<" ";
+    }
+    cout<<endl;
+    
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t= 0;
+    int N = 0;
+
+    cin>>t;
+    
+    while(t--)
+    {
+        cin>>N;
+        int i = 0;
+        vector<char> vn(N,0);
+        vector<char> vb(N,0);
+        
+        while(i<N)
+        {
+            char c;
+            cin>>c;
+            vn[i++] = c;
+        }
+        i = 0;
+        while(i<N)
+        {
+            char c;
+            cin>>c;
+            vb[i++] = c;
+        }
+        
+        SortNutsBolts(vn,vb);
+    }
+    
+    return 0;
+}
+
+
