@@ -41,5 +41,97 @@ Output:
 
 Explanation: In the sample test case, the path leading to maximum possible sum is 391->618.  (391 + 618 = 1009)
 
+*/
+
+/*
+
+sum[r][i] = max{sum[r-1][i]+m[r][i], sum[r-1][i-1]+m[r][i], sum[r-1][i-1]} for i in one column
+max  = max{sum[r][i]}
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+int maximumSumPath(vector< vector<int> >& m)
+{
+    vector< vector<int> > sm(m.size(),vector<int>(m[0].size(),0));
+    int max = 0;
+
+
+    for(int i = 0; i<m[0].size(); ++i)
+    {
+        sm[0][i] = m[0][i];
+        if(sm[0][i]>max)
+        {
+            max = sm[0][i];
+        }
+    }
+    
+    for(int i = 1; i<m.size(); ++i)
+    {
+        for(int j = 0; j<m[0].size(); ++j)
+        {
+            if(j-1>=0)
+            {
+                if( sm[i][j] < sm[i-1][j-1] + m[i][j] )
+                {
+                    sm[i][j] = sm[i-1][j-1] + m[i][j];
+                }
+            }
+
+            if( sm[i][j] < sm[i-1][j] + m[i][j] )
+            {
+                sm[i][j] = sm[i-1][j] + m[i][j];
+            }
+            if(j+1<m[0].size() && sm[i][j]<sm[i-1][j+1] + m[i][j])
+            {
+                sm[i][j] = sm[i-1][j+1] + m[i][j];
+            }  
+            if(max<sm[i][j])
+            {
+                max = sm[i][j];
+            } 
+        }
+    }
+    
+    cout<<max<<endl;
+
+    return 0;
+}
+
+
+int main()
+{
+    int t = 0;
+    int N = 0;
+
+    cin>>t;
+
+    while(t--)
+    {
+        cin>>N;
+        
+        vector<vector<int> > m(N,vector<int>(N,0));
+        int i = 0;
+        int j = 0;
+        while(i<N)
+        {
+            j = 0;
+            while(j<N)
+            {
+                int d = 0;
+                cin>>d;
+                m[i][j++] = d;
+            }
+            ++i;
+        }
+        maximumSumPath(m);
+    }
+
+    return 0;
+}
+
+
