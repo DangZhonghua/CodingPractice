@@ -26,6 +26,50 @@ increasing subsequence 10, 22, 33, 50, 60.
 
 Just like LIS
 
-
-
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+int maximumProductOfLIS(vector<int>& a)
+{
+    long long maxp = 0;
+    vector<long long> p(a.size(),0);
+    
+    for(int i = 0; i<a.size(); ++i)
+    {
+        p[i] = a[i];
+    }
+    
+    for(int i = 1; i<a.size(); ++i)
+    {
+        for(int j = 0; j<i; ++j)
+        {
+            if(a[i]>a[j])
+            {
+                if(p[i]<p[j]*a[i])
+                {
+                    p[i] = p[j]*a[i];
+                }
+            }
+        }
+        if(maxp<p[i])
+        {
+            maxp = p[i];
+        }
+    }
+
+    cout<<maxp<<endl;
+    return 0;
+}
+
+
+int main()
+{
+    vector<int> m{ 10, 22, 9, 33, 21, 50, 41, 60 };
+    maximumProductOfLIS(m);
+
+    return 0;
+}
