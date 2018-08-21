@@ -20,7 +20,7 @@ Output: 9
 
 /*
 
-cost[i] = min{ cost[i-2] + a[i-2, cost[i-1] + a[i-1] }
+cost[i] = min{ cost[i-2] + a[i-2], cost[i-1] + a[i-1] }
 
 */
 
