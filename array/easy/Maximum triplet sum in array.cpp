@@ -1,5 +1,6 @@
 /*
 https://www.geeksforgeeks.org/maximum-triplet-sum-array/
+https://practice.geeksforgeeks.org/problems/maximum-triplet-sum-in-array/0
 Maximum triplet sum in array
 
 iven an array, the task is to find maximum triplet sum in the array.
