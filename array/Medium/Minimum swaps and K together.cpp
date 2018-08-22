@@ -36,3 +36,13 @@ Explanation:
 2. To bring elements 2, 5, 4 together, swap element 7 with 5 & 9 with 4 such that the final array will be {2,5,4,7,8,7,9} 
 
 */
+
+/*
+find maximum length of consecutive element which less the K; suppose the length is L;
+total number which less than K is T
+
+the number will be
+
+
+
+*/
