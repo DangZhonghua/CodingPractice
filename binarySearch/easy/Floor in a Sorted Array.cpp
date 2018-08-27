@@ -54,3 +54,76 @@ Output:
 3
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int floorFind(vector<int>& a, int t)
+{
+    int s = 0;
+    int e = a.size()-1;
+    int m = 0;
+    int index = -1;
+    
+    while(s<=e)
+    {
+        m = (s+e)/2;
+        if(a[m] == t)
+        {
+            index = m;
+            break;
+        }
+        else if(a[m]>t)
+        {
+            e = m-1;
+        }
+        else
+        {
+            s = m+1;
+        }
+    }
+
+    if(-1 == index)
+    {
+        if(s == a.size())
+        {
+            index = a.size()-1;
+        }
+        else if(e == -1)
+        {
+            index = -1;
+        }
+        else
+        {
+            index = e;
+        }
+    }
+
+    cout<<index<<endl;
+
+    return 0;
+}
+
+int main()
+{
+    int t = 0;
+    int x = 0;
+    int N = 0;
+    cin>>t;
+
+    while(t--)
+    {
+        cin>>N>>x;
+        vector<int> a(N,0);
+        int i = 0;
+        while(i<N)
+        {
+            int d;
+            cin>>d;
+            a[i++] = d;
+        }
+        floorFind(a,x);
+    }
+    return 0;
+}
