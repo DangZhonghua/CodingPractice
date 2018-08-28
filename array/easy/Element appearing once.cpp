@@ -41,3 +41,50 @@ Time : O(N)
 
 
 */
+
+/*
+
+use xor method
+
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int appearOnceElement(vector<int>& a)
+{
+    int nxor = 0;
+
+    for(int i:a)
+    {
+        nxor ^= i;
+    }
+    cout<<nxor<<endl;
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    int N = 0;
+
+    cin>>t;
+
+    while(t--)
+    {
+        cin>>N;
+        vector<int> a(N,0);
+        int i = 0;
+        while(i<N)
+        {
+            int d = 0;
+            cin>>d;
+            a[i++] = d;
+        }
+        appearOnceElement(a);
+    }
+
+    return 0;
+}
