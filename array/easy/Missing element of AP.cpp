@@ -41,3 +41,93 @@ Output :
 -14
 18
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int findMissing(vector<int>&a)
+{
+	int bd = 0;
+	int sd = 0;
+	int firstindex = 0;
+	int secondindex = 0;
+	int t = 0;
+
+	for (int i = 1; i<a.size(); ++i)
+	{
+		if (0 == bd)
+		{
+			bd = a[i] - a[i - 1];
+			firstindex = i - 1;
+		}
+		else if (0 == sd)
+		{
+
+			sd = a[i] - a[i - 1];
+			if (sd != bd) // look for different diff.
+			{
+				secondindex = i - 1;
+			}
+			else
+			{
+				sd = 0;
+			}
+			
+		}
+		else
+		{
+			break;
+		}
+	}
+
+///////////////////////////////// dealing with array size == 2 case
+	if (sd == 0)
+	{
+		sd = bd/2;
+	}
+	else if (bd == 0)
+	{
+		bd = sd/2;
+	}
+////////////////////////////
+	int  d = bd>sd ? (bd - sd) : (sd - bd);
+
+	if (bd > sd)
+	{
+		t = a[firstindex] + d;
+	}
+	else
+	{
+		t = a[secondindex] + d;
+	}
+
+	cout << t << endl;
+
+	return 0;
+}
+
+
+int main(int argc, char const *argv[])
+{
+	int t = 0;
+	int N = 0;
+
+	cin >> t;
+
+	while (t--)
+	{
+		cin >> N;
+		vector<int> a(N, 0);
+		int i = 0;
+		while (i<N)
+		{
+			int d;
+			cin >> d;
+			a[i++] = d;
+		}
+		findMissing(a);
+	}
+
+	return 0;
+}
