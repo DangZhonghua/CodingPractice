@@ -17,6 +17,4 @@ of length 4.
 Input : s = "()(((((()"
 Output : 4
 
-
-
 */

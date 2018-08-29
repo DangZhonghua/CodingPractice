@@ -1,10 +1,21 @@
 /*
 Joey doesn't share food 
 https://practice.geeksforgeeks.org/problems/joey-doesnt-share-food/0
-Every friends fan know that joey loves food and monica loves to cook. So, on a occassion of thanksgiving monica made N types of food containing exactly 6 ingredients each. Monica is an excellent cook so she can cook food by adding any ingredient at any order. All ingredients contains protein on the scale of 1 to 10^6. Now, Chandler invented the fun game where everyone needs to find the successive protein rate in all N food of the ingredient on the top(6th ingredient is on top). Ross being the most curious wants to finish this game before dinner, so he wants your help to complete the task.
+Every friends fan know that joey loves food and monica loves to cook. 
+So, on a occassion of thanksgiving monica made N types of food 
+containing exactly 6 ingredients each. 
+Monica is an excellent cook so she can cook food by adding any 
+ingredient at any order. 
+All ingredients contains protein on the scale of 1 to 10^6. 
+Now, Chandler invented the fun game where everyone needs to 
+find the successive protein rate in all N food of the ingredient 
+on the top(6th ingredient is on top). 
+Ross being the most curious wants to finish this game before dinner, 
+so he wants your help to complete the task.
 
 Input:
-First line consists of T test cases. First line of every test case consists of N. Next N lines contains the 6 integers each.
+First line consists of T test cases. First line of every test case consists of N. 
+Next N lines contains the 6 integers each.
 
 Output:
 Single line output, print the longest chain formed.
