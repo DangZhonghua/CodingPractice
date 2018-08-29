@@ -1,5 +1,7 @@
 /*
 https://practice.geeksforgeeks.org/problems/next-larger-element/0/?ref=self
+https://www.geeksforgeeks.org/next-greater-element/
+
 Next larger element 
 
 Given an array A [ ] having distinct elements, the task is to find the next greater element for each element of the array in order of their appearance in the array. If no such element exists, output -1 
@@ -28,3 +30,81 @@ Explanation
 In the array, the next larger element to 1 is 3 , 3 is 4 , 2 is 4 and for 4 ? since it doesn't exist hence -1.
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int nextLarger(vector<int>& a)
+{
+    vector<int> b(a.size(),-1);
+
+    for(int i = a.size()-2; i>=0; --i )
+    {
+        if(a[i]<a[i+1])
+        {
+            b[i] = i+1;
+        }
+        else
+        {
+            int j = i+1;
+            while( -1 != b[j])
+            {
+                if(a[ b[j]] > a[i])
+                {
+                    b[i] = b[j];
+                    break;
+                }
+                else
+                {
+                    j = b[j];
+                }
+            }
+            if(-1 == b[j])
+            {
+                if(a[i]<a[j])
+                {
+                    b[i] = j;
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i<b.size(); ++i)
+    {
+        if( -1 != b[i])
+        {
+            b[i] = a[b[i]];
+        }
+        cout<< b[i]<<" ";
+    }
+    cout<<endl;
+
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    //vector<int> a{1, 3, 2, 4 };
+    //nextLarger(a);
+    int t = 0;
+      
+    cin>>t;
+    while(t--)
+    {
+        int N = 0;
+        cin>>N;
+        vector<int> a(N,0);
+        int i = 0;
+        while(i<N)
+        {
+            int d;
+            cin>>d;
+            a[i++] = d;
+        }
+        nextLarger(a);
+    }
+
+    return 0;
+}
