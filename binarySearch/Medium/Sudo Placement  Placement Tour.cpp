@@ -1,7 +1,12 @@
 /*
 https://www.geeksforgeeks.org/sudo-placement-placement-tour/
 Sudo Placement | Placement Tour
-Given an array A of N positive integers and a budget B. Your task is to decide the maximum number of elements to be picked from the array such that the cumulative cost of all picked elements is less than or equal to budget B. Cost of picking the ith element is given by : A[i] + (i * K) where, K is a constant whose value is equal to the number of elements picked. The indexing(i) is 1 based. Print the maximum number and its respective cumulative cost.
+Given an array A of N positive integers and a budget B. 
+Your task is to decide the maximum number of elements to be picked from the array such that 
+the cumulative cost of all picked elements is less than or equal to budget B. 
+Cost of picking the ith element is given by : A[i] + (i * K) 
+where, K is a constant whose value is equal to the number of elements picked. 
+The indexing(i) is 1 based. Print the maximum number and its respective cumulative cost.
 
 Examples:
 
@@ -12,4 +17,8 @@ Examples:
     Input : arr[] = { 1, 2, 5, 6, 3 }, B = 90
     Output : 4 54 
 
+*/
+
+/*
+Dynamic Programming:
 */

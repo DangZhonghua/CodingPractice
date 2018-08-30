@@ -34,8 +34,32 @@ Output
 
 /*
 find the range: [start peak, end peak]
-
-
-
 */
+
+#include<iostream>
+#include<vector>
+
+struct range_t
+{
+    int s;
+    int e;
+};
+
+
+using namespace std;
+
+int AmountofWater(vector<int>& a)
+{
+    vector<range_t> vr;
+    int s = -1;
+    int e = -1;
+    
+    for(int i = 1; i< a.size(); ++i)
+    {
+         
+    }
+
+
+    return 0;
+}
 
