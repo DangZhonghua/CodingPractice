@@ -20,3 +20,62 @@ Examples:
     Output: 0 20 30 50 70 80 100 
 
 */
+
+
+/*
+
+this is zeroOne(0-1)knapsack problem.
+
+*/
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int DistinctSum(vector<int>& a)
+{
+	int sum = 0;
+
+	std::sort(a.begin(), a.end());
+
+	for (int e : a)
+	{
+		sum += e;
+	}
+	vector<int> b(sum + 1, -1);
+	b[0] = 0;
+
+	for (int i = 0; i< a.size(); ++i)
+	{
+		for (int s = sum; s >=a[i]; --s)
+		{
+			if (-1 != b[s-a[i]])
+			{
+				b[s] = 0;
+			}
+		}
+	}
+	for (int s = 0; s <= sum; ++s)
+	{
+		if (-1 != b[s])
+		{
+			cout << s << " ";
+		}
+	}
+	cout << endl;
+
+	return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+	vector<int> a{ 1, 2, 3 };
+	vector<int> b{ 2, 3, 4, 5, 6 };
+	vector<int> c{ 20, 30, 50 };
+	DistinctSum(a);
+	DistinctSum(b);
+	DistinctSum(c);
+
+
+	return 0;
+}
