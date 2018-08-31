@@ -2,7 +2,9 @@
 Number of ways to reach Nth floor by taking at-most K leaps
 https://www.geeksforgeeks.org/number-of-ways-to-reach-nth-floor-by-taking-at-most-k-leaps/
 
-Given N number of stairs. Also given the number of steps that one can cover at most in one leap (K). The task is to find the number of possible ways one (only consider combinations) can climb to the top of the building in K leaps or less from the ground floor.
+Given N number of stairs. Also given the number of steps that one can cover at most in one leap (K). 
+The task is to find the number of possible ways one (only consider combinations) 
+can climb to the top of the building in K leaps or less from the ground floor.
 
 Examples:
 
