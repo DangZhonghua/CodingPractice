@@ -2,7 +2,8 @@
 Amount of Water 
 https://practice.geeksforgeeks.org/problems/amount-of-water/0/?ref=self
 
-An array containing heights of building was given. Its a rainy season. Calculate the amount of water collected between all the buildings.
+An array containing heights of building was given. Its a rainy season. 
+Calculate the amount of water collected between all the buildings.
 Input:
 
  
@@ -34,6 +35,7 @@ Output
 
 /*
 find the range: [start peak, end peak]
+Find the peak:  find the element which is larger than its neighbours  a[i-1]<a[i] && a[i]>a[i+1]
 */
 
 #include<iostream>
@@ -54,9 +56,10 @@ int AmountofWater(vector<int>& a)
     int s = -1;
     int e = -1;
     
-    for(int i = 1; i< a.size(); ++i)
+
+    for(int i = 0; i< a.size()-1; ++i)
     {
-         
+
     }
 
 

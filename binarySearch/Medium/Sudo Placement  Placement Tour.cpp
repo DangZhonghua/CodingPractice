@@ -20,5 +20,45 @@ Examples:
 */
 
 /*
-Dynamic Programming:
+Binary search to decide the k value:
+Approach: The idea here is to use binary search on all possible values of K 
+i.e. the optimal number of elements to be picked. 
+Start with zero as lower bound and End with total number of elements 
+i.e. N as upper bound. Check if by setting K as current Mid, 
+obtained cumulative cost is less than or equal to budget. 
+If it satisfies the condition, then try to increase K by setting Start as (Mid + 1), 
+otherwise try to decrease K by setting End as (Mid – 1).
+Checking of the condition can be done in a brute force manner 
+by simply modifying the array according to the given formula 
+and adding the K (current number of elements to be picked) smallest modified values to get the cumulative cost.
 */
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int checkBuget(vector<int>&a, int K, int B, int& value)
+{
+    vector<int> bv(a.size(),0);
+    for(int i = 0; i<a.size(); ++i)
+    {
+        bv[i] = a[i] + (i+1)*K;
+    }
+    std::sort(bv.begin(), bv.end());
+    value = 0;
+    for(int i = 0; i<K; ++i)
+    {
+        value += bv[i];
+    }
+    return 0;
+}
+
+int findMaximumLength(vector<int>a, int B)
+{
+    int M = a.size()-1;
+    
+    
+
+    return 0;
+}
