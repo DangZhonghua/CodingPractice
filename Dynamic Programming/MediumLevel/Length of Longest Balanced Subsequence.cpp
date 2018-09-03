@@ -74,16 +74,22 @@ int LongestBalancedSubsequence(const string& strx)
                 {
                     lbs[i][j] = 2;
                 }
-                
+            }
+            //else  since this is subsequence, NO need "else", check every possible balanced subsequence.
+            {
+                for(int k = i; k<j; ++k)
+                {
+                    if(lbs[i][j]< lbs[i][k] + lbs[k+1][j] )
+                    {
+                        lbs[i][j] = lbs[i][k] + lbs[k+1][j];
+                    }
+                }
             }
         }
-
     }
-    
-    
 
+    cout<<lbs[0][N-1]<<endl;
     
-
     return 0;
 }
 
