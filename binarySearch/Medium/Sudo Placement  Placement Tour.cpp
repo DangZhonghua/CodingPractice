@@ -38,7 +38,7 @@ and adding the K (current number of elements to be picked) smallest modified val
 #include<algorithm>
 using namespace std;
 
-int checkBuget(vector<int>&a, int K, int B, int& value)
+int checkBuget(vector<int>&a, int K, int& value)
 {
     vector<int> bv(a.size(),0);
     for(int i = 0; i<a.size(); ++i)
@@ -56,9 +56,53 @@ int checkBuget(vector<int>&a, int K, int B, int& value)
 
 int findMaximumLength(vector<int>a, int B)
 {
-    int M = a.size()-1;
+    int e = a.size()-1;
+    int s = 0;
+    int Value = 0;
+    int max   = 0;
+    int maxval = 0;
     
+    while(s<=e)
+    {
+        int mid = (s+e)/2;
+        checkBuget(a,mid+1, Value);
+        if(Value == B)
+        {
+            if(mid+1>max)
+            {
+                max = mid+1;
+                maxval = Value;
+            }
+            break;
+        }
+        else if(Value>B)
+        {
+            e = mid-1;
+        }
+        else
+        {
+            if(mid+1>max)
+            {
+                max = mid+1;
+                maxval = Value;
+            }
+            s = mid+1;
+        }
+    }
     
+    cout<<max<<" "<<maxval<<endl;
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int B = 11;
+    vector<int> a{2, 3, 5 };
+    findMaximumLength(a,B);
+    vector<int> b{ 1, 2, 5, 6, 3 };
+    B = 90;
+    findMaximumLength(b,B);
 
     return 0;
 }
