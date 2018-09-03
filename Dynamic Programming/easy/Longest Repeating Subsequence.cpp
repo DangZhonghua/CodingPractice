@@ -11,7 +11,8 @@ in the two subsequences shouldn’t have the same index in the original string.
 
 Input:
 
-The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. The first line of each test case contains an integer N denoting the length of string str.
+The first line of input contains an integer T denoting the number of test cases. 
+Then T test cases follow. The first line of each test case contains an integer N denoting the length of string str.
 
 The second line of each test case contains the string str consisting only of lower case english alphabets.
 
@@ -34,17 +35,13 @@ Input:
 2
 
 3
-
 abc
-
 5
-
 axxxy
 
 Output:
 
 0
-
 2
 
 */
