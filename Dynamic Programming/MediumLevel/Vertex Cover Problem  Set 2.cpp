@@ -20,9 +20,11 @@ vc(root) = min{
              }
 vc[null] = 0;
 
+
 */
 
 #include<iostream>
+#include<unordered_map>
 using namespace std;
 
 struct treeNode_t
