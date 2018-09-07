@@ -26,6 +26,6 @@ Job 4: {2, 100, 200}
 Explaination: We can get the maximum profit by 
 scheduling jobs 1 and 4 and maximum profit is 250.
 
-
-
 */
+
+int 

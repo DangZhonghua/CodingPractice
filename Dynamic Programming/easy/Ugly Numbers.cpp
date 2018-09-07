@@ -28,21 +28,20 @@ Output : 5832
 using namespace std;
 
 
-
+unsigned long long vu[5301];
 int UglyNumber(int N)
 {
-    vector<long long> vu(N, 0);
     vu[0] = 1;
-    long long u2 = 2;
-    long long u3 = 3;
-    long long u5 = 5;
+    unsigned long long u2 = 2;
+    unsigned long long u3 = 3;
+    unsigned long long u5 = 5;
     int i2 = 0;
     int i3 = 0;
     int i5 = 0;
-    auto f = [](long long a, long long b)->auto{return a>b? b:a;};
+    auto f = [](unsigned long long a, unsigned long long b)-> long long {return a>b? b:a;};
     for(int i = 1; i<N;++i)
     {
-        long long latest = f(f(u2,u3),u5);
+        unsigned long long latest = ((u2<u3? u2:u3)<u5 ? (u2<u3? u2:u3):u5);
         vu[i] = latest;
         if(latest == u2)
         {
@@ -70,13 +69,16 @@ int main(int argc, char const *argv[])
 {
     int t = 0;
     
-    cin>>t;
+    scanf("%d",&t);
 
+   // UglyNumber(5301);
     while(t--)
     {
         int N = 0;
-        cin>>N;
+        scanf("%d",&N);
         UglyNumber(N);
+        //cout<<vu[N-1]<<endl;
+        //printf("%llu\n",vu[N-1]);
     }
 
 

@@ -15,25 +15,18 @@ Then T test cases follow. The first line of each test case contains an integer N
 The second line of each test case contains the string str.It consists of only lower case english alphabets.
 
 Output:
-
 Print the longest non - overlapping substring for each test case in a new line. If no such sub - sequence exists print -1.
 
-
 Constraints:
-
 1<= T<=100
-
 1<= N <=1000
 
 
 Example:
-
 Input:
 
 1
-
 13
-
 geeksforgeeks
 
 Output:
