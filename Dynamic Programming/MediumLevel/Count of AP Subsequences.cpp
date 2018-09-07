@@ -23,7 +23,9 @@ Input : A[] = { 1, 2, 3, 4, 5 }
 Output : 23
 
 Input:
-The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. Each test case contains an integer n denoting size of the array. Then in the next line are n space separated values of the array.
+The first line of input contains an integer T denoting the no of test cases. 
+Then T test cases follow. Each test case contains an integer n denoting size of the array. 
+Then in the next line are n space separated values of the array.
 
 Output:
 For each test case in a new line print the required output.

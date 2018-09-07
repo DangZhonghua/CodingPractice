@@ -36,3 +36,8 @@ Output:
 
 
 */
+
+/*
+A O(n^2) time and O(n) extra space solution
+
+*/
