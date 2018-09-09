@@ -34,9 +34,9 @@ Base cases:
 /*
 
 This is 2D knapsack problems.
+Select ith element or not select ith element
 
-f[i][N][k] = f[i-1][N-fibo[i-1]][k-1]
-            
+f[i][N][k] += f[i-1][N-fibo[i-1]][k-1];
 
 */
 
