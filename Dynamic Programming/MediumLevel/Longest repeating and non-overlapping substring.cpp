@@ -21,7 +21,6 @@ Constraints:
 1<= T<=100
 1<= N <=1000
 
-
 Example:
 Input:
 
@@ -30,8 +29,6 @@ Input:
 geeksforgeeks
 
 Output:
-
 geeks
-
 
 */
