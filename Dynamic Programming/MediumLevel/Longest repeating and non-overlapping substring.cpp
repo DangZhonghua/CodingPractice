@@ -63,7 +63,8 @@ Then T test cases follow. The first line of each test case contains an integer N
 The second line of each test case contains the string str.It consists of only lower case english alphabets.
 
 Output:
-Print the longest non - overlapping substring for each test case in a new line. If no such sub - sequence exists print -1.
+Print the longest non - overlapping substring for each test case in a new line. 
+If no such sub - sequence exists print -1.
 
 Constraints:
 1<= T<=100
@@ -86,10 +87,24 @@ kxiksxjecwmkwabhsl
 */
 
 /*
-
-LPS[i-1][j-1] + 1 if x[i+LPS[i-1][j-1]] == x[j + LPS[i-1][j-1]]
+			LPS[i-1][j-1] + 1 if x[i] == x[j + LPS[j]
 LPS[i][j] =
-LPS[i-1][j-1]
+			LPS[i-1][j-1] = 0;
+
+Length of longest non-repeating substring can be recursively
+defined as below.
+
+LCSRe(i, j) stores length of the matching and
+            non-overlapping substrings ending 
+            with i'th and j'th characters.
+
+If str[i-1] == str[j-1] && (j-i) > LCSRe(i-1, j-1)
+     LCSRe(i, j) = LCSRe(i-1, j-1) + 1, 
+Else
+     LCSRe(i, j) = 0
+
+Where i varies from 1 to n and 
+      j varies from i+1 to n
 
 */
 
@@ -105,26 +120,18 @@ int LPS(const string& x)
 	int start = -1;
 	int L = x.length();
 	vector< vector<int> >  lps(L + 1, vector<int>(L + 1, 0));
-	
-	for (int l = 1; l <= L / 2; ++l)
+
+	for(int i = 1; i<=L; ++i) //suffix substring
 	{
-		for (int i = 0; i < L - l; ++i)
+		for(int j =  i+1; j<=L; ++j) // repeating prefix of suffix
 		{
-			for (int j = i + l; j < L - l; ++j)
+			if(x[i-1] == x[j-1] && lps[i][j]<j-i /* not overlapped*/)
 			{
-				lps[i+1][j+1] = 0;
-				if (x[i+l-1] == x[j+l-1] && lps[i][j] == l-1)
-				{
-					lps[i + 1][j + 1] = l;
-					if (l > max)
-					{
-						max = l;
-						start = i;
-					}
-				}
+				
 			}
 		}
-	}
+	}	
+
 
 	if (-1 == start)
 	{
