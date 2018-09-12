@@ -40,7 +40,6 @@ If P[i] == Q[j],
                       dp[i - 1][j - 1][k] + 1)
 
 */
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -89,15 +88,16 @@ int lcsatmostk(vector<int>&a, vector<int>&b, int K)
 // Driven Program 
 int main()
 {
-	int k = 2;
+	int k = 1;
 	vector<int>  a{ 1, 2, 3, 4, 5 };
 	vector<int>  b{ 5, 3, 1, 4, 2 };
 	lcsatmostk(a, b, k);
 
+	vector<int>  c{ 8,3 };
+	vector<int>  d{ 1,3 };
+	lcsatmostk(c,d,k);
 	return 0;
 }
-
-
 
 
 // // CPP program to find LCS of two arrays with 
