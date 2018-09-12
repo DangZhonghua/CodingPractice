@@ -4,7 +4,7 @@ https://practice.geeksforgeeks.org/problems/combination-sum-part-2/0/?ref=self
 
 Given an array of integers A and a sum B, find all unique combinations in A where the sum is equal to B.
 
-ach number in A may only be used once in the combination.
+each number in A may only be used once in the combination.
 
 Note:
    All numbers will be positive integers.
@@ -45,5 +45,11 @@ Output:
 (1 1 6)(1 2 5)(1 7)(2 6)
 Empty
 
+
+*/
+
+/*
+
+This is 0-1 knapsack problem.
 
 */
