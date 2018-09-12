@@ -125,13 +125,21 @@ int LPS(const string& x)
 	{
 		for(int j =  i+1; j<=L; ++j) // repeating prefix of suffix
 		{
-			if(x[i-1] == x[j-1] && lps[i][j]<j-i /* not overlapped*/)
+			if(x[i-1] == x[j-1] && lps[i-1][j-1]<(j-i) /* not overlapped*/)
 			{
-				
+				lps[i][j] = lps[i-1][j-1] + 1;
+				if(max<lps[i][j])
+				{
+					max = lps[i][j];
+					start = (i)>start? (i):start;
+				}
+			}
+			else
+			{
+				lps[i][j] = 0;
 			}
 		}
 	}	
-
 
 	if (-1 == start)
 	{
@@ -139,10 +147,10 @@ int LPS(const string& x)
 	}
 	else
 	{
-		for (int i = 0; i<max; ++i)
-		{
-			cout << x[i + start];
-		}
+        for (int i = start - max + 1; i <= start; i++) 
+        {
+            cout<<x[i-1];
+        }
 		cout << endl;
 	}
 
@@ -163,6 +171,7 @@ int main(int argc, char const *argv[])
 		string x;
 		cin>>x;
 		LPS(x);
+		x.clear();
 	}
 
 	return 0;
