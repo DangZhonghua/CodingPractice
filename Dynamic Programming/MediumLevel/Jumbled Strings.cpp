@@ -42,6 +42,7 @@ For the second case there are two K's. So a total of two possible strings can be
 #include<iostream>
 #include<vector>
 #include<string>
+#include<stack>
 using namespace std;
 
 int waysoflcs(const string& x, const string& y)
@@ -72,7 +73,48 @@ int waysoflcs(const string& x, const string& y)
     }
     if(lcs[n][m] == n) // the subsequence is y
     {
-        for(int i = 0; )
+        int start = 0;
+        vector< vector<int> > wc(n+1, vector<int>(m+1,0));
+        for(int r = n; r>0; --r)
+        {
+            int c = 0;
+            for(int j = 1; j<=m; ++j)
+            {
+                if(r == lcs[r][j])
+                {
+                    ++c;
+                    wc[r][j] = c;
+                }
+            }
+        }
+        stack<  pair<int,int> > s;
+        for(int c = 1; c<=m; ++c)
+        {
+            if(lcs[n][c] == n)
+            {
+                start = c;
+                break;
+            }
+        }
+        s.push(pair<int,int>(n,start));
+        
+        while(!s.empty())
+        {
+            pair<int,int>& a = s.top();
+            if(a.first-1>0)
+            {
+                
+            }
+            else
+            {
+
+            }
+        }
+
+
+
+
+        
 
     }
 
