@@ -39,88 +39,129 @@ For the second case there are two K's. So a total of two possible strings can be
 
 */
 
+/*
+#include<iostream>
+#include<vector>
+#include<string>
+#include<stack>
+using namespace std ;
+const int p = 1000000007 ;
+int solve( string s1 , string s2, int n,int m)
+{
+    int dp[m+1][n+1] ;
+    
+    for(int i=0; i<=n ; i++)
+    dp[0][i] = 1;
+    
+    for(int j=1 ; j<=m ; j++)
+    dp[j][0] = 0;
+    
+    for(int i=1 ; i<=m ; i++)
+    {
+        for(int j=1 ; j<=n ; j++)
+        {
+            if( s1[j-1] == s2[i-1] )
+            {
+                dp[i][j] = dp[i][j-1] + dp[i-1][j-1] ;
+            }
+            
+            else
+            {
+                dp[i][j] = dp[i][j-1] ;
+            }
+            
+            dp[i][j] = dp[i][j]%p ;
+        }
+    }
+    
+    return dp[m][n] ;
+}
+int main()
+ {
+	int t ;
+    scanf("%d",&t) ;
+    
+        while(t--)
+        {
+            int n ;
+            string str ;
+            cin>>n>>str ;
+        
+            cout<<solve( str , "GEEKS" , n , 5 )<<endl ;
+        }
+	return 0;
+}
+
+*/
+
+
+
 #include<iostream>
 #include<vector>
 #include<string>
 #include<stack>
 using namespace std;
 
+int mou = 1000000007;
 int waysoflcs(const string& x, const string& y)
 {
-    int n = y.size();
-    int m = x.size();
-    
-    vector< vector<int> > lcs(n+1, vector<int>(m+1,0));
-    vector< int > vt;
-    
-    for(int i = 1;i<=n; ++i)
-    {
-        for(int j = 1; j<=m; ++j)
-        {
-            if(y[i-1] == x[j-1])
-            {
-                lcs[i][j] = lcs[i-1][j-1] + 1;
-            }
-            else
-            {
-                lcs[i][j] = lcs[i-1][j];
-                if(lcs[i][j] < lcs[i][j-1])
-                {
-                    lcs[i][j] = lcs[i][j-1];
-                }
-            }
-        }
-    }
-    if(lcs[n][m] == n) // the subsequence is y
-    {
-        int start = 0;
-        vector< vector<int> > wc(n+1, vector<int>(m+1,0));
-        for(int r = n; r>0; --r)
-        {
-            int c = 0;
-            for(int j = 1; j<=m; ++j)
-            {
-                if(r == lcs[r][j])
-                {
-                    ++c;
-                    wc[r][j] = c;
-                }
-            }
-        }
-        stack<  pair<int,int> > s;
-        for(int c = 1; c<=m; ++c)
-        {
-            if(lcs[n][c] == n)
-            {
-                start = c;
-                break;
-            }
-        }
-        s.push(pair<int,int>(n,start));
-        
-        while(!s.empty())
-        {
-            pair<int,int>& a = s.top();
-            if(a.first-1>0)
-            {
-                
-            }
-            else
-            {
+	int n = y.size();
+	int m = x.size();
 
-            }
-        }
+	vector< vector<int> > lcs(n + 1, vector<int>(m + 1, 0));
+
+	int count = 0;
+	for (int i = 1; i <= m; i++) 
+	{
+		lcs[0][i] = 1;
+	}
+
+	lcs[0][0] = 1;
 
 
+	for (int i = 1; i <= n; ++i)
+	{
+		for (int j = 1; j <= m; ++j)
+		{
+			if (y[i - 1] == x[j - 1])
+			{
+				lcs[i][j] = (lcs[i - 1][j - 1] + lcs[i][j-1]);
+				
+			}
+			else
+			{
+				lcs[i][j] = lcs[i][j - 1];
+			}
+			lcs[i][j] %= mou;
+		}
+	}
+
+	cout << lcs[n][m] << endl;
 
 
-        
-
-    }
-
-
-    return 0;
+	return 0;
 }
+
+int main()
+{
+	int t = 0;
+	string strx = "GEEKS";
+
+	cin >> t;
+
+	while (t--)
+	{
+		int N;
+		cin >> N;
+		string y;
+		cin >> y;
+		waysoflcs(y, strx);
+	}
+
+	return 0;
+
+}
+
 
 
 /*

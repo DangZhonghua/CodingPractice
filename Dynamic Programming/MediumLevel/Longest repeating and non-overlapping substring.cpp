@@ -131,7 +131,7 @@ int LPS(const string& x)
 				if(max<lps[i][j])
 				{
 					max = lps[i][j];
-					start = (i)>start? (i):start;
+					start = (i-1)>start? (i-1):start;
 				}
 			}
 			else
@@ -148,9 +148,7 @@ int LPS(const string& x)
 	else
 	{
         for (int i = start - max + 1; i <= start; i++) 
-        {
             cout<<x[i-1];
-        }
 		cout << endl;
 	}
 
