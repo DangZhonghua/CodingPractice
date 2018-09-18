@@ -2,10 +2,12 @@
 Count in array
 https://practice.geeksforgeeks.org/problems/count-in-array/0
 https://www.geeksforgeeks.org/count-arrays-adjacent-elements-one-divide-another/
-Given two positive integer n and m The task is to find the number of arrays of size n that can be formed such that :
+Given two positive integer n and m The task is to 
+find the number of arrays of size n that can be formed such that :
 1. Each element is in range [1, m]
 
-2. All adjacent element are such that one of them divide the another i.e element Ai divides Ai + 1 or Ai + 1 divides Ai.
+2. All adjacent element are such that one of them divide the another 
+i.e element Ai divides Ai + 1 or Ai + 1 divides Ai.
 
 Examples:
 

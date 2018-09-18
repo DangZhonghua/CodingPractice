@@ -2,7 +2,8 @@
 https://www.geeksforgeeks.org/count-unique-subsequences-of-length-k/
 Count unique subsequences of length K
 
-Given an array of N numbers and an integer K. The task is to print the number of unique subsequences possible of length K.
+Given an array of N numbers and an integer K. 
+The task is to print the number of unique subsequences possible of length K.
 
 Examples:
 

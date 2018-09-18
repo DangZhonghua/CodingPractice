@@ -4,7 +4,10 @@ https://www.geeksforgeeks.org/water-jug-problem-using-memoization/
 
 Water Jug Problem using Memoization
 
-Given two jugs with the maximum capacity of m and n liters respectively. The jugs don’t have markings on them which can help us to measure smaller quantities. The task is to measure d liters of water using these two jugs. Hence our goal is to reach from initial state (m, n) to final state (0, d) or (d, 0).
+Given two jugs with the maximum capacity of m and n liters respectively. 
+The jugs don’t have markings on them which can help us to measure smaller quantities. 
+The task is to measure d liters of water using these two jugs. 
+Hence our goal is to reach from initial state (m, n) to final state (0, d) or (d, 0).
 
 Examples:
 

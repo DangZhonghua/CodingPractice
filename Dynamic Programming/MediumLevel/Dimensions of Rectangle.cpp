@@ -2,7 +2,8 @@
 Dimensions of Rectangle 
 https://practice.geeksforgeeks.org/problems/dimensions-of-rectangle/0/?ref=self
 
-You are required to build some sheets of rectangular shape of Area A. To build a sheet of an  Area A of Dimensions L & B. You have two conditions:
+You are required to build some sheets of rectangular shape of Area A. 
+To build a sheet of an  Area A of Dimensions L & B. You have two conditions:
 1) L and B can not be in decimals.
 2) When L and B are even, L must be Equal to B.
 Calculate the number of possible choices to build a sheet of area A
