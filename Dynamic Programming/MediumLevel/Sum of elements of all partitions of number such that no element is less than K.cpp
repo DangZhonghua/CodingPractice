@@ -44,13 +44,42 @@ using namespace std;
 
 int SumOfPartition(int N, int K)
 {
-
+    vector<int> a(N-K+2,0);
+    vector<int> vc(N+1,0);
+    int index = 1;
+    for(int i = K; i<=N; ++i)
+    {
+        a[index++] = i;
+    }
+    vc[0] = 1;
+    
+    for(int i = 1; i<a.size(); ++i)
+    {
+        for(int v = a[i]; v<=N; ++v)
+        {
+            if( vc[v-a[i]])
+            {
+                vc[v] += vc[v-a[i]];
+            }
+        }
+    }
+    
+    cout<<vc[N]<<" : "<<vc[N]*N<<endl;
 
     return 0;
 }
 
 int main(int argc, char const *argv[])
 {
-    
+    int N1 = 6;
+    int K1 = 2;
+
+    int N2 = 10;
+    int K2 = 3;
+
+    SumOfPartition(N1,K1);
+    SumOfPartition(N2,K2);
+
+
     return 0;
 }
