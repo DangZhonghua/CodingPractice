@@ -53,3 +53,42 @@ Empty
 This is 0-1 knapsack problem.
 
 */
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int CombinationSum(vector<int>&a, int sum)
+{
+    std::sort(a.begin(),a.end());
+
+
+    return 0;
+}
+
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    cin>>t;
+
+    while(t--)
+    {
+        int N = 0;
+        cin>>N;
+        vector<int> a(N,0);
+        int i = 0;
+        while(i<N)
+        {
+            int d = 0;
+            cin>>d;
+            a[i++] = d;
+        }
+        int sum = 0;
+        cin>>sum;
+        CombinationSum(a,sum);
+    }
+
+
+    return 0;
+}
