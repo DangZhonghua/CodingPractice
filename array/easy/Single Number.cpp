@@ -1,8 +1,13 @@
+/*
 Single Number
 https://practice.geeksforgeeks.org/problems/single-number/0/?ref=self
 
-Given an array of integers, every element appears twice except for one. Find that single one.
-Note: There can be an element appearing odd number of times. That element needs to be counted as single number. In case of odd number of copies, the even ones get cancelled out from each other rendering just one element in the end.
+Given an array of integers, every element appears twice except for one. 
+Find that single one.
+Note: There can be an element appearing odd number of times. 
+That element needs to be counted as single number. 
+In case of odd number of copies, the even ones get cancelled out 
+from each other rendering just one element in the end.
 
 Input:
 
@@ -33,3 +38,49 @@ Input:
 Output:
 2
 1
+
+*/
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int singleNumber(vector<int>& a)
+{
+    int xorv = 0;
+    
+    for(int i = 0; i<a.size(); ++i)
+    {
+        xorv ^= a[i];
+    }
+    
+    cout<<xorv<<endl;
+
+    return 0;
+}
+
+
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        int N = 0;
+        cin>>N;
+        vector<int> a(N,0);
+        int i = 0;
+        while(i<N)
+        {
+            int d = 0;
+            cin>>d;
+            a[i++] = d;
+        }
+        singleNumber(a);
+    }
+    
+
+    return 0;
+}
