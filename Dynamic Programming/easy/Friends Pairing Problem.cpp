@@ -1,6 +1,8 @@
 /*
 Friends Pairing Problem 
 https://practice.geeksforgeeks.org/problems/friends-pairing-problem/0/?ref=self
+https://www.geeksforgeeks.org/friends-pairing-problem/
+
 
 Given n friends, each one can remain single or can be paired up with some other friend. 
 Each friend can be paired only once. Find out the total number of ways 
@@ -37,6 +39,57 @@ Input:
 Output:
 4
 2
+*/
+
+/*
+
+f[n] = f[n-1] + (n-1)*f[n-2]
 
 
 */
+
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int gmod = 1000000007;
+
+int FriendsPairs(int N)
+{
+  vector<long long>  fw(N+1, 0);
+  fw[0] = 1;
+  fw[1] = 1;
+  
+  for(int i = 2; i<=N; ++i)
+  {
+      fw[i] = fw[i-1] + (i-1)*fw[i-2];
+      fw[i] %= gmod;
+  }
+
+    cout<<fw[N]<<endl;
+
+    
+
+    return 0;
+}
+
+
+
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        int N = 0;
+        cin>>N;
+        FriendsPairs(N);
+    }
+
+    return 0;
+}

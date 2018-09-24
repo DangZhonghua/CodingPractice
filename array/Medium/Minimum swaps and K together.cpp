@@ -32,8 +32,12 @@ Output
 2
 
 Explanation:
-1. To bring elements 2, 1, 3 together, swap element '5' with '3' such that final array will be- arr[] = {2, 1, 3, 6, 5}
-2. To bring elements 2, 5, 4 together, swap element 7 with 5 & 9 with 4 such that the final array will be {2,5,4,7,8,7,9} 
+1. To bring elements 2, 1, 3 together, swap element '5' with '3' 
+such that final array will be- arr[] = {2, 1, 3, 6, 5}
+
+
+2. To bring elements 2, 5, 4 together, swap element 7 with 5 & 9 with 4 
+such that the final array will be {2,5,4,7,8,7,9} 
 
 */
 
@@ -42,7 +46,5 @@ find maximum length of consecutive element which less the K; suppose the length 
 total number which less than K is T
 
 the number will be
-
-
 
 */

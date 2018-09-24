@@ -28,18 +28,78 @@ Example:
 Input:
 
 1
-
 5
-
 3 2 1 4 5
-
 Output:
-
 8
-
 Explanation:
 
 Modified array: 3 1 1 4 1
 
 ans = | 1 - 3 | + | 1 - 1 | + | 4 - 1 | + | 1 - 4 | = 8
 */
+
+/*
+
+vs[i][0] = max{  
+                    vs[i-1][0] + |a[i]-a[i-1]|,
+                    vs[i-1][1] + |a[i]-1|
+                }
+
+vs[i][1] = max {       
+                    vs[i-1][0] + |1-a[i-1]|
+                    vs[i-1][1] + |1-1|
+            }
+
+*/
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<functional>
+using namespace std;
+
+int maximizeSum(vector<int>& a)
+{
+    vector< vector<int> > vs(a.size(), vector<int>(2,0));
+    
+    for(int i = 1; i<a.size(); ++i)
+    {
+        vs[i][0] = vs[i-1][0] + abs(a[i]-a[i-1]);
+        if(vs[i][0] < vs[i-1][1] + abs(a[i]-1))
+        {
+            vs[i][0] = vs[i-1][1] + abs(a[i]-1);
+        }
+        
+        vs[i][1] = vs[i-1][0] + abs(1-a[i-1]);
+        if(vs[i][1]<vs[i-1][1])
+        {
+            vs[i][1] = vs[i-1][1];
+        }
+    }
+    cout<<max(vs[a.size()-1][1], vs[a.size()-1][0])<<endl;
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    
+    cin>>t;
+    
+    while(t--)
+    {
+        int N = 0;
+        cin>>N;
+        vector<int> a(N,0);
+        int i = 0;
+        while(i<N)
+        {
+            cin>>a[i];
+            ++i;
+        }
+        maximizeSum(a);
+    }
+    return 0;
+}
