@@ -35,14 +35,28 @@ Output:
 
 */
 
+
 #include<iostream>
 #include<vector>
 using namespace std;
 
-
 int PerfectSum(vector<int>& a, int sum)
 {
+    vector<int> vw(sum+1, 0);
+    vw[0] = 1; 
+
+    for(int i = 0; i<a.size(); ++i)
+    {
+        for(int v = sum; v>=a[i]; --v)
+        {
+            if(vw[v-a[i]])
+            {
+                vw[v] += vw[v-a[i]];
+            }
+        }
+    }   
     
+    cout<<vw[sum]<<endl;
 
     
     return 0;

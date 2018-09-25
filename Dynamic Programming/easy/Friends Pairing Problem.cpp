@@ -43,7 +43,7 @@ Output:
 
 /*
 
-f[n] = f[n-1] + (n-1)*f[n-2]
+f[n] = f[n-1](remain single for the new) + (n-1)*f[n-2](pair for the new)
 
 
 */
@@ -67,15 +67,10 @@ int FriendsPairs(int N)
       fw[i] = fw[i-1] + (i-1)*fw[i-2];
       fw[i] %= gmod;
   }
-
     cout<<fw[N]<<endl;
-
-    
 
     return 0;
 }
-
-
 
 
 int main(int argc, char const *argv[])
