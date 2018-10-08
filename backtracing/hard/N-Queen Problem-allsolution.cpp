@@ -41,7 +41,6 @@ Output:
 #include<vector>
 using namespace std;
 
-
 void printSolution(vector< vector<int> >& board, int N)
 {
 	//for (int r = 0; r < N; ++r)
@@ -100,51 +99,60 @@ bool isSafePlace(vector< vector<int> >& board, int N, int col, int row)
 	return true;
 }
 
-
-bool SloveNQ(vector< vector<int> >& board, int N, int currentCol)
+bool SolveNQ(vector< vector<int> >& board, int N, int col)
 {
-    bool bPlaced = false;
+	if (col == N) //we have reach one solution.
+	{
+		printSolution(board, N);
+		return true;
+	}
 
-    if(currentCol == N) // we have reach one solution.
-    {
-        printSolution(board,N);
-        return true;      
-    }
+	bool bPlaced = false;
+	for (int r = 0; r < N; ++r)
+	{
+		if (isSafePlace(board, N, col, r))
+		{
+			board[r][col] = 1;
+
+			//if true, we not return, this will let us calculate all possible solution.
+			bPlaced = (SolveNQ(board, N, col + 1) || bPlaced);
+
+			board[r][col] = 0; // this mean backtrack to another row with the same column.
+		}
+	}
 
 
-    for(int r = 0; r<N; ++r)
-    {
-        if(isSafePlace(board,N,currentCol,r))
-        {
-            board[r][currentCol] = 1;
-            if(SloveNQ(board,N,currentCol+1)) // recursive the next column
-            {
-                bPlaced = true;
-                break;
-            }
-            else  // backtrck to another choice
-            {
-                board[r][currentCol] = 0;                
-            }
-        }
-    }
-    return bPlaced;
+	return bPlaced;
 }
 
-int testSolveNQ(int N)
-{
-    vector< vector<int> > board(N, vector<int>(N,0));
-        
-    SloveNQ(board, N, 0);
 
-    return 0;
+int SolveNQUtil(int N)
+{
+	vector< vector<int> > board(N, vector<int>(N, 0));
+	if (false == SolveNQ(board, N, 0))
+	{
+		cout << -1 << endl;
+	}
+	return 0;
 }
+
 
 int main(int argc, char const *argv[])
 {
-    
-    testSolveNQ(4);
+	int t = 0;
 
-    return 0;
+	cin >> t;
+
+	while (t--)
+	{
+		int N = 0;
+		cin >> N;
+		SolveNQUtil(N);
+	}
+
+	return 0;
 }
+
+
+
 
