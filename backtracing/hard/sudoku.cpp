@@ -41,3 +41,72 @@ Output:
 3 1 6 5 7 8 4 9 2 5 2 9 1 3 4 7 6 8 4 8 7 6 2 9 5 3 1 2 6 3 4 1 5 9 8 7 9 7 4 8 6 3 1 2 5 8 5 1 7 9 2 6 4 3 1 3 8 9 4 7 2 5 6 6 9 2 3 5 1 8 7 4 7 4 5 2 8 6 3 1 9 
 
 */
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void OutputSudokuSolution(vector< vector<int> >& board, int N)
+{
+    for(int r = 0; r<N; ++r)
+    {
+        for(int c = 0; c<N; ++c)
+        {
+            cout<<board[r][c]<<" ";
+        }
+    }
+    cout<<endl;
+}
+
+
+bool BtSolveSudoku( vector< vector<int>  > & rv, vector<int>& cv, vector<int>& bv,vector<vector<int>> &board, int N, int r, int c)
+{
+    bool bSolve = false;
+    if(r == N && c == N)
+    {
+        bSolve = true;
+        OutputSudokuSolution(board,N);
+        return bSolve;
+    }
+    
+
+
+
+
+    return bSolve;
+}
+
+
+
+int SolveSudoku(vector<vector<int>> &board, int N)
+{
+
+    
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int N = 9;
+    int t = 0;
+
+    cin >> t;
+    while (t--)
+    {
+        vector<vector<int>> board(N, vector<int>(N, 0));
+        int r = 0;
+        int c = 0;
+        while (r < N)
+        {
+            c = 0;
+            while (c < N)
+            {
+                cin >> board[r][c];
+                ++c;
+            }
+        }
+    }
+
+    return 0;
+}
