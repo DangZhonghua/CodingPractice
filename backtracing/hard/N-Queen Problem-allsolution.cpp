@@ -137,6 +137,8 @@ int SolveNQUtil(int N)
 }
 
 
+
+
 int main(int argc, char const *argv[])
 {
 	int t = 0;

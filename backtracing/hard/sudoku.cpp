@@ -44,6 +44,7 @@ Output:
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 void OutputSudokuSolution(vector< vector<int> >& board, int N)
@@ -58,19 +59,69 @@ void OutputSudokuSolution(vector< vector<int> >& board, int N)
     cout<<endl;
 }
 
-
-bool BtSolveSudoku( vector< vector<int>  > & rv, vector<int>& cv, vector<int>& bv,vector<vector<int>> &board, int N, int r, int c)
+int CalcGridIndex(int r, int c,int n )
 {
-    bool bSolve = false;
-    if(r == N && c == N)
+    int index = -1;
+    index =  (n*(r/n) + c/n);
+    return index;
+}
+bool findEmptyLocation(vector< vector<int> >& board, int& row, int& col, int N)
+{
+    for( int r = 0; r<N; ++r)
     {
-        bSolve = true;
-        OutputSudokuSolution(board,N);
-        return bSolve;
+        for(int c = 0; c< N; ++c)
+        {
+            if(0 == board[r][c])
+            {
+                row = r;
+                col = c;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool isSafePlace(vector< vector<bool>  > & rv, vector<vector<bool>>& cv, vector< vector<bool> >& bv, 
+                int row, int col,int num, int N)
+{
+    if(rv[row][num]) // have place the same num at the same row
+    {
+        return false;
+    }
+    if(cv[col][num]) // have place the same num at the same col.
+    {
+        return false;
+    }
+    if(bv[CalcGridIndex(row,col,sqrt(N))][num]) // have place the same num at the same grid
+    {
+        return false;
     }
     
 
+    return true;
+}
 
+
+bool BtSolveSudoku( vector< vector<bool>  > & rv, vector<vector<bool>>& cv, vector<vector<bool>>& bv,vector<vector<int>> &board, int N)
+{
+    bool bSolve = false;
+    int row = 0;
+    int col = 0;
+    if( !findEmptyLocation(board,row,col,N))
+    {
+        return true;
+    }
+
+    for(int num = 1; num<=N; ++num)
+    {
+        if(isSafePlace(rv,cv,bv,row,col,num,N))
+        {
+            //set the flag for fast backtrack.
+
+
+        }
+    }
 
 
     return bSolve;
@@ -80,8 +131,27 @@ bool BtSolveSudoku( vector< vector<int>  > & rv, vector<int>& cv, vector<int>& b
 
 int SolveSudoku(vector<vector<int>> &board, int N)
 {
+    //set the map for quick check conflict.
+    vector< vector<bool> > rv(N, vector<bool>(N,0));
+    vector< vector<bool> > cv(N, vector<bool>(N,0));
+    vector< vector<bool> > bv(N, vector<bool>(N,0));
 
-    
+    int ngrid = sqrt(N);
+    for(int r = 0; r<N; ++r )
+    {
+        for(int c = 0; c<N; ++c)
+        {
+            if(0 == board[r][c])
+            {
+                continue;
+            }
+            rv[r][board[r][c]] = true;
+            cv[c][board[r][c]] = true;
+            bv[CalcGridIndex(r,c,ngrid)][board[r][c]] = true;
+        }
+    }
+
+    BtSolveSudoku(rv,cv,bv,board,N,0,0);
 
     return 0;
 }
