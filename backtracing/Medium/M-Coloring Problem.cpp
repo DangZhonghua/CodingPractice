@@ -3,7 +3,10 @@ M-Coloring Problem
 https://practice.geeksforgeeks.org/problems/m-coloring-problem/0
 https://www.geeksforgeeks.org/m-coloring-problem-backtracking-5/
 
-Given an undirected graph and an integer M, determine if the graph can be colored with at most M colors such that no two adjacent vertices of the graph are colored with the same color. Here coloring of a graph means assignment of colors to all vertices. Print 1 if it is possible to colour vertices and 0 otherwise.
+Given an undirected graph and an integer M, determine if the graph can be colored 
+with at most M colors such that no two adjacent vertices of the graph are colored with the same color. 
+Here coloring of a graph means assignment of colors to all vertices. 
+Print 1 if it is possible to colour vertices and 0 otherwise.
 
 Vertex are 1-based (vertext number starts with 1, not 0).
 
