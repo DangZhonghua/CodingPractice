@@ -57,6 +57,27 @@ using namespace std;
 
 
 
+vector<string> genIp(string s)
+{
+    
+}
+
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    cin>>t;
+    
+    while(t--)
+    {
+        string strtext;
+        cin>>strtext;
+        genIp(strtext);
+    }
+    return 0;
+}
+
+
 
 
 
