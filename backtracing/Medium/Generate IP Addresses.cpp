@@ -70,21 +70,36 @@ bool isSafeDigital(const string& strdig)
 	return false;
 }
 
+bool isSafePart(const string& strPart)
+{
+    if( !isSafeDigital(strPart))
+    {
+        return false;
+    }
+    if(strPart[0] == '0' && strPart.length()>1)
+    {
+        return false;
+    }
+    return true;
+}
+
 bool btGenIp(string& s, int step, int level, vector<string>& vstrip, string& strip)
 {
-	if (level == 4 && (step) != s.length())
+	if (4 == level)
 	{
-		return false;
+		if (step == s.length())
+		{
+			string s = strip;
+			s.pop_back();
+			vstrip.push_back(s);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	if (4 == level && (step) == s.length())
-	{
-		strip.pop_back();
-		string s = strip;
-		s.pop_back();
-		vstrip.push_back(s);
-		return true;
-	}
-	if (step  == s.length())
+	if (4 > level && step >= s.length())
 	{
 		return false;
 	}
@@ -93,7 +108,7 @@ bool btGenIp(string& s, int step, int level, vector<string>& vstrip, string& str
 	for (int i = 0; i<3; ++i)
 	{
 		string strDigital = s.substr(step, i + 1);
-		if (isSafeDigital(strDigital))
+		if (isSafePart(strDigital))
 		{
 			strip += strDigital;
 			strip += ".";
@@ -121,7 +136,7 @@ vector<string> genIp(string s)
 	generateIpString(s, vstrIp);
 	for (auto str : vstrIp)
 	{
-		cout<<str<<endl;
+		cout << str << endl;
 	}
 
 	return vstrIp;
