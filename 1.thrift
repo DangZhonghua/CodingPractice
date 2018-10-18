@@ -8,4 +8,4 @@ struct UserProfile {
 service UserStorage {
   void store(1: UserProfile user),
   UserProfile retrieve(1: i32 uid)
-}
+}\
