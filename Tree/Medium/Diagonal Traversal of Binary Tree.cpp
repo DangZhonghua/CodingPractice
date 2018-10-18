@@ -10,7 +10,7 @@ Consider lines of slope -1 passing between nodes. Given a Binary Tree, print all
 Input:
 The task is to complete the method which takes 1 argument, root of Binary Tree. The struct Node has a data part which stores the data, pointer to left child and pointer to right child.
 There are multiple test cases. For each test case, this method will be called individually.
-
+git
 Output:
 The function should print out the diagonal traversal of the binary tree.
 

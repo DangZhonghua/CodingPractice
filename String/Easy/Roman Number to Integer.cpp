@@ -1,6 +1,7 @@
 /*
-Roman Number to Integer
+Roman Number to Integer 
 https://practice.geeksforgeeks.org/problems/roman-number-to-integer/0
+https://www.geeksforgeeks.org/converting-roman-numerals-decimal-lying-1-3999/
 Given an string in roman no format (s)  your task is to convert it to integer .
 
 Input:
