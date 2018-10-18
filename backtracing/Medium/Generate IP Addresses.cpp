@@ -1,23 +1,23 @@
 /*
 https://practice.geeksforgeeks.org/problems/generate-ip-addresses/1/?ref=self
-Generate IP Addresses 
+Generate IP Addresses
 
-Given a string s containing only digits, Your task is to complete the function genIp 
-which returns a vector containing all possible combination of valid IPv4 ip address 
-and takes only a string s as its only argument . 
+Given a string s containing only digits, Your task is to complete the function genIp
+which returns a vector containing all possible combination of valid IPv4 ip address
+and takes only a string s as its only argument .
 Note : Order doesn't matter
 
-For string 11211 the ip address possible are 
+For string 11211 the ip address possible are
 1.1.2.11
 1.1.21.1
 1.12.1.1
 11.2.1.1
 
 Input:
-The first line of input will contain no of test cases T. Then T test cases follow . Each test case will contains a string s . 
+The first line of input will contain no of test cases T. Then T test cases follow . Each test case will contains a string s .
 
 Output:
-The output in the expected output will be 1 if successfully all the combinations 
+The output in the expected output will be 1 if successfully all the combinations
 were obtained in the returned vector else it will be 0.
 
 Constraints:
@@ -44,7 +44,7 @@ You are required to complete this method
 
 vector<string> genIp(string s)
 {
-    //Your code here
+//Your code here
 }
 
 */
@@ -55,26 +55,91 @@ vector<string> genIp(string s)
 using namespace std;
 
 
+int ConvertStr2Int(const char* str)
+{
+	return atoi(str);
+}
 
+bool isSafeDigital(const string& strdig)
+{
+	int d = ConvertStr2Int(strdig.c_str());
+	if (d >= 0 && d <= 255)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool btGenIp(string& s, int step, int level, vector<string>& vstrip, string& strip)
+{
+	if (level == 4 && (step) != s.length())
+	{
+		return false;
+	}
+	if (4 == level && (step) == s.length())
+	{
+		strip.pop_back();
+		string s = strip;
+		s.pop_back();
+		vstrip.push_back(s);
+		return true;
+	}
+	if (step  == s.length())
+	{
+		return false;
+	}
+
+	bool bIp = false;
+	for (int i = 0; i<3; ++i)
+	{
+		string strDigital = s.substr(step, i + 1);
+		if (isSafeDigital(strDigital))
+		{
+			strip += strDigital;
+			strip += ".";
+			bIp = (btGenIp(s, step + i + 1, level + 1, vstrip, strip) | bIp);
+			for (int j = 0; j <= strDigital.length(); ++j)
+			{
+				strip.pop_back();
+			}
+		}
+	}
+	return bIp;
+}
+
+
+int    generateIpString(string& s, vector<string>& vstrip)
+{
+	string strip;
+	btGenIp(s, 0, 0, vstrip, strip);
+	return 0;
+}
 
 vector<string> genIp(string s)
 {
-    
+	vector<string> vstrIp;
+	generateIpString(s, vstrIp);
+	for (auto str : vstrIp)
+	{
+		cout<<str<<endl;
+	}
+
+	return vstrIp;
 }
 
 
 int main(int argc, char const *argv[])
 {
-    int t = 0;
-    cin>>t;
-    
-    while(t--)
-    {
-        string strtext;
-        cin>>strtext;
-        genIp(strtext);
-    }
-    return 0;
+	int t = 0;
+	cin >> t;
+
+	while (t--)
+	{
+		string strtext;
+		cin >> strtext;
+		genIp(strtext);
+	}
+	return 0;
 }
 
 
