@@ -54,12 +54,11 @@ using namespace std;
 /*
 
 Use level-order traversal to find the bounary which locate the head and tail of one queue of current level.
-for anti_clock_wise print, the left child will into queue, the right child will into stack.
-
-Before one node en-queue, we decide its anti_clock_wise order.
-
+for anti_clock_wise print, for nodes in the next level, the left-most will be in queue
+the right-most will be in stack.
 
 */
+
 
 void printBoundary(Node *root)
 {
@@ -80,32 +79,60 @@ void printBoundary(Node *root)
      }
      
      while(!pCurLevel->empty())
-     {
-         Node* head = pCurLevel->front();
-         if(pCurLevel->size() == 1)
-         {
-             if(head->left)
-             {
-                 bQueue.push(head->left);
-             }
-             if(head->right)
-             {
-                 bStack.push(head->right);
-             }
-         }
-         else
-         {
-             if(head->left)
-             {
-                 bQueue.push(head->left);
-             }
-             else if(head->right)
-             {
-                 bQueue.push(head->right);
-             }
-         }
-         pCurLevel->pop();
+     { 
+         Node* pFNode = NULL;
+         Node* pFPNode = NULL;
+         Node* pSNode = NULL;
+         Node* pSPNode = NULL;
          
+         while( !pCurLevel->empty())
+         {
+            Node* head = pCurLevel->front();
+            if(head->left)
+            {
+                pNextLevel->push(head->left);
+                if(NULL == pFNode)
+                {
+                    pFNode = head->left;
+                    pFPNode = head;
+                }
+                else
+                {
+                    pSNode = head->left;
+                    
+                }
+            }    
+            if(head->right)
+            {
+                pNextLevel->push(head->right);
+                if(NULL == pFNode)
+                {
+                    pFNode = head->right;
+                    pFPNode = head;
+                }
+                else
+                {
+                    pSNode = head->right;
+                }
+            }
+            pCurLevel->pop();
+         }
+         if(pNextLevel->size()>1)
+         {
+             bQueue.push(pFNode);
+             bStack.push(pSNode);
+         }
+         else if( pNextLevel->size() == 1)
+         {
+             if(pFPNode->left == pFNode)
+             {
+                 bQueue.push(pFNode);
+             }
+             else
+             {
+                 bStack.push(pFNode);
+             }
+         }
 
          queue<Node*>* pTemp = pCurLevel;
          pCurLevel = pNextLevel;
