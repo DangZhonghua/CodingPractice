@@ -78,10 +78,9 @@ void diagonalPrint(Node *root)
    {
         //This is current level.
        Node* head = pCurDQ->front();
-       while(head)
+       while(head)  //util there is no element from the current node with the same slope.
        {
            cout<<head->data<<" ";
-
            //this is the next level.
            if(head->left)
            {
