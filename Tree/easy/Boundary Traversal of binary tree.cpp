@@ -51,103 +51,68 @@ struct Node
 #include<stack>
 using namespace std;
 
-/*
+void printLeftEdge(Node* root)
+{
+    if(root)
+    {
+       
+        if(root->left)
+        {
+             cout<<root->data<<" ";
+            printLeftEdge(root->left);
+        }
+        else if(root->right)
+        {
+             cout<<root->data<<" ";
+            printLeftEdge(root->right);
+        }
+    }
+}
 
-Use level-order traversal to find the bounary which locate the head and tail of one queue of current level.
-for anti_clock_wise print, for nodes in the next level, the left-most will be in queue
-the right-most will be in stack.
+void printLeaves(Node* root)
+{
+    if(root)
+    {
+        if(NULL ==  root->left && NULL == root->right)
+        {
+            cout<<root->data<<" ";
+        }
+        else
+        {
+            printLeaves(root->left);
+            printLeaves(root->right);
+        }
+    }
+}
 
-*/
+void printRightEdge(Node* root)
+{
+    if(root)
+    {
+        if(root->right)
+        {
+            printRightEdge(root->right);
+            cout<<root->data<<" ";
+        }
+        else if(root->left)
+        {
+            printRightEdge(root->left);
+            cout<<root->data<<" ";
+        }
+        
+    }
+}
 
 
 void printBoundary(Node *root)
 {
      //Your code here
-     queue<Node*> curLevel;
-     queue<Node*> nextLevel;
-     queue<Node*>* pCurLevel;
-     queue<Node*>* pNextLevel;
-     queue<Node*>  bQueue;
-     stack<Node*>  bStack;
-     pCurLevel = &curLevel;
-     pNextLevel = &nextLevel;
-     
      if(root)
      {
-         bQueue.push(root);
-         pCurLevel->push(root);
+         cout<<root->data<<" ";
+         printLeftEdge(root->left);
+         printLeaves(root->left);
+         printLeaves(root->right);
+         printRightEdge(root->right);
      }
-     
-     while(!pCurLevel->empty())
-     { 
-         Node* pFNode = NULL;
-         Node* pFPNode = NULL;
-         Node* pSNode = NULL;
-         Node* pSPNode = NULL;
-         
-         while( !pCurLevel->empty())
-         {
-            Node* head = pCurLevel->front();
-            if(head->left)
-            {
-                pNextLevel->push(head->left);
-                if(NULL == pFNode)
-                {
-                    pFNode = head->left;
-                    pFPNode = head;
-                }
-                else
-                {
-                    pSNode = head->left;
-                    
-                }
-            }    
-            if(head->right)
-            {
-                pNextLevel->push(head->right);
-                if(NULL == pFNode)
-                {
-                    pFNode = head->right;
-                    pFPNode = head;
-                }
-                else
-                {
-                    pSNode = head->right;
-                }
-            }
-            pCurLevel->pop();
-         }
-         if(pNextLevel->size()>1)
-         {
-             bQueue.push(pFNode);
-             bStack.push(pSNode);
-         }
-         else if( pNextLevel->size() == 1)
-         {
-             if(pFPNode->left == pFNode)
-             {
-                 bQueue.push(pFNode);
-             }
-             else
-             {
-                 bStack.push(pFNode);
-             }
-         }
-
-         queue<Node*>* pTemp = pCurLevel;
-         pCurLevel = pNextLevel;
-         pNextLevel = pTemp;
-     }
-
-    while(!bQueue.empty())
-    {
-        cout<<bQueue.front()->data<<" ";
-        bQueue.pop();
-    }
-    while(!bStack.empty())
-    {
-        cout<<bStack.top()->data<<" ";
-        bStack.pop();
-    }
-    //cout<<endl;
 }
