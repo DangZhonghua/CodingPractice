@@ -42,3 +42,69 @@ Explanation: The pairs are : (1 , 20 ) , (5 , 16 ) , (8 ,13 ) ,( 11 , 10 )
 
 
 */
+
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+using namespace std;
+
+int CountPair(vector< vector<int> >& a, vector< vector<int> >& b, int N, int X)
+{
+    int count = 0;
+    for(int i = 0; i<N; ++i)
+    {
+        for(int j = 0; j<N; ++j)
+        {
+            
+        }
+    }
+
+
+
+
+    return count;
+}
+
+
+int main()
+{
+    int t = 0;
+    cin>>t;
+    
+    while(t--)
+    {
+        int N;
+        int X;
+        cin>>N>>X;
+        vector< vector<int> > a(N, vector<int>(N,0));
+        vector< vector<int> > b(N, vector<int>(N,0));
+        int i = 0;
+        int j = 0;
+        
+        while(i<N)
+        {
+            j = 0;
+            while(j<N)
+            {
+                cin>>a[i][j];
+                ++j;
+            }
+            ++i;
+        }
+        i = 0;
+        j = 0;
+        while(i<N)
+        {
+            j = 0;
+            while(j<N)
+            {
+                cin>>b[i][j];
+                ++j;
+            }
+            ++i;
+        }
+        CountPair(a,b,N,X);
+    }
+
+    return 0;
+}

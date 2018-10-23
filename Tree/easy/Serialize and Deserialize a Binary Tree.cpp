@@ -40,7 +40,8 @@ Output
 
 
 
-There are two test casess.  First case represents a tree with 3 nodes and 2 edges where root is 1, left child of 1 is 3 and right child of 1 is 2.   Second test case represents a tree with 4 edges and 5 nodes.
+There are two test casess.  First case represents a tree with 3 nodes and 2 edges where root is 1, 
+left child of 1 is 3 and right child of 1 is 2.   Second test case represents a tree with 4 edges and 5 nodes.
 
 
 */
