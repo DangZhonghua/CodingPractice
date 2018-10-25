@@ -51,15 +51,68 @@ struct Node
 #include<stack>
 using namespace std;
 
-/*
+void printLeftEdge(Node* root)
+{
+    if(root)
+    {
+       
+        if(root->left)
+        {
+             cout<<root->data<<" ";
+            printLeftEdge(root->left);
+        }
+        else if(root->right)
+        {
+             cout<<root->data<<" ";
+            printLeftEdge(root->right);
+        }
+    }
+}
 
-print left child in top-down manner
-print leaves in left-right manner
-print right child in bottom-up manner
+void printLeaves(Node* root)
+{
+    if(root)
+    {
+        if(NULL ==  root->left && NULL == root->right)
+        {
+            cout<<root->data<<" ";
+        }
+        else
+        {
+            printLeaves(root->left);
+            printLeaves(root->right);
+        }
+    }
+}
 
-*/
+void printRightEdge(Node* root)
+{
+    if(root)
+    {
+        if(root->right)
+        {
+            printRightEdge(root->right);
+            cout<<root->data<<" ";
+        }
+        else if(root->left)
+        {
+            printRightEdge(root->left);
+            cout<<root->data<<" ";
+        }
+        
+    }
+}
 
 
 void printBoundary(Node *root)
 {
+     //Your code here
+     if(root)
+     {
+         cout<<root->data<<" ";
+         printLeftEdge(root->left);
+         printLeaves(root->left);
+         printLeaves(root->right);
+         printRightEdge(root->right);
+     }
 }

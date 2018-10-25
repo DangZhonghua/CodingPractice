@@ -39,3 +39,52 @@ Output:
 60
 
 */
+
+/*Structure of the node of the binary tree is as
+*/
+
+#include<iostream>
+using namespace std;
+
+struct Node
+{
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// function should return the sum of all 
+// right leaf nodes
+
+int pre_orderLeafSum(Node* root, int d)
+{
+  if(root)
+  {
+    if(root->left == NULL && root->right == NULL && 1==d)
+    {
+      return root->data;
+    }
+    else
+    {
+      return (pre_orderLeafSum(root->left,0) + pre_orderLeafSum(root->right,1) );
+    }
+  }
+  else
+  {
+    return 0;
+  }
+  
+}
+
+int rightLeafSum(Node* root)
+{
+     //Code here
+     if(NULL == root)
+     {
+       return 0;
+     }
+     int s1 = pre_orderLeafSum(root->left,0);
+     int s2 = pre_orderLeafSum(root->right,1);
+     
+     return (s1+s2);
+}
