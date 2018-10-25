@@ -2,7 +2,8 @@
 Combination Sum
 https://practice.geeksforgeeks.org/problems/combination-sum/0
 
-Given an array of integers A and a sum B, find all unique combinations in A where the sum is equal to B. The same repeated number may be chosen from A unlimited number of times.
+Given an array of integers A and a sum B, find all unique combinations in A where the sum is equal to B. 
+The same repeated number may be chosen from A unlimited number of times.
 Note:
 All numbers will be positive integers.
 Elements in a combination (a1, a2, … , ak) must be in non-descending order. (ie, a1 ≤ a2 ≤ … ≤ ak).
@@ -45,8 +46,4 @@ Output:
 (2 2 2 2 2 2 2 2)(2 2 2 2 2 6)(2 2 2 5 5)(2 2 5 7)(2 2 6 6)(2 7 7)(5 5 6)
 (1 1 1 1 1 1)(1 1 1 1 2)(1 1 2 2)(1 5)(2 2 2)(6)
 Empty
-
-
-
-
 */
