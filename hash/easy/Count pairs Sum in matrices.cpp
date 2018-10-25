@@ -48,19 +48,42 @@ Explanation: The pairs are : (1 , 20 ) , (5 , 16 ) , (8 ,13 ) ,( 11 , 10 )
 #include<unordered_map>
 using namespace std;
 
+
 int CountPair(vector< vector<int> >& a, vector< vector<int> >& b, int N, int X)
 {
     int count = 0;
+    unordered_map<int, int> mapValueCount;
+
     for(int i = 0; i<N; ++i)
     {
         for(int j = 0; j<N; ++j)
         {
-            
+            auto it = mapValueCount.find(b[i][j]);
+            if(mapValueCount.end() != it)
+            {
+                it->second += 1;
+            }
+            else
+            {
+                mapValueCount.insert(std::make_pair(b[i][j],1));
+            }
         }
     }
 
-
-
+    for( int r = 0; r<N; ++r)
+    {
+        for( int c = 0; c<N; ++c)
+        {
+            int d = X - a[r][c];
+            auto it = mapValueCount.find(d);
+            if(mapValueCount.end() != it)
+            {
+                count += it->second;
+            }
+        }
+    }
+    
+    cout<<count<<endl;
 
     return count;
 }
