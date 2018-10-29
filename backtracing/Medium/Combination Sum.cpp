@@ -47,3 +47,31 @@ Output:
 (1 1 1 1 1 1)(1 1 1 1 2)(1 1 2 2)(1 5)(2 2 2)(6)
 Empty
 */
+
+
+/*
+this can be done by using dynamic programming or backtracking technique.
+*/
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+int btCombinationSum()
+{
+
+}
+
+
+int CombinationSum(vector<int>&a, int sum)
+{
+
+}
+
+
+int main()
+{
+
+}
