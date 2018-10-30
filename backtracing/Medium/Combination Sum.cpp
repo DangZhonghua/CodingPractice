@@ -59,15 +59,45 @@ this can be done by using dynamic programming or backtracking technique.
 using namespace std;
 
 
-int btCombinationSum()
+void OutputCombination(vector<int>& vc)
 {
+    cout<<"(";
+    for(auto a:vc)
+    {
+        cout<<a<<" "; 
+    }
+    cout<<")";
+}
+
+bool btCombinationSum( vector<int>& a, vector<int>& vc, int sum, int index,bool& bFind)
+{
+    if(a.size()>index && sum>=a[index])
+    {
+        sum -= a[index];
+        vc.push_back(a[index]);
+        if(0 == sum)
+        {
+            bFind = true;
+            OutputCombination(vc);
+        }
+        btCombinationSum(a,vc,sum,index, bFind);
+    }
 
 }
 
 
 int CombinationSum(vector<int>&a, int sum)
 {
-
+    vector<int> vc;
+    bool bFind = false;
+    std::sort(a.begin(), a.end());
+    btCombinationSum(a,vc,sum,0,bFind);
+    if(!bFind)
+    {
+        cout<<"Empty"<<endl;
+    }
+    
+    return 0;
 }
 
 
