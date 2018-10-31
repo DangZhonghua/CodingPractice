@@ -40,3 +40,54 @@ Output:
 1
 
 */
+
+/*
+The basic idea is the backtracking: try to assign a color to vertex, if the color is safe. then process the next vertext
+if the color is not safe, then try another color.
+*/
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int ColorGraph(vector< vector<int> >&,int M )
+{
+
+
+    return 0;
+}
+
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    cin>>t;
+
+    while(t--)
+    {
+        int N;
+        int M;
+        int E;
+        cin>>N>>M>>E;
+        vector< vector<int> > graph(N+1, vector<int>(N+1,0));
+        for(int i = 0; i<E; ++i)
+        {
+            int s,e;
+            cin>>s>>e;
+            graph[s][e] = 1;
+            graph[e][s] = 1;
+        }
+    }
+
+
+    return 0;
+}
+
+
+
+
+
+
+
+
