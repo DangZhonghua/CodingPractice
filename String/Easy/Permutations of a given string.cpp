@@ -1,10 +1,7 @@
 /*
 Permutations of a given string
 https://practice.geeksforgeeks.org/problems/permutations-of-a-given-string/0/?ref=self
-
-
 https://www.geeksforgeeks.org/find-n-th-lexicographically-permutation-string-set-2/
-
 https://www.geeksforgeeks.org/write-a-c-program-to-print-all-permutations-of-a-given-string/
 
 Given a string, print all permutations of a given string.
