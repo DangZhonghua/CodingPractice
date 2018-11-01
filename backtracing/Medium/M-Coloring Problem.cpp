@@ -47,47 +47,98 @@ if the color is not safe, then try another color.
 */
 
 
+
 #include<iostream>
 #include<vector>
 using namespace std;
 
-int ColorGraph(vector< vector<int> >&,int M )
+bool IsSafeAssignColor(vector< vector<int> >& Graph, int vertex, int color, vector<int>& vColors)
+{
+	bool bSafe = true;
+	for (auto v : Graph[vertex])
+	{
+		if (0 != v && color == vColors[v])
+		{
+			bSafe = false;
+			break;
+		}
+	}
+	return bSafe;
+}
+
+
+bool  btAssignColor2Vertices(vector< vector<int> >& Graph, int vertex, vector<int>& vColors, int M)
 {
 
+	bool bColor = false;
+	for (int i = 1; i <= M; ++i)
+	{
+		if (IsSafeAssignColor(Graph, vertex, i, vColors))
+		{
+			vColors[vertex] = i;
 
-    return 0;
+			if ((vertex + 1) < Graph.size())
+			{
+				bColor = btAssignColor2Vertices(Graph, vertex + 1, vColors, M);
+				if (!bColor)
+				{
+					vColors[vertex] = 0; //Backtracking, try another color for current vertex.
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				bColor = true;
+				break;
+			}
+
+		}
+	}
+	return bColor;
+}
+
+
+int ColorGraph(vector< vector<int> >& Graph, int M)
+{
+	vector<int> vColors(Graph.size(), 0); // 0 element means invalid color.
+
+	if (btAssignColor2Vertices(Graph, 1, vColors, M))
+	{
+		cout << 1 << endl;
+	}
+	else
+	{
+		cout << 0 << endl;
+	}
+
+	return 0;
 }
 
 
 int main(int argc, char const *argv[])
 {
-    int t = 0;
-    cin>>t;
+	int t = 0;
+	cin >> t;
 
-    while(t--)
-    {
-        int N;
-        int M;
-        int E;
-        cin>>N>>M>>E;
-        vector< vector<int> > graph(N+1, vector<int>(N+1,0));
-        for(int i = 0; i<E; ++i)
-        {
-            int s,e;
-            cin>>s>>e;
-            graph[s][e] = 1;
-            graph[e][s] = 1;
-        }
-    }
+	while (t--)
+	{
+		int N;
+		int M;
+		int E;
+		cin >> N >> M >> E;
+		vector< vector<int> > graph(N + 1, vector<int>(N + 1, 0));
+		for (int i = 0; i < E; ++i)
+		{
+			int s, e;
+			cin >> s >> e;
+			graph[s][e] = e;
+			graph[e][s] = s;
+		}
+		ColorGraph(graph,M);
+	}
 
-
-    return 0;
+	return 0;
 }
-
-
-
-
-
-
-
-
