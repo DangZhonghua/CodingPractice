@@ -27,5 +27,51 @@ Output:
 ABC ACB BAC BCA CAB CBA 
 ABGS ABSG AGBS AGSB ASBG ASGB BAGS BASG BGAS BGSA BSAG BSGA GABS GASB GBAS GBSA GSAB GSBA SABG SAGB SBAG SBGA SGAB SGBA 
 
-
 */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<iostream>
+using namespace std;
+
+void SwapCharP(char*x, char*y)
+{
+    char c = *x;
+    *x = *y;
+    *y = c;
+}
+
+void PermutationsofString(char* szText, int Len, int index)
+{
+    if(index == Len)
+    {
+        cout<<szText<<" ";
+    }
+    else
+    {
+        for(int i = index; i<=Len; ++i)
+        {
+            SwapCharP(szText+index, szText+i);
+            PermutationsofString(szText,Len,index+1);
+            SwapCharP(szText+index,szText+i);
+        }
+    }
+}
+
+int main()
+{
+    int t= 0;
+    cin>>t;
+
+    while(t--)
+    {
+        char szText[10];
+        cin>>szText;
+        std::sort(szText,szText+strlen(szText));
+        PermutationsofString(szText,strlen(szText)-1,0);
+        cout<<endl;
+    }
+
+    return 0;
+}
