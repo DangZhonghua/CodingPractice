@@ -33,6 +33,8 @@ ABGS ABSG AGBS AGSB ASBG ASGB BAGS BASG BGAS BGSA BSAG BSGA GABS GASB GBAS GBSA 
 #include<stdlib.h>
 #include<string.h>
 #include<iostream>
+#include<algorithm>
+#include<vector>
 using namespace std;
 
 void SwapCharP(char*x, char*y)
@@ -42,21 +44,34 @@ void SwapCharP(char*x, char*y)
     *y = c;
 }
 
-void PermutationsofString(char* szText, int Len, int index)
+void PermutationsofString(char* szText, int Len, int index, vector<string>& vp)
 {
     if(index == Len)
     {
-        cout<<szText<<" ";
+        //cout<<szText<<" ";
+        vp.push_back(szText);
+
     }
     else
     {
         for(int i = index; i<=Len; ++i)
         {
             SwapCharP(szText+index, szText+i);
-            PermutationsofString(szText,Len,index+1);
+            PermutationsofString(szText,Len,index+1,vp);
             SwapCharP(szText+index,szText+i);
         }
     }
+}
+
+void outputPermutation(vector<string>& vp)
+{
+    std::sort(vp.begin(),vp.end());
+    for(auto s:vp)
+    {
+        cout<<s<<" ";
+    }
+    cout<<endl;
+    vp.clear();
 }
 
 int main()
@@ -68,9 +83,10 @@ int main()
     {
         char szText[10];
         cin>>szText;
-        std::sort(szText,szText+strlen(szText));
-        PermutationsofString(szText,strlen(szText)-1,0);
-        cout<<endl;
+        //std::sort(szText,szText+strlen(szText));
+        vector<string> vp;
+        PermutationsofString(szText,strlen(szText)-1,0,vp);
+        outputPermutation(vp);
     }
 
     return 0;
