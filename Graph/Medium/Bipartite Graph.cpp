@@ -39,7 +39,32 @@ Driver Code to call/invoke your function is mentioned above.*/
 /*The function takes an adjacency matrix representation of the graph (g)
 and an integer(v) denoting the no of vertices as its arguments.
 You are required to complete below method */
+
+/*
+
+use BFS to two colored vertices of graph
+
+*/
+
+#define MAX (20)
+
+#include<queue>
+#include<iostream>
+#include<unordered_map>
+using namespace std;
+
+
 bool isBipartite(int G[][MAX],int V)
 {
      //Your code here
+     unordered_map<int,int> vertex2ColorMap;
+     queue<int> levelQ;
+     //From the vertex 0 to BFS the Graph.
+
+
+     
+     
+
+
+
 }
