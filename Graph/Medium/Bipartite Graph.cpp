@@ -59,8 +59,10 @@ bool isBipartite(int G[][MAX],int V)
      //Your code here
      unordered_map<int,int> vertex2ColorMap;
      queue<int> levelQ;
+     int nextColor = 2;
      //From the vertex 0 to BFS the Graph.
-
+     vertex2ColorMap[0] = 1;
+     levelQ.push(0);
 
      
      
