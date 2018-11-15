@@ -54,7 +54,7 @@ use BFS to two colored vertices of graph
 using namespace std;
 
 
-bool JudgeBiPartite(int G[][MAX], int V, int startVertex,unordered_map<int, int>& vertex2ColorMap )
+bool JudgeBiPartite(int G[][MAX], int V, int startVertex, unordered_map<int, int>& vertex2ColorMap)
 {
 	queue<int> levelQ;
 	bool  bBipartite = true;
@@ -63,8 +63,8 @@ bool JudgeBiPartite(int G[][MAX], int V, int startVertex,unordered_map<int, int>
 	int CurlevelCount = 1;
 	int NextLevelCount = 0;
 	//From the vertex 0 to BFS the Graph.
-	vertex2ColorMap[0] = CurColor;
-	levelQ.push(0);
+	vertex2ColorMap[startVertex] = CurColor;
+	levelQ.push(startVertex);
 	while (CurlevelCount && bBipartite)
 	{
 		while (CurlevelCount && bBipartite)
@@ -107,22 +107,21 @@ bool JudgeBiPartite(int G[][MAX], int V, int startVertex,unordered_map<int, int>
 bool isBipartite(int G[][MAX], int V)
 {
 	//Your code here
-    bool bBipartite = true;
-    unordered_map<int, int> vertex2ColorMap;
-    for(int i = 0; i<V; ++i)
-    {
-        if( vertex2ColorMap.find(i) == vertex2ColorMap.end() )
-        {
-            bBipartite &= JudgeBiPartite(G,V,i,vertex2ColorMap);
-        }
-        if(!bBipartite)
-        {
-            break;
-        }
-    }
-    return bBipartite;    
+	bool bBipartite = true;
+	unordered_map<int, int> vertex2ColorMap;
+	for (int i = 0; i < V; ++i)
+	{
+		if (vertex2ColorMap.find(i) == vertex2ColorMap.end())
+		{
+			bBipartite &= JudgeBiPartite(G, V, i, vertex2ColorMap);
+		}
+		if (!bBipartite)
+		{
+			break;
+		}
+	}
+	return bBipartite;
 }
-
 
 int main()
 {
