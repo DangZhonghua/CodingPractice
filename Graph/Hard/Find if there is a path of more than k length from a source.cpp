@@ -5,7 +5,8 @@ https://www.geeksforgeeks.org/find-if-there-is-a-path-of-more-than-k-length-from
 Given a graph, a source vertex in the graph and a number k, 
 find if there is a simple path (without any cycle) starting from given source and ending at any other vertex.
 
-One important thing to note is, simply doing BFS or DFS and picking the longest edge at every step would not work. 
+One important thing to note is, simply doing BFS or DFS and picking the longest edge at every step 
+would not work. 
 The reason is, a shorter edge can produce longer path due to higher weight edges connected through it.
 
 The idea is to use Backtracking. We start from given source, explore all paths from current vertex. 
