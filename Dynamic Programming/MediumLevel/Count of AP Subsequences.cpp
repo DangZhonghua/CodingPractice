@@ -50,7 +50,26 @@ Output:
 
 /*
 
-
-
+AP[D][L][I] = AP[D][L-1][i-1] if a[i]-a[i-1] == D
+              0 else
 
 */
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int CountAP(vector<int>&a)
+{
+    long long count = 1+a.size();
+    int d = 0;
+    std::sort(a.begin(),a.end());
+    d = (*(a.rbegin())) - (*(a.begin()));
+    d +=1;
+    vector< vector< vector<int> > > AP(d+1, vector< vector<int> >(a.size()+1, vector<int>(a.size()+1,-1)));
+    
+
+
+
+    return 0;
+}
