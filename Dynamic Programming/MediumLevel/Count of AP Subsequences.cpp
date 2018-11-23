@@ -68,6 +68,16 @@ int CountAP(vector<int>&a)
     d +=1;
     vector< vector< vector<int> > > AP(d+1, vector< vector<int> >(a.size()+1, vector<int>(a.size()+1,-1)));
     
+    //For length == 2 AP.
+    for(int i = 0; i<a.size(); ++i)
+    {
+        for(int j = i+1; j<a.size(); ++j)
+        {
+            AP[a[j]-a[i]][2][j] = j;
+            ++count;
+        }
+    }
+    
 
 
 
