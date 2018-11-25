@@ -47,8 +47,7 @@ Output:
 
 /*
 
-AP[D][L][I] = AP[D][L-1][i-1] if a[i]-a[i-1] == D
-              0 else
+AP[i][d] = AP[i][d] + 1 if a[j]-a[i]==d if j>i
 
 */
 #include<iostream>
@@ -58,25 +57,21 @@ using namespace std;
 
 int CountAP(vector<int>&a)
 {
-    long long count = 1+a.size();
+    long long count = 1; // 1 for empty set
     int d = 0;
     std::sort(a.begin(),a.end());
     d = (*(a.rbegin())) - (*(a.begin()));
-    d +=1;
-    vector< vector< vector<int> > > AP(d+1, vector< vector<int> >(a.size()+1, vector<int>(a.size()+1,-1)));
+    vector< vector<int> > AP(a.size(), vector<int>(d+1,-1));
     
     //For length == 2 AP.
     for(int i = 0; i<a.size(); ++i)
     {
-        for(int j = i+1; j<a.size(); ++j)
+        for(int j = 0; j<=i; ++j)
         {
-            AP[a[j]-a[i]][2][j] = j;
-            ++count;
+            d = a[i]-a[j];
+            
         }
     }
     
-
-
-
     return 0;
 }
