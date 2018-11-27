@@ -1,5 +1,7 @@
 
 /*
+https://practice.geeksforgeeks.org/problems/count-of-ap-subsequences/0
+https://www.geeksforgeeks.org/count-arithmetic-progression-subsequences-array/
 Given an array A[] of n positive integers. The task is to count the number of Arithmetic Progression subsequence in the array.
 
 Note: Empty sequence or single element sequence is Arithmetic Progression. 
