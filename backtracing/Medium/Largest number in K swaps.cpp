@@ -2,7 +2,8 @@
 Largest number in K swaps 
 https://practice.geeksforgeeks.org/problems/largest-number-in-k-swaps/0
 
-Given a number K and string S of digits denoting a positive integer, build the largest number possible by performing swap operations on the digits of S atmost K times.
+Given a number K and string S of digits denoting a positive integer, 
+build the largest number possible by performing swap operations on the digits of S atmost K times.
 
 Input
 The first line of input contains an integer T denoting the number of test cases. Then T test cases follow. 

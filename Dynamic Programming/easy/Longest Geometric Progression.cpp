@@ -1,6 +1,7 @@
 /*
 Longest Geometric Progression
 https://practice.geeksforgeeks.org/problems/longest-geometric-progression/0
+https://www.geeksforgeeks.org/longest-geometric-progression/
 
 Given a set of numbers, find the Length of the Longest Geometrix Progression (LLGP) in it. The common ratio of GP must be an integer.
 
