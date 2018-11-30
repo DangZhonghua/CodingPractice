@@ -34,6 +34,14 @@ Testcase 2 : 3 and 10 forms a non-continuous subsequence with maximum sum.
 
 */
 
+/*
+
+SA[i] = max(SA[i-1], SA[i-2]+a[i])
+SA[0] = a[0]
+SA[1] = max{a[0],a[1]}
+
+*/
+
 #include<iostream>
 #include<vector>
 using namespace std;

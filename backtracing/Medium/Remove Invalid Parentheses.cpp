@@ -15,7 +15,12 @@ There are two possible solutions
 Input  : str = (v)())()
 Output : (v)()()  (v())()
 
+*/
 
+/*
+Are there: optimal substructure and overlapped problems?
+Seems there are no substructure: from prefix or postfix  or range
 
+What is the difference between DP and BT
 
 */
