@@ -2,7 +2,8 @@
 Find duplicate rows in a binary matrix
 https://www.geeksforgeeks.org/find-duplicate-rows-binary-matrix/
 
-Given a binary matrix whose elements are only 0 and 1, we need to print the rows which are duplicate of rows which are already present in the matrix.
+Given a binary matrix whose elements are only 0 and 1, we need to print the rows which are duplicate of rows 
+which are already present in the matrix.
 
 Examples:
 

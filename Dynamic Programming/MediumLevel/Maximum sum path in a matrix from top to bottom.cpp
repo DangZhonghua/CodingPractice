@@ -43,35 +43,70 @@ int MaximumSumPath(vector< vector<int>>& a)
 	int size = a.size();
 	vector< vector<int> > ms(size, vector<int>(size, INT_MIN));
 
-	for (int i = 0; i<size; ++i)
+	for (int i = 0; i < size; ++i)
 	{
 		ms[0][i] = a[0][i];
 	}
 
-	for (int r = 1; r<size; ++r)
+	for (int r = 1; r < size; ++r)
 	{
-		for (int c = 0; c<size; ++c)
+		for (int c = 0; c < size; ++c)
 		{
-			if (c - 1 >= 0 && ms[r][c]<ms[r - 1][c - 1] + a[r][c])
+			if (c - 1 >= 0 && ms[r][c] < ms[r - 1][c - 1] + a[r][c])
 			{
 				ms[r][c] = ms[r - 1][c - 1] + a[r][c];
 			}
-			if (c + 1<size && ms[r][c]<ms[r - 1][c + 1] + a[r][c])
+			if (c + 1 < size && ms[r][c] < ms[r - 1][c + 1] + a[r][c])
 			{
 				ms[r][c] = ms[r - 1][c + 1] + a[r][c];
 			}
 		}
 	}
 	int maxPath = INT_MIN;
-	for (int c = 0; c< size; ++c)
+	for (int c = 0; c < size; ++c)
 	{
-		if (ms[size - 1][c]>maxPath)
+		if (ms[size - 1][c] > maxPath)
 		{
 			maxPath = ms[size - 1][c];
 		}
 	}
 	cout << maxPath << endl;
 
+	return 0;
+}
+
+int MaximumSumPathWithLessSpace(vector< vector<int>>& a)
+{
+	int size = a.size();
+	vector< vector<int> > ms(2, vector<int>(size, INT_MIN));
+	int curlen = 0;
+	for (int c = 0; c < size; ++c)
+	{
+		ms[0][c] = a[0][c];
+	}
+	for (int r = 1; r < size; ++r)
+	{
+		for (int c = 0; c < size; ++c)
+		{
+			if (c - 1 >= 0 && ms[r % 2][c] < ms[(r - 1) % 2][c - 1] + a[r][c])
+			{
+				ms[r % 2][c] = ms[(r - 1) % 2][c - 1] + a[r][c];
+			}
+			if (c + 1 < size && ms[r % 2][c] < ms[(r - 1)%2][c + 1] + a[r][c])
+			{
+				ms[r % 2][c] = ms[(r - 1) % 2][c + 1] + a[r][c];
+			}
+		}
+	}
+	int maxSum = INT_MIN;
+	for (int c = 0; c < size; ++c)
+	{
+		if (maxSum < ms[(size - 1) % 2][c])
+		{
+			maxSum = ms[(size - 1) % 2][c];
+		}
+	}
+	cout << maxSum << endl;
 	return 0;
 }
 
@@ -84,6 +119,7 @@ int main()
 		{ 12, -4, 2, 6 } };
 
 	MaximumSumPath(mat);
+	MaximumSumPathWithLessSpace(mat);
 
 	return 0;
 }
