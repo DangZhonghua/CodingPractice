@@ -13,3 +13,41 @@ Following is the implementation for Tug of War problem. It prints the required a
 
 
 */
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int g_sum = 0;
+
+int btTugOfWar(vector<int>& a, vector<int>& curset, int cursum)
+{
+    if(curset.size() == a.size()/2)
+    {
+        
+    }
+}
+
+int TugOfWar(vector<int>& a)
+{
+    int ret = 0;
+    int sum = 0;
+    for(auto e:a)
+    {
+        sum += e;
+    }
+    g_sum = sum;
+
+    vector<int> curset;
+    btTugOfWar(a,curset,0);
+
+    return ret;
+}
+
+int main(int argc, char const *argv[])
+{
+    vector<int> a{3, 4, 5, -3, 100, 1, 89, 54, 23, 20};
+    vector<int> b{23, 45, -34, 12, 0, 98, -99, 4, 189, -1, 4};
+    return 0;
+}
