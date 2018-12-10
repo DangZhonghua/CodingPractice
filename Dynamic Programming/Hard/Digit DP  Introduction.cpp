@@ -4,9 +4,13 @@ Digit DP | Introduction
 
 Prerequisite : How to solve a Dynamic Programming Problem ?
 
-There are many types of problems that ask to count the number of integers ‘x‘ between two integers say ‘a‘ and ‘b‘ such that x satisfies a specific property that can be related to its digits.
+There are many types of problems that ask to count the number of integers ‘x‘ 
+between two integers say ‘a‘ and ‘b‘ such that x satisfies a specific property that can be related to its digits.
 
-So, if we say G(x) tells the number of such integers between 1 to x (inclusively), then the number of such integers between a and b can be given by G(b) – G(a-1). This is when Digit DP (Dynamic Programming) comes into action. All such integer counting problems that satisfy the above property can be solved by digit DP approach.
+So, if we say G(x) tells the number of such integers between 1 to x (inclusively), 
+then the number of such integers between a and b can be given by G(b) – G(a-1). 
+This is when Digit DP (Dynamic Programming) comes into action. 
+All such integer counting problems that satisfy the above property can be solved by digit DP approach.
 
 Key Concept
 
