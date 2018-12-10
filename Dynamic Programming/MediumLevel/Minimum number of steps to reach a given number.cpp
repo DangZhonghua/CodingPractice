@@ -27,10 +27,15 @@ Input:
 Output:
 3
 4
-
 Explanation:
-
 In the first test case we can go from 0 to 1 (1 step) and then from 1 to -1 (2 steps) and 
 then from -1 to 2 (3 steps). So in 3 steps we have reached our destination by taking i steps in ith turn.
+
+*/
+
+
+/*
+
+optimal substructure and overlapped sub-problems.
 
 */
