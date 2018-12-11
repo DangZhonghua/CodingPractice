@@ -33,17 +33,11 @@ Constraints:
 
 
 Example:
-
 Input:
 
 4 1
 
-1 3 0 3
-
 Output:
-
 3
-
-
 
 */
