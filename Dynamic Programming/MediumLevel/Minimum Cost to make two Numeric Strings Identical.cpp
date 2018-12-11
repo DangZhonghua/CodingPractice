@@ -71,6 +71,16 @@ int MinimumCost(const string& x, const string& y)
 
 	cout << mc[R][C] << endl;
 
+    for (auto row : mc)
+	{
+		for (auto cost : row)
+		{
+			cout << cost << " ";
+		}
+		cout<<endl;
+	}
+
+
 	return ret;
 }
 
