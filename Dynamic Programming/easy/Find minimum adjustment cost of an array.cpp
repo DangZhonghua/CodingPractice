@@ -22,22 +22,54 @@ Output:
 
 Print the minimum adjustment cost for each test case in a new line.
 
-
 Constraints:
-
 1<= T <=100
-
 1<= N, K <=1000
-
 1<= A[ ] <=100
 
 
 Example:
+
 Input:
-
 4 1
-
+1 3 0 3
 Output:
 3
 
 */
+
+/*
+optimal substructure and overlapped problem
+1. optimal substructure:  subarray solution is contained in the origin solution.
+2. overlapped subproblem: the min-cost end at every possible value.
+*/
+
+/*
+
+mdc[i][j] = min { mdc[i-1][k] + abs(j-a[i])} for abs(j-k)<X(target) 
+
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+int MinimumAdjustCost(vector<int>& a, int target)
+{
+    int ret = 0;
+
+    
+
+    return ret;
+}
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+    
+    return 0;
+}
