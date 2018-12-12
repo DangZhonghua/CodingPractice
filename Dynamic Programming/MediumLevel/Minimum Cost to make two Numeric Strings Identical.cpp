@@ -20,6 +20,13 @@ from both the strings or by deleting ‘1’, ‘4’and ‘2’
 from both the string. Deleting 142 from both the string will cost 2*(1+4+2)=14 which is more optimal than deleting ‘9’.
 */
 
+/*
+
+			mc[i-1][j-1]
+mc[i][j] =  min{mc[i-1][j] + x[i], mc[i][j-1]+y[j]}
+
+*/
+
 #include<iostream>
 #include<vector>
 #include<string>
@@ -35,6 +42,7 @@ int MinimumCost(const string& x, const string& y)
 	int C = y.length();
 
 	vector< vector<int> > mc(R + 1, vector<int>(C + 1, INT_MAX));
+	vector< vector<int> > md(R + 1, vector<int>(C+1,0));
 
 	mc[0][0] = 0; //for both empty string, it minimum cost is zero
 
@@ -61,9 +69,11 @@ int MinimumCost(const string& x, const string& y)
 			else
 			{
 				mc[r][c] = mc[r - 1][c] + x[r - 1] - '0';
+				md[r][c] = 1;
 				if (mc[r][c] >mc[r][c - 1] + y[c - 1] - '0')
 				{
 					mc[r][c] = mc[r][c - 1] + y[c - 1] - '0';
+					md[r][c] = 2;
 				}
 			}
 		}
@@ -71,7 +81,7 @@ int MinimumCost(const string& x, const string& y)
 
 	cout << mc[R][C] << endl;
 
-    for (auto row : mc)
+	for (auto row : mc)
 	{
 		for (auto cost : row)
 		{
@@ -80,6 +90,14 @@ int MinimumCost(const string& x, const string& y)
 		cout<<endl;
 	}
 
+	for (auto row : md)
+	{
+		for (auto cost : row)
+		{
+			cout << cost << " ";
+		}
+		cout << endl;
+	}
 
 	return ret;
 }
@@ -91,9 +109,9 @@ int main(int argc, char const *argv[])
 	string y1 = "135";
 
 	string x2 = "9142";
-	string y2 = "1429";
+	string y2 = "1429"; 
 
-	MinimumCost(x1, y1);
+	//MinimumCost(x1, y1);
 	MinimumCost(x2, y2);
 
 	return 0;
