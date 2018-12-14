@@ -23,3 +23,41 @@ Exp :- 1 + 2 + 3 + 1 + 2 + 1 + 2 + 3 = 15
 Dynamic Programming: optimal substructure and overlapped subproblems.
 
 */
+
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+int MinimumCostOfBuying(vector<int>& a)
+{
+    int ret = 0;
+    int maxRatio  = 0;
+    int C = a.size();
+    for(auto v:a)
+    {
+        if(maxRatio<v)
+        {
+            maxRatio = v;
+        }
+    }
+    vector< vector<int> > dp(C, vector<int>(maxRatio+1, INT_MAX));
+
+    for(int i = 0; i<C; ++i)
+    {
+        for(int r = 1; r<=maxRatio; ++r)
+        {
+            
+        }
+    }
+
+
+    return ret;
+}
+
+
+int main(int argc, char const *argv[])
+{
+    
+    return 0;
+}
