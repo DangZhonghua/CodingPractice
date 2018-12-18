@@ -20,6 +20,7 @@ Exp :- 1 + 2 + 3 + 1 + 2 + 1 + 2 + 3 = 15
 */
 
 /*
+
 Dynamic Programming: optimal substructure and overlapped subproblems.
 
 */
@@ -41,23 +42,58 @@ int MinimumCostOfBuying(vector<int>& a)
             maxRatio = v;
         }
     }
-    vector< vector<int> > dp(C, vector<int>(maxRatio+1, INT_MAX));
+    vector< vector<int> > dp(C+1, vector<int>(maxRatio+1, INT_MAX));
+    for(int i = 0; i<=maxRatio; ++i)
+    {
+        dp[0][i] = 0;
+    }
 
-    for(int i = 0; i<C; ++i)
+    for(int i = 1; i<=C; ++i)
     {
         for(int r = 1; r<=maxRatio; ++r)
         {
-            
+            if( 1 == i)
+            {
+                dp[i][r] = r; // For single elements.
+            }
+            else
+            {
+               if(a[i]>a[i-1] && INT_MAX != dp[i-1][r])
+               {
+                   dp[i][r] = dp[i-1][r] + r+1;
+               }
+               else if(a[i]<a[i-1] && INT_MAX != dp[i-1][r])
+               {
+                 if(1<r)
+                 {
+                    dp[i][r] = dp[i-1][r] + r-1;
+                 }
+               }
+               else
+               {
+                   dp[i][r] = dp[i-1][r] + r;
+               }
+            }
         }
     }
-
-
+    int minv = INT_MAX;
+    for(int r = 1; r<=maxRatio; ++r)
+    {
+        if(minv>dp[C][r])
+        {
+            minv = dp[C][r];
+        }
+    }
+    cout<<minv<<endl;
+    
     return ret;
 }
 
 
 int main(int argc, char const *argv[])
 {
+    vector<int> a{1, 3, 4, 3, 7, 1};
+    MinimumCostOfBuying(a);
     
     return 0;
 }
