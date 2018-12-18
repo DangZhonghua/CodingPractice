@@ -18,3 +18,48 @@ Output: 9
 2->3->1->3
 
 */
+
+/*
+
+optimal substructure and overlapped subproblems.
+cost[i] = min{cost[i-1]+a[i-1], cost[i-2]+a[i-2]}
+cost[0] = cost[1] = 0;
+*/
+
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+
+int minimumCostClimb(vector<int>& a)
+{
+    int ret = 0;
+    vector<int> minc(a.size(), INT_MAX);
+
+    minc[0] = minc[1] = 0;
+    
+    for(int i = 2;i<a.size(); ++i)
+    {
+        minc[i] = minc[i-2]+a[i-2];
+        if(minc[i]>minc[i-1]+a[i-1])
+        {
+            minc[i] = minc[i-1]+a[i-1];
+        }
+    }
+    
+    cout<<minc[a.size()-1]<<endl;
+
+    return ret;
+}
+
+
+int main(int argc, char const *argv[])
+{
+    vector<int> a{ 16, 19, 10, 12, 18 };
+    vector<int> b{2, 5, 3, 1, 7, 3, 4};
+    minimumCostClimb(a);
+    minimumCostClimb(b);
+
+    return 0;
+}
