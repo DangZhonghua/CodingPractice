@@ -42,6 +42,13 @@ Output:
 
 /*
 this is 0-1 knapsack with right-full restrict.
+
+2
+19 134
+84 3 105 70 75 129 50 184 24 23 40 158 194 63 126 146 14 167 165
+20 555
+78 125 118 91 183 115 56 188 139 18 193 93 20 142 178 197 60 126 3 74
+
 */
 
 #include<iostream>
@@ -53,40 +60,60 @@ using namespace std;
 int minimumCostBuy(vector<int>& vc, int W)
 {
 	int ret = 0;
-	vector< vector<int> >  f(vc.size(), vector<int>(W + 1, INT_MAX));
 
-	for (int i = 0; i < vc.size(); ++i) //when W = 0; the minimum cost of course is zero.
-	{
-		f[i][0] = 0;
-	}
+	vector<int> vw;
+	vector<int> vv;
+	vv.push_back(0);
+	vw.push_back(0);
 
 	for (int i = 1; i < vc.size(); ++i)
 	{
-		if (-1 == vc[i])
+		if (-1 != vc[i])
 		{
-			continue;
+			vw.push_back(i);
+			vv.push_back(vc[i]);
 		}
-		for (int w = 1; w <= W; ++w)
+	}
+
+	vector< vector<int> >  f(W+1, vector<int>(vw.size(), INT_MAX));
+
+	for (int i = 0; i < vw.size(); ++i) //when W = 0; the minimum cost of course is zero.
+	{
+		f[0][i] = 0;
+	}
+	
+	for (int w = 1; w <= W; ++w)
+	{
+		for (int i = 1; i < vw.size(); ++i)
 		{
-			f[i][w] = f[i - 1][w];
-			if (w>=i && INT_MAX != f[i - 1][w - i] && f[i][w] > f[i - 1][w - i] + vc[i])
+			if (f[w][i] > f[w][i - 1])  // without any number  of ith packet
 			{
-				f[i][w] = f[i - 1][w - i] + vc[i];
+				f[w][i] = f[w][i-1];
+			}
+			if (vw[i] <= w)
+			{
+				if (INT_MAX != f[w - vw[i]][i] && f[w][i] > f[w - vw[i]][i] + vv[i])
+				{
+					f[w][i] = f[w - vw[i]][i] + vv[i];
+				}	
 			}
 		}
 	}
-	if (INT_MAX == f[vc.size() - 1][W])
+	
+
+	if (INT_MAX != f[W][vw.size() - 1])
 	{
-		cout << -1 << endl;
+		cout << f[W][vw.size()-1]<<endl;
 	}
 	else
 	{
-		cout << f[vc.size() - 1][W] << endl;
+		cout<<-1<<endl;
 	}
-
 
 	return ret;
 }
+
+
 
 int main(int argc, char const *argv[])
 {
