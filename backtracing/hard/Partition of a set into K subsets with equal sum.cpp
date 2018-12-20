@@ -18,3 +18,13 @@ It is not possible to divide above array into 3
 parts with equal sum
 
 */
+
+/*
+
+this can be sloved by dp as knapsack problem .
+Or
+Backtracking technique.
+
+
+
+*/
