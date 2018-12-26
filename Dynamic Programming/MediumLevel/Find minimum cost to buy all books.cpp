@@ -22,6 +22,8 @@ Exp :- 1 + 2 + 3 + 1 + 2 + 1 + 2 + 3 = 15
 /*
 Dynamic Programming: optimal substructure and overlapped subproblems.
 
+DP[i][p] = min{DP[i-1][j]+p} for a[i]>a[i-1] p = j+1 or a[i]<a[i-1] p = j-1
+
 */
 
 #include<iostream>
@@ -41,13 +43,19 @@ int MinimumCostOfBuying(vector<int>& a)
             maxRatio = v;
         }
     }
-    vector< vector<int> > dp(C, vector<int>(maxRatio+1, INT_MAX));
 
-    for(int i = 0; i<C; ++i)
+    vector< vector<int> > dp(C+1, vector<int>(maxRatio+1, INT_MAX));
+    for(int p = 0; p<=maxRatio; ++p)
+    {
+        dp[0][p] = 0;
+        dp[1][p] = 1;  //for only one single element case.
+    }
+
+    for(int i = 1; i<=C; ++i)
     {
         for(int r = 1; r<=maxRatio; ++r)
         {
-            
+            dp[]
         }
     }
 
