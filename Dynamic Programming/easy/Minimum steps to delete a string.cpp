@@ -1,6 +1,7 @@
 /*
 Minimum steps to delete a string 
 https://practice.geeksforgeeks.org/problems/minimum-steps-to-delete-a-string/0/?ref=self
+https://www.geeksforgeeks.org/minimum-steps-to-delete-a-string-after-repeated-deletion-of-palindrome-substrings/
 
 Given a string containing characters as integers only. We need to delete all character of this string 
 in a minimum number of steps where in one step we can delete the substring which is a palindrome. 
