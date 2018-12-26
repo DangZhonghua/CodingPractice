@@ -31,7 +31,4 @@ Output : (1, 3) or (2  ,4 ) or (3 ,4 )
 They all are having  maximum bit difference
 that is 3
 
-
-
-
 */

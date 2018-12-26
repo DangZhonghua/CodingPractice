@@ -3,7 +3,7 @@ Find maximum path length in a binary matrix
 https://www.geeksforgeeks.org/find-maximum-path-length-in-a-binary-matrix/
 
 Given a square matrix mat every element of which is either 0 or 1. A value 1 means connected and 0 means not connected. 
-The task is to find the largest length of a path in the matrix after changing atmost one 0 to 1.
+The task is to find the largest length of a path in the matrix after changing at most one 0 to 1.
  A path is a 4-directionally connected group of 1s.
 
 Examples:
@@ -14,6 +14,5 @@ Examples:
 
     Input: mat[][] = {{1, 1}, {1, 1}}
     Output: 4 
-
 
 */
