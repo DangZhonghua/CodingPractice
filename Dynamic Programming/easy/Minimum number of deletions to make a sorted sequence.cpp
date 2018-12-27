@@ -37,3 +37,52 @@ Output:
 this is LIS variation problem: Minimum Deletion = Len-LIS
 
 */
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+int minimumDeletion(vector<int>&a)
+{
+    vector<int> lis(a.size(),1);
+    int maxlis = 1;
+    for(int i = 1; i<a.size();++i)
+    {
+        for(int j = 0; j<i; ++j)
+        {
+          if(a[i]>a[j] && lis[i]<lis[j]+1)
+          {
+              lis[i] = lis[j]+1;
+          }
+        }
+        if(lis[i]>maxlis)
+        {
+            maxlis = lis[i];
+        }
+    }
+
+    cout<<(a.size()-maxlis)<<endl;
+
+
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+    cin>>t;
+    while(t--)
+    {
+        int N = 0;
+        cin>>N;
+        int i =0;
+        vector<int> a(N,0);
+        while(i<N)
+        {
+            cin>>a[i];
+            ++i;
+        }
+        minimumDeletion(a);
+    }
+    return 0;
+}

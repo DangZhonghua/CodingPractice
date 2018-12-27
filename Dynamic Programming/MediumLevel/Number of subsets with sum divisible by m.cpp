@@ -67,10 +67,6 @@ int CalcSubSetCount(vector<int>&a, int m)
 				{
 					f[i][s] += f[i - 1][s - a[i - 1]];
 				}
-				if (s%m == 0)
-				{
-					//divisibleCount += f[i][s];
-				}
 			}
 
 		}
