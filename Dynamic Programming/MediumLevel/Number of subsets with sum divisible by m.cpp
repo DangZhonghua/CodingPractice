@@ -23,7 +23,7 @@ and {1, 2, 3, 4}
 
 /*
 
-Use 0-1 knapsack technique to slove this.
+Use 0-1 knapsack technique to solve this.
 
 */
 
@@ -46,11 +46,17 @@ int CalcSubSetCount(vector<int>&a, int m)
 	vector< vector<int> > f(a.size() + 1, vector<int>(sum + 1, INT_MIN));
 
 	f[0][0] = 1;
+	for (int i = 0; i < a.size(); ++i)
+	{
+		f[i][0] = 1;	// if no select from the previous i element, the choice is 1.
+	}
 
 	for (int i = 1; i <= a.size(); ++i)
 	{
 		for (int s = 1; s <= sum; ++s)
 		{
+			//This is the most important for me!
+			f[i][s] = f[i-1][s]; // s is formed by the previous (i-1) elements
 			if (s >= a[i - 1] && INT_MIN != f[i - 1][s - a[i - 1]])
 			{
 				if (INT_MIN == f[i][s])
@@ -61,16 +67,24 @@ int CalcSubSetCount(vector<int>&a, int m)
 				{
 					f[i][s] += f[i - 1][s - a[i - 1]];
 				}
+				if (s%m == 0)
+				{
+					//divisibleCount += f[i][s];
+				}
 			}
-			if (INT_MIN != f[i][s] && s%m == 0)
-			{
-				divisibleCount += f[i][s];
-			}
+
 		}
 	}
 
-	cout << divisibleCount << endl;
+	for (int i = 1; i <= sum; ++i)
+	{
+		if (i%m == 0)
+		{
+			divisibleCount += f[a.size()][i];
+		}
+	}
 
+	cout<< divisibleCount << endl;
 
 	return ret;
 }
@@ -83,5 +97,8 @@ int main(int argc, char const *argv[])
 	int m = 3;
 	CalcSubSetCount(a, m);
 
+	vector<int> b{1, 2, 3, 4};
+	m = 2;
+	CalcSubSetCount(b, m);
 	return 0;
 }
