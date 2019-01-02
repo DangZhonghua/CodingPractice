@@ -9,7 +9,9 @@ If a sequence {x1, x2, .. xn} is alternating sequence then its element satisfy o
   x1 > x2 < x3 > x4 < x5 > …. xn 
 
 Input:
-The first line of input contains an integer T denoting the number of test cases. Each test case contains an integer n which denotes the number of elements in the array a[]. Next line contains space separated n elements in the array a[].​
+The first line of input contains an integer T denoting the number of test cases. 
+Each test case contains an integer n which denotes the number of elements in the array a[]. 
+Next line contains space separated n elements in the array a[].​
 
 Output:
 Print the length of the longest such subsequence.
@@ -31,5 +33,10 @@ Output:
 3
 2
 
+*/
+
+/*
+
+Dynamic Programming:overlapped subproblem and optimal structure.
 
 */

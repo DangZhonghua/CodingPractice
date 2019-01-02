@@ -1,4 +1,5 @@
 /*
+
 Minimum cost to buy N kilograms of sweet for M persons
 https://www.geeksforgeeks.org/minimum-cost-to-buy-n-kilograms-of-sweet-for-m-persons/
 
@@ -22,8 +23,69 @@ Also, there is an infinite number of packets with i size of sweets.
 
 */
 
+
+
 /*
 
 this is 2D complete knapsack problems. There are two ressource need to consume: kilogram and the package count.
-f[i][K][P]
+f[i][K][M]
+
 */
+
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+
+int CalcMinimumSpent(vector<int>&a, int M, int N)
+{
+    int ret = 0;
+    vector<int> vc;
+    vector<int> vw;
+    
+    for(int i = 0; i<a.size(); ++i)
+    {
+        if(a[i])
+        {
+            vc.push_back(a[i]);
+            vw.push_back(i+1);
+        }
+    }
+
+    vector< vector< vector<int> > > dp(vc.size()+1,vector< vector<int> >(M+1, vector<int>(N+1,INT_MAX)));
+    //Pay attention to the initialization of matrix.
+    dp[0][0][0] = 0;
+
+    for(int i = 0; i<vc.size(); ++i)
+    {
+        for(int m = 1; m<M; ++m)
+        {
+            for(int n = 1; n< N; ++n)
+            {
+                dp[i][m][n] = dp[i-1][m][n];
+                if(n>=vw[i] && INT_MAX != dp[i-1][m-1][n-vw[i]] && dp[i][m][n]< dp[i-1][m-1][n-vw[i]] + vc[i])
+                {
+                   dp[i][m][n] = dp[i-1][m-1][n-vw[i]] + vc[i];
+                }
+            }
+        }
+    }
+
+    cout<<dp[vc.size()-1][M][N]<<endl; 
+
+    return ret;
+}
+
+
+int main(int argc, char const *argv[])
+{
+    vector<int> a{2, 1, 3, 0, 4, 10};
+    int M = 3;
+    int N = 6;
+    CalcMinimumSpent(a,M,N);
+
+
+    
+    return 0;
+}
