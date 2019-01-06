@@ -1,7 +1,8 @@
 /*
 Distinct Transformations
 https://practice.geeksforgeeks.org/problems/distinct-transformations/0/?ref=self
-Given two sequences A, B, find out number of unique ways in sequence A, to form a subsequence that is identical to the sequence B.
+Given two sequences A, B, find out number of unique ways in sequence A, to form a subsequence 
+that is identical to the sequence B.
 
 Example :
 A = "abcccdf"  B = "abccdf"
