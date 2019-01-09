@@ -38,13 +38,12 @@ Output:
 
 /*
 
-			mc[i,j-1]+1 if x[i] == y[j]
+mc[i,j-1]+1 if x[i] == y[j]
 mc[i,j] =
-			mc[i,j-1]  if x[i] != y[j]
+mc[i,j-1]  if x[i] != y[j]
 
 */
 
-#include "pch.h"
 #include<iostream>
 #include<vector>
 #include<string>
@@ -76,14 +75,11 @@ int DistinctTransformation(string& x, string& y)
 
 			if (vlcs[i][j] == i)
 			{
+				vmc[i][j] = vmc[i - 1][j - 1];
 				if (vlcs[i][j - 1] == i)
 				{
-					vmc[i][j] = vmc[i][j - 1] + 1; // how many choices which make x[1...i] and y[1...j] lcs is i length.
-				}
-				else
-				{
-					vmc[i][j] = vmc[i - 1][j-1];
-				}
+					vmc[i][j] += vmc[i][j - 1]; // how many choices which make x[1...i] and y[1...j] lcs is i length.
+				}				
 			}
 			else
 			{
