@@ -38,9 +38,9 @@ Output:
 
 /*
 
-mc[i,j-1]+1 if x[i] == y[j]
+			mc[i-1,j-1]+mc[i][j-1] if x[i] == y[j]
 mc[i,j] =
-mc[i,j-1]  if x[i] != y[j]
+			mc[i,j-1]  if x[i] != y[j]
 
 */
 
@@ -50,7 +50,7 @@ mc[i,j-1]  if x[i] != y[j]
 using namespace std;
 
 
-int DistinctTransformation(string& x, string& y)
+int DistinctTransformation(const string& x, const string& y)
 {
 	vector< vector<int> > vlcs(x.length() + 1, vector<int>(y.length() + 1, 0));
 	vector< vector<int> > vmc(x.length() + 1, vector<int>(y.length() + 1, 0));
@@ -67,28 +67,33 @@ int DistinctTransformation(string& x, string& y)
 			if (x[i - 1] == y[j - 1])
 			{
 				vlcs[i][j] = vlcs[i - 1][j - 1] + 1;
+				if (vlcs[i][j] == i)
+				{
+					vmc[i][j] = vmc[i - 1][j - 1];
+					if (vlcs[i][j - 1] == i)
+					{
+						vmc[i][j] += vmc[i][j - 1]; // how many choices which make x[1...i] and y[1...j] lcs is i length if  y[j] is not used to match
+					}
+				}
 			}
 			else
 			{
 				vlcs[i][j] = vlcs[i][j - 1]; // this make x[1,i] is a substring not the subSequence.
-			}
-
-			if (vlcs[i][j] == i)
-			{
-				vmc[i][j] = vmc[i - 1][j - 1];
-				if (vlcs[i][j - 1] == i)
-				{
-					vmc[i][j] += vmc[i][j - 1]; // how many choices which make x[1...i] and y[1...j] lcs is i length.
-				}				
-			}
-			else
-			{
 				vmc[i][j] = vmc[i][j - 1];
 			}
 		}
 	}
 
 	cout << vmc[x.length()][y.length()] << endl;
+
+	//for (int i = 0; i <= x.length(); ++i)
+	//{
+	//	for (int j = 0; j <= y.length(); ++j)
+	//	{
+	//		cout << vmc[i][j] << " ";
+	//	}
+	//	cout<<endl;
+	//}
 
 	return 0;
 }
@@ -98,10 +103,22 @@ int main()
 {
 	int ret = 0;
 
-	string x = "abccdf";
-	string y = "abcccdf";
+	//string x = "abccdf";
+	//string y = "abcccdf";
 
-	DistinctTransformation(x, y);
+	//DistinctTransformation(x, y);
+	//DistinctTransformation("uwnny","uwnny");
+
+	int t = 0;
+	cin>>t;
+	while (t--)
+	{
+		string y;
+		string x;
+		cin>>y>>x;
+		DistinctTransformation(x,y);
+
+	}
 
 	return ret;
 }
