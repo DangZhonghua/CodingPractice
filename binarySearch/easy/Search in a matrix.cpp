@@ -36,8 +36,111 @@ Input:
 
 Output:
 0
-
 1
 
 
 */
+
+/*
+Find the row range first. then locate the target column. then search the column
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+int SearchInMatrix(vector< vector<int> >&m, int R, int C,int x)
+{
+    int ret = 0;
+    int rs = -1;
+    int re = -1;
+    
+    for(int i = 0; i<R; ++i)
+    {
+        if(m[i][0] >= x)
+        {
+            if(-1== re)
+            {
+                if( m[i][0] > x)
+                {
+                    re = i-1;
+                }
+            }
+        }
+
+        if(m[i][C-1]>=x)
+        {
+            if( -1 == rs)
+            {
+                rs = i;
+            }
+        }
+    }
+
+    if( -1 == re)
+    {
+        re = R-1;
+    }
+    if( -1 == rs)
+    {
+        cout<<0<<endl;
+        return 0;
+    }
+
+    //rs and re is the row range.
+    int c = 0;
+    for( c = 0; c<C; ++c)
+    {
+        if(m[re][c]>=x)
+        {
+            break;    
+        }
+    }
+    
+    bool bFind = false;
+    for(int r = re;r>=rs;--r)
+    {
+        if(m[r][c] == x)
+        {
+            bFind = true;
+            break;
+        }
+    }
+
+    cout<<(bFind?1:0)<<endl;
+    
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+
+    cin>>t;
+
+    while(t--)
+    {
+        int r,c;
+        cin>>r>>c;
+        int i = 0;
+        int j = 0;
+        vector< vector<int> > m(r,vector<int>(c,0));
+        while(i<r)
+        {
+            j = 0;
+            while(j<c)
+            {
+                cin>>m[i][j];
+                ++j;
+            }
+            ++i;
+        }
+        int X = 0;
+        cin>>X;
+        SearchInMatrix(m,r,c,X);
+    }
+    
+    return 0;
+}
+
