@@ -1,11 +1,14 @@
 /*
 Generate Grey Code Sequences 
 https://practice.geeksforgeeks.org/problems/generate-grey-code-sequences/1
+https://www.geeksforgeeks.org/given-a-number-n-generate-bit-patterns-from-0-to-2n-1-so-that-successive-patterns-differ-by-one-bit/
 
-Given a number N, your task is to complete the function which generates all n-bit grey code sequences, a grey code sequence is a sequence such that successive patterns in it differ by one bit.
+Given a number N, your task is to complete the function which generates all n-bit grey code sequences, 
+a grey code sequence is a sequence such that successive patterns in it differ by one bit.
 
 Input:
-The first line of input contains an integer T denoting the no of test cases. Then T test cases follow. Each test case contains an integer N.
+The first line of input contains an integer T denoting the no of test cases. 
+Then T test cases follow. Each test case contains an integer N.
 
 Output:
 For each test case in print the generated grey code sequences separated by space.
