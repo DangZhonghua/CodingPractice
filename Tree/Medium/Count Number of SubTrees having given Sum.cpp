@@ -1,3 +1,5 @@
+/*
+
 Count Number of SubTrees having given Sum
 https://practice.geeksforgeeks.org/problems/count-number-of-subtrees-having-given-sum/1
 
@@ -45,3 +47,54 @@ Input:
 Output:
 2
 0
+
+*/
+
+
+/*Please note that it's Function problem i.e.
+you need to write your solution in the form of Function(s) only.
+Driver Code to call/invoke your function is mentioned above.*/
+
+//User function Template for C++
+
+//Structure of the node of the binary tree is as
+
+struct Node {
+	int data;
+	struct Node *left, *right;
+};
+
+// your are required to complete this function
+// function should return the count of the number of subtrees with Sum equal to X
+// Use the post-order traverse to do this.
+
+
+int PostOrderCountSubtree(Node* n, int x,int&count)
+{
+    if(nullptr == n)
+    {
+        return 0;
+    }
+    int leftsum     = 0;
+    int rightsum    = 0;
+    
+    leftsum = PostOrderCountSubtree(n->left,x,count);
+    rightsum = PostOrderCountSubtree(n->right,x,count);
+    int sum = leftsum+rightsum+n->data;
+    if(sum == x)
+    {
+        ++count;
+    }
+    return sum;
+}
+
+
+int countSubtreesWithSumX(Node* root, int x)
+{
+	if (!root)return 0;
+	// Code here
+    int count = 0;
+    PostOrderCountSubtree(root, x,count);
+    
+    return count;
+}
