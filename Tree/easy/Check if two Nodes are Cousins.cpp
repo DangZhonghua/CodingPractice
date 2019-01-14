@@ -37,3 +37,16 @@ Output:
 1
 
 */
+
+
+//Complete the function below
+//Node is as follows:
+struct Node{
+  int data;
+  Node *left,*right;
+};
+
+bool ifCousin(Node *root,Node *a,Node *b)
+{
+   //add code here.
+}
