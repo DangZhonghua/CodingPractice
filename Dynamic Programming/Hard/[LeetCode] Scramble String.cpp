@@ -86,13 +86,21 @@ http://www.lifeincode.net/programming/leetcode-scramble-string-java/
 
 Analysis
 
-If string s1 and s2 are scramble strings, there must be a point that breaks s1 to two parts s11, s12, and a point that breaks s2 to two parts, s21, s22, and isScramble(s11, s21) && isScramble(s12, s22) is true, or isScramble(s11, s22) && isScramble(s12, s21) is true.
+If string s1 and s2 are scramble strings, there must be a point that breaks s1 to two parts s11, s12, 
+and a point that breaks s2 to two parts, s21, s22, and isScramble(s11, s21) && isScramble(s12, s22) is true, 
+or isScramble(s11, s22) && isScramble(s12, s21) is true.
 
-So we can make it recursively. We just break s1 at different position to check if there exists one position satisfies the requirement.
+So we can make it recursively. We just break s1 at different position to check if 
+there exists one position satisfies the requirement.
 
-Some checks are needed otherwise it will time out. For example, if the lengths of two strings are different, they can’t be scramble. And if the characters in two strings are different, they can’t be scramble either.
+Some checks are needed otherwise it will time out. For example, 
+if the lengths of two strings are different, they can’t be scramble. 
+And if the characters in two strings are different, they can’t be scramble either.
 
-Another way is to use DP. I use a three dimension array scramble[][][] to save the states. What scramble[k][i][j] means is that two substrings of length k, one starts from i of string s1, another one starts from j of string s2, are scramble. We are trying to find scramble[L][0][0]. For every length k, we try to divide the string to two parts differently, checking if there is a way that can make it true.
+Another way is to use DP. I use a three dimension array scramble[][][] to save the states. 
+What scramble[k][i][j] means is that two substrings of length k, one starts from i of string s1, 
+another one starts from j of string s2, are scramble. We are trying to find scramble[L][0][0]. For every length k, 
+we try to divide the string to two parts differently, checking if there is a way that can make it true.
 Code
 Recursive version
 

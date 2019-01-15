@@ -29,7 +29,8 @@ Given a Binary Tree, check if all leaves are at same level or not.
  Leaves are at same level
 
 Input:
-The task is to complete the method that takes one argument, root of Binary Tree and returns 1 if all leaves are at same level else returns 0
+The task is to complete the method that takes one argument, 
+root of Binary Tree and returns 1 if all leaves are at same level else returns 0
 
 Output:
 Output for each test case will be 0 if all leaves are not at same level else it will 1.
