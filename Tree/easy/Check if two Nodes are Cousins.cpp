@@ -46,7 +46,93 @@ struct Node{
   Node *left,*right;
 };
 
+/*
+record the parent the level during traversal.
+*/
+
+#include<queue>
+using namespace std;
+
 bool ifCousin(Node *root,Node *a,Node *b)
 {
    //add code here.
+   int alevel = -1;
+   Node* aParent = nullptr;
+   int blevel = -1;
+   Node* bParent = nullptr;
+   queue<Node*> curQue;
+   queue<Node*> nextQue;
+   
+   queue<Node*>* pCurQue = &curQue;
+   queue<Node*>* pNextQue = &nextQue;
+   
+   if(root == a)
+   {
+       alevel = 0;
+   }
+   if(root == b)
+   {
+       blevel = 0;
+   }
+   int nLevel = 0;
+   curQue.push(root);
+   bool bCousin = false;
+   while( !pCurQue->empty())
+   {
+       ++nLevel;
+       while(!pCurQue->empty())
+       {
+           Node* head =pCurQue->front();
+           pCurQue->pop();
+           if(head->left)
+           {
+               if(a->data == head->left->data)
+               {
+                   aParent = head;
+                   alevel = nLevel;
+               }
+               else if(b->data == head->left->data)
+               {
+                   bParent = head;
+                   blevel = nLevel;
+               }
+               pNextQue->push(head->left);
+           }
+           if(head->right)
+           {
+               if(a->data == head->right->data)
+               {
+                   aParent = head;
+                   alevel = nLevel;
+               }
+               else if(b->data == head->right->data)
+               {
+                   bParent = head;
+                   blevel = nLevel;
+               }
+               pNextQue->push(head->right);
+           }
+       }
+       if(nullptr != aParent && nullptr != bParent)
+       {
+           if(aParent != bParent)
+           {
+               bCousin = true;    
+           }
+           break;
+       }
+       else if( nullptr != aParent || nullptr != bParent)
+       {
+           break;
+       }
+       else
+       {
+           queue<Node*>* t = pCurQue;
+           pCurQue = pNextQue;
+           pNextQue = t;
+       }
+   } 
+
+    return bCousin;
+
 }
