@@ -17,3 +17,14 @@ Output : 25
 If you changed 'a' to 'z', it will cost 0 XOR 25.
 
 */
+#include<string>
+#include<iostream>
+using namespace std;
+
+int MinimumTransform(const string& x, const string& y, int K)
+{
+    int ret = 0;
+
+
+    return ret;
+}
