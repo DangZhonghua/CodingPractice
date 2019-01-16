@@ -58,14 +58,61 @@ Second test case represents a tree with 6 edges and 7 nodes.
 
 */
 
-/* Tree node structure  used in the program
+ //Tree node structure  used in the program
  struct Node
  {
      int data;
      Node* left, *right;
-}; */
+}; 
 /*You are required to complete below method */
+
+#include <queue>
+using namespace std;
+
 int maxLevelSum(Node * root)
 {
-   //Your code here
+  int maxsum = 0;
+  int cursum = 0;
+  queue<Node*>  levelQ;
+  
+  if(nullptr == root)
+  {
+      return 0;
+  }
+  
+  int nCurCount     = 0;
+  int nNextCount    = 0;
+
+  levelQ.push(root);
+  nCurCount = 1;
+  
+  while(nCurCount)
+  {
+      while(nCurCount)
+      {
+          Node* head = levelQ.front();
+          cursum += levelQ.front()->data;
+          levelQ.pop();
+          --nCurCount;
+          if(nullptr != head->left )
+          {
+              levelQ.push(head->left);
+              ++nNextCount;
+          }
+          if(nullptr != head->right)
+          {
+              levelQ.push(head->right);
+              ++nNextCount;
+          }
+      }
+      nCurCount = nNextCount;
+      nNextCount = 0;
+      if(cursum>maxsum)
+      {
+          maxsum = cursum;
+      }
+      cursum = 0;
+  }
+
+    return maxsum;
 }
