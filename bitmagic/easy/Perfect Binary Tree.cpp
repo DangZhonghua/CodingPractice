@@ -35,3 +35,13 @@ Yes
 No
 
 */
+
+
+/* This function tests if a binary tree is perfect
+   or not. It basically checks for two things :
+   1) All leaves are at same level
+   2) All internal nodes have two children */
+bool isPerfectRec(struct Node* root, int d, int level )
+{
+// Your code goes here
+}
