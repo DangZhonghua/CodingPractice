@@ -17,9 +17,19 @@ Output : 25
 If you changed 'a' to 'z', it will cost 0 XOR 25.
 
 */
+
+/*
+
+mc[k,i,j] = 
+
+*/
+
+
 #include<string>
 #include<iostream>
+#include<vector>
 using namespace std;
+
 
 int MinimumTransform(const string& x, const string& y, int K)
 {
