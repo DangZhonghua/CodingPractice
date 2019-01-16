@@ -55,7 +55,7 @@ Output
 
 */
 
-The structure of the binary tree is as follows
+//The structure of the binary tree is as follows
 struct Node
 {
     int data;
@@ -64,7 +64,65 @@ struct Node
 };
 
 /*You are required to complete this method*/
+
+#include<queue>
+using namespace std;
+
 bool check(Node *root)
 {
-    //Your code here
+  bool bleaf = false;
+  int  nFistLeafLevel = -1;
+  bool bSameLevel = true;
+  
+  if( nullptr == root)
+  {
+    return bSameLevel;
+  }
+
+  queue<Node*> levelQ;
+  int nCurCount   = 1;
+  int nNextCount  = 0;
+  int nLevel      = 0;
+
+  levelQ.push(root);
+  while(nCurCount && bSameLevel)
+  {
+    while(nCurCount)
+    {
+      Node* head = levelQ.front();
+      levelQ.pop();
+      --nCurCount;
+      if(head->left)
+      {
+        levelQ.push(head->left);
+        ++nNextCount;
+      }
+      if(head->right)
+      {
+        levelQ.push(head->right);
+        ++nNextCount;
+      }
+      if(nullptr == head->left && nullptr == head->right)
+      {
+        if(bleaf)
+        {
+          if( nLevel != nFistLeafLevel)
+          {
+            bSameLevel = false;
+            break;
+          }
+        }
+        else
+        {
+          bleaf = true;
+          nFistLeafLevel = nLevel;
+        }
+      }
+    }
+    nCurCount = nNextCount;
+    nNextCount = 0;
+    ++nLevel;
+  }
+
+  return bSameLevel;
 }
