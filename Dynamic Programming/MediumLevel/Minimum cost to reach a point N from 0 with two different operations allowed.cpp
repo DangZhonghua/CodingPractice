@@ -26,3 +26,45 @@ Examples:
     Total cost = 5 + 1 + 1 + 1 + 5 = 13. 
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int MinimumCost2Reach(int N,int P, int Q)
+{
+    int ret = 0;
+    vector<int> vc(N+1, 0);
+
+    for(int i = 1; i<= N; ++i)
+    {
+        vc[i] = vc[i-1] + P;
+        if(0 == i%2)
+        {
+          if( vc[i]> vc[i/2] + Q )
+          {
+              vc[i] = vc[i/2] + Q;
+          }
+        }
+    }
+    cout<<vc[N]<<endl;
+    return ret;
+}
+
+int main(int argc, char const *argv[])
+{
+    int t = 0;
+
+     MinimumCost2Reach(1,3,4);
+     MinimumCost2Reach(9,5,1);
+
+    // cin>>t;
+    
+    // while(t--)
+    // {
+    //     int N,P,Q;
+    //     cin>>N>>P>>Q;
+    //     MinimumCost2Reach(N,P,Q);
+    // }
+    return 0;
+}

@@ -2,10 +2,12 @@
 https://practice.geeksforgeeks.org/problems/find-the-highest-number/0/?ref=self
 Find the Highest number
 
-Given an array in such a way that the elements stored in array are in increasing order initially and then after reaching to a peak element , elements stored are in decreasing order. Find the highest element.
+Given an array in such a way that the elements stored in array are in increasing order initially and 
+then after reaching to a peak element , elements stored are in decreasing order. Find the highest element.
 
 Input:
-The first line of input contains an integer T denoting the number of test cases. The first line of each test case consists of an integer n. The next line consists of n spaced integers. 
+The first line of input contains an integer T denoting the number of test cases. 
+The first line of each test case consists of an integer n. The next line consists of n spaced integers. 
 
 Output:
 Print the highest number in the array.
