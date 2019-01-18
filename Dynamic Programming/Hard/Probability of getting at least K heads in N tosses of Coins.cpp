@@ -2,7 +2,8 @@
 https://www.geeksforgeeks.org/probability-getting-least-k-heads-n-tosses-coins/
 Probability of getting at least K heads in N tosses of Coins
 
-Given N number of coins, the task is to find probability of getting at least K number of heads after tossing all the N coins simultaneously.
+Given N number of coins, the task is to find probability of getting at least K number of heads 
+after tossing all the N coins simultaneously.
 
 Example :
 

@@ -2,7 +2,11 @@
 https://www.geeksforgeeks.org/minimum-cost-sort-strings-using-reversal-operations-different-costs/
 Minimum cost to sort strings using reversal operations of different costs
 
-Given an array of strings and costs of reversing all strings, we need to sort the array. We cannot move strings in array, only string reversal is allowed. We need to reverse some of the strings in such a way that all strings make a lexicographic order and cost is also minimized. If it is not possible to sort strings in any way, output not possible.
+Given an array of strings and costs of reversing all strings, we need to sort the array. 
+We cannot move strings in array, only string reversal is allowed. 
+We need to reverse some of the strings in such a way that all strings make 
+a lexicographic order and cost is also minimized. 
+If it is not possible to sort strings in any way, output not possible.
 Examples:
 
 Input  : arr[] = {“aa”, “ba”, “ac”}, 
