@@ -38,12 +38,13 @@ Output:
 
 /*
 
+
 md[i,j] = min
-{
-1+md[i+1,j],
-md[i+2,k-1] + md[k+1,j], if s[k] == s[i]
-1 + md[i+2,j] if s[i] == s[i+1]
-}
+				{
+				1+md[i+1,j],
+				md[i+2,k-1] + md[k+1,j], if s[k] == s[i]
+				1 + md[i+2,j] if s[i] == s[i+1]
+				}
 
 
 */
