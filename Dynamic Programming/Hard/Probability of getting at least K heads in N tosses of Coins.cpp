@@ -1,4 +1,5 @@
 /*
+
 https://www.geeksforgeeks.org/probability-getting-least-k-heads-n-tosses-coins/
 Probability of getting at least K heads in N tosses of Coins
 
@@ -9,7 +10,7 @@ Example :
 
 Suppose we have 3 unbiased coins and we have to
 find the probability of getting at least 2 heads,
-so there are 23 = 8 ways to toss these
+so there are 2^3 = 8 ways to toss these
 coins, i.e.,
 HHH, HHT, HTH, HTT, THH, THT, TTH, TTT 
 
@@ -19,6 +20,6 @@ HHH, HHT, HH, THH
 
 So the probability is 4/8 or 0.5
 
-
-
 */
+
+

@@ -2,7 +2,8 @@
 All ways to add parenthesis for evaluation
 https://www.geeksforgeeks.org/all-ways-to-add-parenthesis-for-evaluation/
 
-Given a string that represents an expression constituting numbers and binary operator +, – and * only. We need to parenthesize the expression in all possible way and return all evaluated values.
+Given a string that represents an expression constituting numbers and binary operator +, – and * only. 
+We need to parenthesize the expression in all possible way and return all evaluated values.
 
 Input : expr = “3-2-1”
 Output : {0, 2}
