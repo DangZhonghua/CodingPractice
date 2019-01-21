@@ -25,3 +25,13 @@ Output : 3
 (geeks)(for)(geeks)
 
 */
+
+/*
+this can be solved by greedy algorithm since DP is too complicated.
+this problem has greedy choice property.
+
+LPS[i,j] = LPS[i+k, j-k] + 1, the prefix and postfix which the length K is block palindrome.
+
+else increase the k and try again.
+the greedy choice is with the minimum k, the chunked palindrome is longest. So greedy algorithm can slove this problem.
+*/

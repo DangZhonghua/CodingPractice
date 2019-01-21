@@ -27,3 +27,18 @@ A solution set is:
 ]
 
 */
+
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) 
+    {
+        std::sort(candidates.begin(), candidates.end());
+        int cCount = candidates.size();
+        
+    }
+};
