@@ -1,7 +1,8 @@
 /*
 https://www.geeksforgeeks.org/minimum-number-of-bracket-reversals-needed-to-make-an-expression-balanced/
 Minimum number of bracket reversals needed to make an expression balanced
-Given an expression with only ‘}’ and ‘{‘. The expression may not be balanced. Find minimum number of bracket reversals to make the expression balanced.
+Given an expression with only ‘}’ and ‘{‘. The expression may not be balanced. 
+Find minimum number of bracket reversals to make the expression balanced.
 
 Examples:
 
