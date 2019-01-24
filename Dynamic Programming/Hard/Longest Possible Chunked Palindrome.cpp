@@ -37,3 +37,41 @@ the greedy choice is with the minimum k, the chunked palindrome is longest.
 So greedy algorithm can slove this problem.
 */
 
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+
+int longestChunkPalindrome(const string& x)
+{
+    int ret = 0;
+    int i = 0;
+    int j = x.length()-1;
+    int chunklen = 0;
+
+    while(i<j)
+    {
+        bool bChunked = false;
+        for(int k = 1; k<=(j-i+1); ++k)
+        {
+            if(x[i+k-1] == x[j-k+1] && 1==k)
+            {
+                ++chunklen;
+                bChunked = true;
+                break;
+            }
+            else
+            {
+                int cs1 = i;
+                int cs2 = j-k+1;
+                for(int L = 0; L<k; ++L)
+                {
+                    
+                }
+            }
+        }
+    }
+
+    return ret;
+}
