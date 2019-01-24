@@ -36,7 +36,6 @@ public:
 		unordered_map<char, int> dict;
 		bool bFind = true;
 		string strw = "";
-
 		for (char c : s)
 		{
 			dict[c] += 1;
