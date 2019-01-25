@@ -59,7 +59,12 @@ grid 是一个 N * N 的二维数组，N的取值范围是1 <= N <= 50。
 可以保证起点 grid[0][0] 和终点 grid[N-1][N-1] 的值都不会是 -1。
 */
 /*
+
+Get maximum cherry and must insure player can come back.
+
 this can be sloved by what?
+
+two dfs?
 
 
 */

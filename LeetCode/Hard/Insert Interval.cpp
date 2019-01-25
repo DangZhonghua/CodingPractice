@@ -1,25 +1,17 @@
 /*
-https://leetcode-cn.com/problems/merge-intervals/
-Merge Intervals
+https://leetcode-cn.com/problems/insert-interval/
+Insert Interval
 
-Given a collection of intervals, merge all overlapping intervals.
+Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
+You may assume that the intervals were initially sorted according to their start times.
 Example 1:
-Input: [[1,3],[2,6],[8,10],[15,18]]
-Output: [[1,6],[8,10],[15,18]]
-Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
+Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
+Output: [[1,5],[6,9]]
 Example 2:
-Input: [[1,4],[4,5]]
-Output: [[1,5]]
-Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+Output: [[1,2],[3,10],[12,16]]
+Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
 
-*/
-
-/*
-This can be solved by interval tree.
-
-[[2,3],[4,5],[6,7],[8,9],[1,10]]
-[[4,5],[6,7],[8,9]]
-[[1,10]]
 */
 
 /**
@@ -31,31 +23,9 @@ This can be solved by interval tree.
  *     Interval(int s, int e) : start(s), end(e) {}
  * };
  */
-
-
-
-
-#include<iostream>
-#include<vector>
-#include<map>
-#include<set>
-using namespace std;
-
-struct Interval {
-	int start;
-	int end;
-	Interval() : start(0), end(0) {}
-	Interval(int s, int e) : start(s), end(e) {}
-};
-
-
-
-
-
-
 class Solution 
 {
-public:
+    public:
 	struct CompareInterval
 	{
 
@@ -71,7 +41,16 @@ public:
 	};
 
 public:
-	vector<Interval> merge(vector<Interval>& intervals)
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) 
+    {
+        intervals.push_back(newInterval );
+        vector<Interval> a;
+        merge(intervals,a);
+        return a;
+    }
+
+private:
+    void merge(vector<Interval>& intervals, vector<Interval>& vi)
 	{
 		set<Interval, CompareInterval> is;
 		int i = 0;
@@ -99,23 +78,9 @@ public:
 				}	
 			}
 		}
-
-		vector<Interval> vi;
 		for (auto it = is.begin(); it != is.end(); ++it)
 		{
 			vi.push_back(*it);
 		}
-		return vi;
 	}
 };
-
-
-int main()
-{
-	vector<Interval> intervals{ {2,3 }, { 4,5 }, { 6,7 }, { 8,9 }, { 1,10 }};
-	Solution sol;
-	sol.merge(intervals);
-
-
-	return 0;
-}
