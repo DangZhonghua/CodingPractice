@@ -33,66 +33,129 @@ class Solution {
 public:
 	string minWindow(string s, string t)
 	{
-		unordered_map<char, int> dict;
+		struct chPos
+		{
+			vector<int> vp;
+			int count{ 0 };
+			int index{ 0 };
+		};
+
+		unordered_map<char, chPos > dict;
 		bool bFind = true;
+		int  ws = -1;
+		int  we = -1;
+		int  wmin = -1;
+		int  fws = -1;
+		int  fwe = -1;
 		string strw = "";
-		for (char c : s)
+
+		//Build map for char in S about their position.
+		for (int i = 0; i < s.length(); ++i)
 		{
-			dict[c] += 1;
-		}
-		for (char c : t)
-		{
-			if (dict.end() != dict.find(c))
+			if (dict.end() != dict.find(s[i]))
 			{
-				dict[c] -= 1;
-				if (dict[c] < 0)
-				{
-					bFind = false;
-					break;
-				}
+				dict[s[i]].count += 1;
+				dict[s[i]].vp.push_back(i);
 			}
 			else
+			{
+				chPos a;
+				a.count += 1;
+				a.vp.push_back(i);
+				dict[s[i]] = a;
+			}
+		}
+
+		for (int i = 0; i < t.length(); ++i)
+		{
+			if (dict.end() == dict.find(t[i]))
 			{
 				bFind = false;
 				break;
 			}
 		}
-
-		if (bFind)
+		if (!bFind)
 		{
-			int i = 0;
-			int j = s.length() - 1;
-			while (i <= j)
-			{
-				dict[s[i]] -= 1;
-				if (dict[s[i]] < 0)
-				{
-					break;
-				}
-				++i;
-			}
-			while (i <= j)
-			{
-				dict[s[j]] -= 1;
-				if (dict[s[j]] < 0)
-				{
-					break;
-				}
-				--j;
-			}
-
-			strw = s.substr(i, j - i + 1);
+			return strw;
 		}
 
+		while (1)
+		{
+			int Lenp = t.length();
+			int start = 0;
+			chPos& fp = dict[t[0]];
+			if (fp.index >= fp.count)
+			{
+				break;
+			}
+			ws = fp.vp[fp.index++];
+			start = ws;
+			we = -1;
+			for (int i = 1; i < Lenp; ++i)
+			{
+				bool bNext = false;
+				chPos& fnp = dict[t[i]];
+				for (int next = fnp.index; next < fnp.count; ++next)
+				{
+					if (start < fnp.vp[next])
+					{
+						start = fnp.vp[next];
+						fnp.index = next;
+						bNext = true;
+						break;
+					}
+				}
+				if (bNext)
+				{
+					we = start;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if (-1 == we)
+			{
+				break;
+			}
+			else
+			{
+				if (-1 == wmin)
+				{
+					wmin = we - ws + 1;
+					fwe = we;
+					fws = ws;
+				}
+				else
+				{
+					if (wmin > (we - ws + 1))
+					{
+						wmin = (we - ws + 1);
+						fwe = we;
+						fws = ws;
+					}
+				}
+			}
+		}
+		
+		if (fwe > 0)
+		{
+			strw = s.substr(fws, wmin);
+		}
 		return strw;
 	}
 };
 
 int main(int argc, char const *argv[])
 {
-	string s = "ADO";
-	string t = "ABC";
+	string s = "cabwefgewcwaefgcf";
+	string t = "cae";
 	Solution sol;
+
+	s = "ADOBECODEBANC";
+	s = "BANC";
+
+	t = "ABC";
 
 	cout << sol.minWindow(s, t) << endl;
 
