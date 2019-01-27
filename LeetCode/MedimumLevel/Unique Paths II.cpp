@@ -23,3 +23,45 @@ There are two ways to reach the bottom-right corner:
 2. Down -> Down -> Right -> Right
 
 */
+
+/*
+
+mp[i][j] = mp[i-1][j] + mp[i][j-1]
+
+*/
+#include<vector>
+#include<iostream>
+using namespace std;
+
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) 
+    {
+      int R = obstacleGrid.size();
+      int C = obstacleGrid[0].size();
+      vector< vector<int> > mp(R+1, vector<int>(C+1,0));
+      if(0 == obstacleGrid[0][0]) // this for real case.
+       {
+         mp[0][0] = 1; 
+       }
+      
+      for(int r = 0; r<R; ++r)
+      {
+        for(int c = 0; c<C; ++c)
+        {
+          if(0 == obstacleGrid[r][c])
+          {
+              if(r-1>=0)
+              {
+                mp[r][c] += mp[r-1][c];
+              }
+              if(c-1>=0)
+              {
+                mp[r][c] += mp[r][c-1];
+              }
+          }
+        }
+      }
+      return mp[R-1][C-1];
+    }
+};
