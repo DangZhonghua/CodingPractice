@@ -24,10 +24,22 @@ Could you solve it in linear time?
 
 */
 
+/*
+
+这个问题可以用单调队列解决。
+
+
+*/
+
+#include<vector>
+#include<queue>
+using namespace std;
+
 class Solution {
 public:
     vector<int> maxSlidingWindow(vector<int>& nums, int k) 
     {
+        priority_queue<int> maxHeap;
         
     }
 };
