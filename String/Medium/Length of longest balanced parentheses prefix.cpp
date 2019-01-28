@@ -16,3 +16,16 @@ Output : 6
 
 
 */
+
+/*
+find parenthesis range, then concatenation if possbile: if previous range is continuous
+
+*/
+
+#include<iostream>
+#include<stack>
+#include<string>
+
+using namespace std;
+
+
