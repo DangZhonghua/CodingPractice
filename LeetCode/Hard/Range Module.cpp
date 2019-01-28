@@ -4,7 +4,9 @@ Range Module
 
 A Range Module is a module that tracks ranges of numbers. Your task is to design and implement the following interfaces in an efficient manner.
 
-addRange(int left, int right) Adds the half-open interval [left, right), tracking every real number in that interval. Adding an interval that partially overlaps with currently tracked numbers should add any numbers in the interval [left, right) that are not already tracked.
+addRange(int left, int right) Adds the half-open interval [left, right), tracking every real number in that interval. 
+Adding an interval that partially overlaps with currently 
+tracked numbers should add any numbers in the interval [left, right) that are not already tracked.
 
 
 queryRange(int left, int right) Returns true if and only if every real number in the interval [left, right) is currently being tracked.
@@ -50,25 +52,30 @@ queryRange(16, 17): true （尽管执行了删除操作，区间 [16, 17) 中的
 */
 
 /*
+
 this include interval split, merge, insert of tree operation.
 
 */
 
 class RangeModule {
 public:
-    RangeModule() {
+    RangeModule() 
+    {
         
     }
     
-    void addRange(int left, int right) {
+    void addRange(int left, int right) 
+    {
         
     }
     
-    bool queryRange(int left, int right) {
+    bool queryRange(int left, int right) 
+    {
         
     }
     
-    void removeRange(int left, int right) {
+    void removeRange(int left, int right) 
+    {
         
     }
 };

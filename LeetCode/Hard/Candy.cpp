@@ -3,8 +3,10 @@ Candy
 https://leetcode-cn.com/problems/candy/
 There are N children standing in a line. Each child is assigned a rating value.
 You are giving candies to these children subjected to the following requirements:
+
 Each child must have at least one candy.
 Children with a higher rating get more candies than their neighbors.
+
 What is the minimum candies you must give?
 Example 1:
 Input: [1,0,2]
@@ -27,27 +29,40 @@ class Solution {
 public:
 	int candy(vector<int>& ratings)
 	{
-		unordered_set<int> dict;
+		vector<int> vsrat;
+		vsrat = ratings;
+		std::sort(vsrat.begin(),vsrat.end());
 
-		int maxr = ratings[0];
-		int minr = ratings[0];
-		for (int i = 0; i < ratings.size(); ++i)
-		{
-			if (maxr < ratings[i])
-			{
-				maxr = ratings[i];
-			}
-			if (minr > ratings[i])
-			{
-				minr = ratings[i];
-			}
-			dict.insert(ratings[i]);
-		}
+		int minr = 	ratings[0];
+		int maxr = *(vsrat.rbegin());
 
 		vector<int> vc(ratings.size(), 0);
         
-
-		return 0;
+		for(int i = 0; i<vsrat.size(); ++i)
+		{
+			for(int j = 0; j<ratings.size(); ++j)
+			{
+				if(vsrat[i] == ratings[j])
+				{
+					vc[j] = 1;
+					if( j-1>=0 && ratings[j]> ratings[j-1] && vc[j]< (vc[j-1]+1))
+					{
+						vc[j] = vc[j-1]+1;
+					}
+					if(j+1<ratings.size() && ratings[j]>ratings[j+1] && vc[j]< (vc[j+1]+1) )
+					{
+						vc[j] = vc[j+1]+1;
+					}
+				}
+			}
+		}
+		
+		int miniCandy = 0;
+		for( auto c: vc)
+		{
+			miniCandy += c;
+		}
+		return miniCandy;
 
 	}
 };
