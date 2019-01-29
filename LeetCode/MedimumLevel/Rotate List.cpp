@@ -19,17 +19,63 @@ rotate 4 steps to the right: 2->0->1->NULL
 
 */
 
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
-class Solution {
+
+
+#include<iostream>
+using namespace std;
+
+ // Definition for singly-linked list.
+struct ListNode 
+{
+      int val;
+      ListNode *next;
+     ListNode(int x) : val(x), next(NULL) {}
+};
+ 
+class Solution 
+{
 public:
-    ListNode* rotateRight(ListNode* head, int k) {
+    ListNode* rotateRight(ListNode* head, int k) 
+    {
+        if(NULL == head || 0 == k)
+        {
+            return head;
+        }
+        int Len = 0;
+        ListNode* h     = head;
+        ListNode* tail  = NULL;
         
+        
+        while(h)
+        {
+           ++Len;
+           if( NULL == h->next)
+           {
+               tail = h;
+           }
+           h = h->next;
+        }
+
+        if(k>=Len)
+        {
+            k %= Len;
+        }
+        
+        h = head;
+        if(k)
+        {
+            int count  = 0;
+            ListNode* Pre = NULL;
+            while( count < (Len-k) )
+            {
+                ++count;
+                Pre = h;
+                h = h->next;
+            }
+
+            tail->next = head;
+            Pre->next = NULL;       
+        }
+        return h;
     }
 };
