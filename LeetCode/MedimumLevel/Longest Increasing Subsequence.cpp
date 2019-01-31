@@ -22,6 +22,19 @@ class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) 
     {
+        int maxlen = 1;
+        vector<int> lenSmallest(nums.size()+1,0);
+        lenSmallest[1] = nums[0];
+
+        for(int i = 1; i<nums.size();++i)
+        {
+            
+        }
+    }
+
+private:
+    int findLargestWhichLessthanX(vector<int>&,int X, int Len)
+    {
         
     }
 };

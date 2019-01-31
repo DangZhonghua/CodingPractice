@@ -20,3 +20,10 @@ Try to come up as many solutions as you can, there are at least 3 different ways
 Could you do it in-place with O(1) extra space?
 
 */
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        
+    }
+};

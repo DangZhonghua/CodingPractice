@@ -49,7 +49,8 @@ public:
         while(i<j)
         {
             int m = (i+j)/2;
-            if(  )
+            if(m-1)
         }
     }
+private:
 };
