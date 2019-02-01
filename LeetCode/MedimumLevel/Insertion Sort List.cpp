@@ -41,10 +41,54 @@ using namespace std;
   };
 
 
-class Solution {
+class Solution 
+{
+
 public:
     ListNode* insertionSortList(ListNode* head) 
     {
+        ListNode* nh = NULL;
         
+        while(head)
+        {
+            ListNode* t = head;
+            head = head->next;
+            t->next = NULL;
+            insertionSort(&nh,t);
+        }
+        return nh;
+    }
+
+private:
+    void insertionSort(ListNode** hhead,ListNode* node)
+    {
+        if(NULL == *hhead)
+        {
+            *hhead  = node;
+        }
+        else
+        {
+            ListNode* pre = NULL;
+            ListNode* head = *hhead;
+            while(head)
+            {
+                if(head->val >= node->val)
+                {
+                    break;    
+                }
+                pre = head;
+                head = head->next;
+            }
+            if(pre)
+            {
+                node->next = pre->next;
+                pre->next = node;
+            }
+            else
+            {
+                node->next = *hhead;
+                *hhead = node;
+            }
+        }
     }
 };
