@@ -22,19 +22,59 @@ class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) 
     {
+        if(nums.empty())
+        {
+            return 0;
+        }
         int maxlen = 1;
         vector<int> lenSmallest(nums.size()+1,0);
         lenSmallest[1] = nums[0];
 
         for(int i = 1; i<nums.size();++i)
         {
-            
+            bool bFind = false;
+            int index = findLargestWhichLessthanX(lenSmallest,nums[i],maxlen,bFind);
+            if(!bFind)
+            {
+                lenSmallest[index] = nums[i];
+                if(index>maxlen)
+                {
+                    maxlen = index;
+                }
+            }
         }
+        
+        return maxlen;
     }
 
 private:
-    int findLargestWhichLessthanX(vector<int>&,int X, int Len)
+    int findLargestWhichLessthanX(vector<int>&lis,int X, int Len,bool& bFind)
     {
-        
+        int i = 1;
+        int j = Len;
+        int index = -1;
+        bFind = false;
+        while(i<=j)
+        {
+            int m = (i+j)/2;
+            if(lis[m] == X)
+            {
+                bFind = true;
+                break;
+            }
+            else if(lis[m]>X)
+            {
+                j = m-1;
+            }
+            else
+            {
+                i = m+1;
+            }
+        }
+        if(-1 == index )
+        {
+            index = i;
+        }
+        return index;
     }
 };

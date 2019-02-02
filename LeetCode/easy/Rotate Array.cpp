@@ -20,10 +20,20 @@ Try to come up as many solutions as you can, there are at least 3 different ways
 Could you do it in-place with O(1) extra space?
 
 */
+#include<iostream>
+#include<vector>
+using namespace std;
+
+/*
+Find the exchgange range, the step the range.
+
+*/
+
 
 class Solution {
 public:
-    void rotate(vector<int>& nums, int k) {
+    void rotate(vector<int>& nums, int k) 
+    {
         
     }
 };
