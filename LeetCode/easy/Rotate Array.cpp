@@ -26,14 +26,45 @@ using namespace std;
 
 /*
 Find the exchgange range, the step the range.
+use the short part exchange with the same length of longer part.
 
 */
-
 
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) 
     {
+        int len = nums.size();
         
+        k %= len;
+        if(0 == k)
+        {
+            return;
+        }
+
+        int ke = nums.size()-1;
+        int ks = ke-k + 1;
+        
+        int se = ks+1;
+        int ss = ks-k;
+        while(ss>=0) //handle these middle parts rotate
+        {
+            for(int i = ss; i<= se; ++i)
+            {
+                int t = nums[i];
+                nums[i] = nums[k+i];
+                nums[k+i] = t;
+            }
+            ke = 
+        }
+        //handle the last part rotate
+        {
+
+        }
+
+        
+
+
+
     }
 };

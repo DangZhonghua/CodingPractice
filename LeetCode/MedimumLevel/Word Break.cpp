@@ -21,10 +21,48 @@ Output: false
 
 */
 
-class Solution {
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+
+
+
+
+class Solution 
+{
+    struct TreeItem
+    {
+        int c;
+        struct TreeItem* next;
+    };
 public:
     bool wordBreak(string s, vector<string>& wordDict) 
     {
-        
+        vector<bool> sb(s.length(),false);
+        for(int i = 0; i<s.length();++i)
+        {
+               
+        }
+
+
+
     }
+private:
+    bool SearchDict(vector<string>& wordDict, const char* szWord)
+    {
+        for(string& str:wordDict)
+        {
+            if(!strcmp(str.c_str(),szWord))
+            {
+                return true;
+            }
+        }
+        return false;
+    } 
+
+private:
+    
 };
