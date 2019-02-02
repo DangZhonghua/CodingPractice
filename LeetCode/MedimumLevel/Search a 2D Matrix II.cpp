@@ -66,7 +66,14 @@ public:
 				break;
 			}
 
-			int index = searchTarget(matrix, row - 1, col, target);
+			int index = -1;
+			
+			while( -1 == index && col<matrix[0].size())
+			{
+				index = searchTarget(matrix, row - 1, col, target);
+				++col;
+			}
+			
 
 			if (-1 != index)
 			{
