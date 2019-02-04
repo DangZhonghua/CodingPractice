@@ -19,7 +19,13 @@ The 5 valid permutations of (0, 1, 2, 3) are:
 (3, 0, 2, 1)
 (3, 1, 2, 0)
  
+ (3,2,3,)
 Note:
 1 <= S.length <= 200
 S consists only of characters from the set {'D', 'I'}.
 */
+
+            |DP[i-1][m] if  s[i-1] = 'D'  for m<n  
+DP[i][n] =  |DP[i-1][p] if  s[i-1] = 'I'  for p>n  
+            |
+DP[n][i]

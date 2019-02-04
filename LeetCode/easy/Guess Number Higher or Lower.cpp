@@ -31,6 +31,28 @@ class Solution
 public:
     int guessNumber(int n) 
     {
-        
+       unsigned  int i = 1;
+       unsigned  int j = n;
+       unsigned  int nr = 0;
+
+        while(i<=j)
+        {
+           unsigned  int m = (i+j)/2;
+           int r = guess(m);
+            if( 0 == r )
+            {
+                nr = m;
+                break;
+            }
+            else if( r == -1)
+            {
+                j = m-1;
+            }
+            else
+            {
+                i = m+1;
+            }
+        }
+        return nr;
     }
 };

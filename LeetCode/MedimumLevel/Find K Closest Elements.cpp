@@ -29,12 +29,74 @@ Please reload the code definition to get the latest changes.
 
 #include<iostream>
 #include<vector>
+#include<climits>
 using namespace std;
 
 class Solution {
 public:
     vector<int> findClosestElements(vector<int>& arr, int k, int x) 
     {
+        int i = 0;
+        int j = arr.size()-1;
+        int index = -1;
+        vector<int> vr;
+        while(i<=j)
+        {
+            int m = (i+j)/2;
+            if( arr[m] == x)
+            {
+                index = m;
+                break;
+            }
+            else if(arr[m]<x)
+            {
+                i = m+1;
+            }
+            else
+            {
+                j = m-1;
+            }
+        }
+
+        if(-1 == index)
+        {
+            index = i;
+        }
+
+        i = index-1;
+        j = index;
+        int count = 0;
         
+        while( count<k )
+        {
+            int d1 = INT_MAX;
+            int d2 = INT_MAX;
+            if(i>=0)
+            {
+                d1 = x-arr[i];
+            }
+            if(j<arr.size())
+            {
+                d2 = arr[j]-x;
+            }
+            if(d1<=d2)
+            {
+                --i;
+            }
+            else
+            {
+                ++j;
+            }
+            ++count;
+        }
+        
+        int start = i+1;
+        int end = j-1;
+        while(start<=end)
+        {
+            vr.push_back(arr[start]);
+            ++start;
+        }
+        return vr;
     }
 };
