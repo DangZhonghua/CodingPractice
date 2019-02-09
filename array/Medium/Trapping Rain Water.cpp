@@ -1,5 +1,7 @@
 //https://practice.geeksforgeeks.org/problems/trapping-rain-water/0/?ref=self
 
+//https://www.geeksforgeeks.org/trapping-rain-water/
+
 #include<iostream>
 #include <climits>
 using namespace std;

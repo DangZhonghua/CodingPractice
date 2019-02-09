@@ -9,7 +9,10 @@ be made of a number of contiguous bars. For simplicity, assume that all bars hav
  
 
 Input:
-The first line contains an integer 'T' denoting the total number of test cases. In each test cases, the first line contains an integer 'N' denoting the size of array. The second line contains N space-separated integers A1, A2, ..., AN denoting the elements of the array. The elements of the array represents the height of the bars.
+The first line contains an integer 'T' denoting the total number of test cases. 
+In each test cases, the first line contains an integer 'N' denoting the size of array. 
+The second line contains N space-separated integers A1, A2, ..., AN denoting the elements of the array. 
+The elements of the array represents the height of the bars.
 
 
 Output:
