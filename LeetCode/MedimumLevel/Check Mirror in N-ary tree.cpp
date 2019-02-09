@@ -46,3 +46,9 @@ Output:
 1
 0
 */
+
+/*
+use pre-order traversal
+
+
+*/
