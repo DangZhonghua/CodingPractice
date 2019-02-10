@@ -18,19 +18,18 @@ k = 4
 Output :
 10 10 10 15 15 90 90
 */
-
+/*
 Method 3 (A O(n) method: use Deque)
-We create a Deque, Qi of capacity k, that stores only useful elements of current window of k elements. An element is useful if it is in current window and is greater than all other elements on left side of it in current window. We process all array elements one by one and maintain Qi to contain useful elements of current window and these useful elements are maintained in sorted order. The element at front of the Qi is the largest and element at rear of Qi is the smallest of current window. Thanks to Aashish for suggesting this method.
+We create a Deque, Qi of capacity k, that stores only useful elements of current window of k elements. 
+An element is useful if it is in current window and is greater than all other elements on left side 
+of it in current window. We process all array elements one by one and maintain Qi to contain useful 
+elements of current window and these useful elements are maintained in sorted order. 
+The element at front of the Qi is the largest and element at rear of Qi is the smallest of current window. 
+Thanks to Aashish for suggesting this method.
 
 Following is the implementation of this method.
 
-filter_none
 
-edit
-
-play_arrow
-
-brightness_4
 #include <iostream> 
 #include <deque> 
   
@@ -102,3 +101,74 @@ Auxiliary Space: O(k)
 
 Below is an extension of this problem.
 Sum of minimum and maximum elements of all subarrays of size k.
+
+*/
+
+#include<iostream>
+#include<vector>
+#include<deque>
+using namespace std;
+
+class Solution
+{
+public:
+	vector<int>  LargestOfWindowInArray(vector<int>& arr, int wk)
+	{
+		vector<int> vw;
+		deque<int>  mq(wk); //use to record the window info. It is decreasing order according to the element position.
+							//this queue is used to store the array index RATHER THAN the element itself.
+
+		for (int i = 0; i < wk && i < arr.size(); ++i)
+		{
+			while (!mq.empty())
+			{
+				if (arr[i] >= arr[mq.back()]) //the current is larger than previous, so remove the previous
+				{
+					mq.pop_back();
+				}
+				else
+				{
+					break;
+				}
+			}
+			mq.push_back(i); //store the index
+		}
+
+		for (int i = wk; i < arr.size(); ++i)
+		{
+			vw.push_back(arr[mq.front()]);
+			//update the largest since the window has been changed
+			while (!mq.empty() && mq.front() <= (i - wk)) // the removed are that of out of range
+			{
+				mq.pop_front();
+			}
+			//the current should be into queue since the window has been started.
+			while (!mq.empty() && arr[i] >= arr[mq.back()])
+			{
+				mq.pop_back();
+			}
+			mq.push_back(i);
+		}
+		vw.push_back(arr[mq.front()]);
+
+		for (auto m : vw)
+		{
+			cout << m << " ";
+		}
+		cout << endl;
+
+		return vw;
+	}
+};
+
+int main()
+{
+	vector<int> arr{ 12, 1, 78, 90, 57, 89, 56 };
+	int K = 3;
+	Solution sol;
+
+	sol.LargestOfWindowInArray(arr, K);
+
+
+	return 0;
+}

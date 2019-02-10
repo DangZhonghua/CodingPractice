@@ -111,22 +111,27 @@ int main()
 } 
 
 
-We have discussed this problem in Maximum Product Subarray, but there is a restriction that result can only be positive. For the maximum product to be negative or zero, the values of variable maxval (maximum product up to current element) and minval (minimum product up to current element), has to be updated as follows:
-When arr[i] is positive : As maxval is maximum possible value, simply multiply arr[i] with maxval to obtain new maxval. minval is minimum possible negative product. If its previous value is negative then simply multiply it with arr[i]. If its value is 1 keep it as 1.
-When arr[i] is 0 : Consider the test case : arr[] = {0, -4, 0, -2}. The maximum product is 0 in this case. To account for this case in our algo, update maxval with 0 instead of 1 whenever arr[i] is zero. The product of any number with zero is zero. Consider another test case, arr[] = {0, 1 ,2}.
-If maxval remains zero after current iteration (according to the step described above) and the next element is positive then the result will be zero and not the positive element. To consider that at the end of each iteration check if maxval is zero or not.
-If it is zero set it equal to 1. Update minval with 1 as subarray product with zero as element in it will be zero, which results in loss of minimum possible value. So exclude this zero from subarray by setting minval to 1, i.e., restarting product calculation.
-When arr[i] is negative : new value of maxval is previous minval*arr[i] and new value of minval is previous maxval*arr[i]. Before updating maxval, store its previous value in prevMax to be used to update minval.
+We have discussed this problem in Maximum Product Subarray, but there is a restriction that result can only be positive. 
+For the maximum product to be negative or zero, the values of variable maxval (maximum product up to current element) 
+and minval (minimum product up to current element), has to be updated as follows:
+When arr[i] is positive : As maxval is maximum possible value, simply multiply 
+arr[i] with maxval to obtain new maxval. minval is minimum possible negative product. 
+If its previous value is negative then simply multiply it with arr[i]. If its value is 1 keep it as 1.
+When arr[i] is 0 : Consider the test case : arr[] = {0, -4, 0, -2}. 
+The maximum product is 0 in this case. To account for this case in our algo, 
+update maxval with 0 instead of 1 whenever arr[i] is zero. The product of any number with zero is zero. 
+Consider another test case, arr[] = {0, 1 ,2}.
+If maxval remains zero after current iteration (according to the step described above) and 
+the next element is positive then the result will be zero and not the positive element. 
+To consider that at the end of each iteration check if maxval is zero or not.
+If it is zero set it equal to 1. Update minval with 1 as subarray product 
+with zero as element in it will be zero, which results in loss of minimum possible value. 
+So exclude this zero from subarray by setting minval to 1, i.e., restarting product calculation.
+When arr[i] is negative : new value of maxval is previous minval*arr[i] 
+and new value of minval is previous maxval*arr[i]. Before updating maxval, 
+store its previous value in prevMax to be used to update minval.
 Implementation: 
-C++
-Java
-Python3
-C#
-PHP
-filter_none 
-edit 
-play_arrow
-brightness_4 
+
 // C++ program to find maximum subarray product. 
 #include <bits/stdc++.h> 
   

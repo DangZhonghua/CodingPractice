@@ -2,9 +2,10 @@
 https://practice.geeksforgeeks.org/problems/largest-sum-subarray-of-size-at-least-k/0
 https://www.geeksforgeeks.org/largest-sum-subarray-least-k-numbers/
 Largest Sum Subarray of Size at least K 
-Given an array and a number k, find the largest sum of the subarray containing at least k numbers. It may be assumed that the size of array is at-least k.
+Given an array and a number k, find the largest sum of the subarray containing at least k numbers. 
+It may be assumed that the size of array is at-least k.
 
-Input:â€‹
+Input:
 The first line of input contains an integer T denoting the number of test cases. 
 Then T test cases follow. Each test case contains an integer n denoting the size of the array. 
 Then the following line contains n space separated integers. The last line of the input contains the number k.
@@ -31,6 +32,5 @@ Input:
 Output:
 -1
 6
-
 
 */
