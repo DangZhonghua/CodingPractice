@@ -31,15 +31,48 @@ Could you solve it in linear time?
 
 */
 
+
+#include<iostream>
 #include<vector>
-#include<queue>
+#include<deque>
 using namespace std;
+
 
 class Solution {
 public:
-    vector<int> maxSlidingWindow(vector<int>& nums, int k) 
+    vector<int> maxSlidingWindow(vector<int>& nums, int K) 
     {
-        priority_queue<int> maxHeap;
+        deque<int>  DecrQ;
+        vector<int> vmax;
+        int i = 0;
         
+        for( ; i<K && i< nums.size(); ++i)
+        {
+            while(!DecrQ.empty() && nums[ DecrQ.back()]<=nums[i])
+            {
+                DecrQ.pop_back();
+            }
+            DecrQ.push_back(i);
+        }
+
+        for( ; i<nums.size(); ++i)
+        {
+            vmax.push_back(nums[DecrQ.front()]);
+
+            while(!DecrQ.empty() && DecrQ.front()<= (i-K))
+            {
+                DecrQ.pop_front();
+            }
+            while(!DecrQ.empty() && nums[DecrQ.back()]<=nums[i])
+            {
+                DecrQ.pop_back();
+            }
+            DecrQ.push_back(i);
+        }
+        if( !DecrQ.empty())
+        {
+            vmax.push_back(nums[DecrQ.front()]);
+        }
+        return vmax;
     }
 };
