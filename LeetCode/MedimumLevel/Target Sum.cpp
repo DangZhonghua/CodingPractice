@@ -48,55 +48,69 @@ public:
 
 		//Initialize the state
 		pw[0][nums[0]] = 1; // "+" case
-		if (nums[0] >0)
+		if (nums[0] >= 0)
 		{
 			nw[0][nums[0]] = 1; // "-" case
 		}
 
-		for (int i = 1; i< nums.size(); ++i)
+		for (int i = 1; i < nums.size(); ++i)
 		{
 			for (int s = 0; s <= sum; ++s)
 			{
+
 				// for "+" case
-				if (pw[i - 1][s] && (s + nums[i])<=sum)
+				if ((s + nums[i]) <= sum)
 				{
-					pw[i][s + nums[i]] += pw[i-1][s];
-				}
-				
-				if (nw[i - 1][s])
-				{
-					int t = (nums[i]-s);
-					if (t >= 0)
-					{
-						pw[i][t] += nw[i - 1][s];
-					}
-					else
-					{
-						nw[i][t] += nw[i-1][s];
-					}
+					pw[i][s + nums[i]] += pw[i - 1][s];
 				}
 
-				// for "-" case
-				
-				int t = s - nums[i];
+				int t = (nums[i] - s);
 				if (t >= 0)
 				{
-					pw[i][t] += pw[i-1][s];
+					pw[i][t] += nw[i - 1][s];
 				}
 				else
 				{
-					nw[i][t] += pw[i-1][s];
-				}				
+					nw[i][-t] += nw[i - 1][s];
+				}
+
+
+				// for "-" case
+
+				t = s - nums[i];
+				if (t >= 0)
+				{
+					pw[i][t] += pw[i - 1][s];
+				}
+				else
+				{
+					nw[i][-t] += pw[i - 1][s];
+				}
+
+				t = -s - nums[i];
+				if (t >= -sum)
+				{
+					nw[i][-t] += nw[i - 1][s];
+				}
 			}
 		}
-
-		int wc = pw[nums.size() - 1][S];
-		
-		if (S < 0)
+		int wc = 0;
+		if (S > sum || S<-sum)
 		{
-			wc = nw[nums.size() - 1][S];
+			wc = 0;
 		}
-
+		else
+		{
+			wc = pw[nums.size() - 1][S];
+			if (S < 0)
+			{
+				wc = nw[nums.size() - 1][-S];
+			}
+			else if (0 == S)
+			{
+				wc += nw[nums.size() - 1][-S];
+			}
+		}
 		return wc;
 	}
 };
@@ -108,7 +122,16 @@ int main()
 	int S = 3;
 	Solution sol;
 
-	cout << sol.findTargetSumWays(nums1, S) << endl;
+	//cout << sol.findTargetSumWays(nums1, S) << endl;
+
+	vector<int> nums2{ 1000 };
+	S = -1000;
+	
+	//cout << sol.findTargetSumWays(nums2, S) << endl;
+
+	vector<int> nums3{ 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+	S = 1;
+	cout << sol.findTargetSumWays(nums3, S) << endl;
 
 
 	return 0;

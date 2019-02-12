@@ -32,3 +32,23 @@ Output: []
 
 
 */
+
+/* 
+this can be solved by backtrcking technique.
+
+*/
+
+
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+class Solution 
+{
+public:
+    vector<string> addOperators(string num, int target) 
+    {
+        
+    }
+};
