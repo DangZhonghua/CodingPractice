@@ -41,13 +41,19 @@ public:
         int N = nums.size();
         vector< vector<int> > maxCoins(N+2, vector<int> (N+2,0));
         
+        for(int i = 1; i<=N; ++i)
+        {
+            maxCoins[i][i] = nums[i-1];
+        }
+
         for(int L = 1; L<=N; ++L)
         {
             for(int i = 1; i<= N-L; ++i)
             {
                 int j = i+L-1; //calculate coin[i,j]
                 for(int k = i; k<=j; ++k)
-                {                    
+                {
+
                 }
             }   
         }

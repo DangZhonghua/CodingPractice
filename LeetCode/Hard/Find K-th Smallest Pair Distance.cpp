@@ -2,7 +2,8 @@
 https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/
 Find K-th Smallest Pair Distance
 
-Given an integer array, return the k-th smallest distance among all the pairs. The distance of a pair (A, B) is defined as the absolute difference between A and B.
+Given an integer array, return the k-th smallest distance among all the pairs. 
+The distance of a pair (A, B) is defined as the absolute difference between A and B.
 
 Example 1:
 
@@ -28,12 +29,15 @@ Note:
 
 #include<iostream>
 #include<vector>
+#include<algorithm>
 using namespace std;
 
 class Solution {
 public:
     int smallestDistancePair(vector<int>& nums, int k) 
     {
+        std::sort(nums.begin(), nums.end());
+        
         
     }
 };

@@ -30,7 +30,9 @@ Given a particular n ≥ 1, find out how much money you need to have to guarante
 class Solution {
 public:
     int getMoneyAmount(int n) 
-    {}
+    {
+        
+    }
 }
 
 
