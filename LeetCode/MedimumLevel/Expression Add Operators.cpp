@@ -33,7 +33,8 @@ Output: []
 
 */
 
-/* 
+/*
+
 this can be solved by backtrcking technique.
 
 */
@@ -49,6 +50,16 @@ class Solution
 public:
     vector<string> addOperators(string num, int target) 
     {
-        
+
     }
+private:
+    //from S, length is L
+    bool btAddOperators(vector<string>& vStrResult, string& strExp, string& num, int S, int L, int target, int preResult)
+    {
+        for(int i = S; i<num.size(); ++i)
+        {
+            
+        }
+    }
+
 };

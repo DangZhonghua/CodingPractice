@@ -26,3 +26,14 @@ Input:  arr[] = {10, 12, 12, 10, 10, 11, 10};
 Output: Length of the longest contiguous subarray is 2
 
 */
+
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+
+class Solution
+{
+
+};
