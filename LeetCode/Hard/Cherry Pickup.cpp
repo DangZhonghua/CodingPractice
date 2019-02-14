@@ -61,19 +61,38 @@ grid 是一个 N * N 的二维数组，N的取值范围是1 <= N <= 50。
 /*
 
 Get maximum cherry and must insure player can come back.
-
 this can be sloved by what?
 
-two dfs?
+two dfs? and backtracking
 
 
 */
 
+#include<vector>
+#include<stack>
+#include<iostream>
+using namespace std;
 
-class Solution {
+
+class Solution 
+{
 public:
     int cherryPickup(vector<vector<int>>& grid) 
     {
         
+    }
+private:
+    int DfsStart2End()
+    {
+        
+
+        return 0;
+    }
+    
+    int DfsEnd2Start()
+    {
+
+
+        return 0;
     }
 };

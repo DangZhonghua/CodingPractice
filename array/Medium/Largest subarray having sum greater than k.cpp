@@ -24,12 +24,12 @@ The two pointers: slow, fast
 if presum[fast] > K then window is [0,fast]
 else
 {
-	if(presum[i]>=presum[i-1])
-	{	
-	}
-	else
-	{
-	}
+if(presum[i]>=presum[i-1])
+{
+}
+else
+{
+}
 }
 
 
@@ -94,21 +94,42 @@ class Solution
 public:
 	int LongestSubarrayWithSumLargerThanK(vector<int>& nums, int K)
 	{
-		vector<int> vPresum(nums.size()+1, 0);
+		int ws = 0;
+		int we = -1;
+		vector<int> vPresum(nums.size() + 1, 0);
 		vPresum[0] = 0;
-		
+
 		for (int i = 0; i < nums.size(); ++i)
 		{
-			vPresum[i+1] = (vPresum[i] + nums[i]);
+			vPresum[i + 1] = (vPresum[i] + nums[i]);
 		}
 		//
-		
+
 		for (int i = 1; i <= nums.size(); ++i)
 		{
-			
+			if (vPresum[i]>K)
+			{
+				ws = 1;
+				we = i;
+				continue;
+			}
+			for (int j = 1; j <= i; ++j)
+			{
+				if ((vPresum[i] - vPresum[j - 1])>K)
+				{
+					if (i - j>we - ws)
+					{
+						ws = j;
+						we = i;
+					}
+					break;
+				}
+			}
 		}
-		
-		
+		cout << (ws - 1) << " " << (we - 1) << endl;
+		cout << nums[ws - 1] << " " << nums[we-1]<<endl;
+
+		return (we-ws+1);
 	}
 };
 
@@ -122,10 +143,10 @@ int main()
 	vector<int> nums1{ 2, -3, 3, 2, 0, -1 };
 
 
-	cout << sol.LongestSubarrayWithSumLargerThanK(nums, K) << endl;
+	cout<<sol.LongestSubarrayWithSumLargerThanK(nums, K)<<endl;
 
 	K = 3;
-	cout << sol.LongestSubarrayWithSumLargerThanK(nums1, K) << endl;
+	cout<<sol.LongestSubarrayWithSumLargerThanK(nums1, K)<<endl;
 
 	return 0;
 }
