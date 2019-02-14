@@ -57,8 +57,8 @@ class Solution
 		int m_end;
 		int m_OP;
 		bool m_bLast;
-		btDesc(){ m_Start = 0; m_Len = -1;m_end = 0; m_OP = 0; m_bLast = false; }
-		btDesc(int s, int l,int e, int o, bool bLast)
+		btDesc() { m_Start = 0; m_Len = 1; m_end = 0; m_OP = 0; m_bLast = false; }
+		btDesc(int s, int l, int e, int o, bool bLast)
 		{
 			m_Start = s;
 			m_Len = l;
@@ -83,41 +83,37 @@ public:
 		string  strExp;
 		btDesc btd;
 
+		if ((btd.m_Start + btd.m_Len) == num.length())
+		{
+			btd.m_bLast = true;
+		}
 		btStack.push(btd);
+		btQ.push_back(btd);
+
 		//#1: Keep the operator unchanged, change the digital length
 		//#2: change the operator, then step 1
 
 		while (!btStack.empty())
 		{
 			btDesc& tp = btStack.top();
-            tp.m_Len += 1;
-
-            if(  (tp.m_Start + tp.m_Len) == num.length() ) // reach the string end?
-            {
-                //Now, we should try change the operator
-            }
-            else
-            {
-              btDesc btQNext;
-              btQNext.m_Start = tp.m_Start;
-              btQNext.m_end   = tp.m_Start+tp.m_Len-1;
-              btQNext.m_OP    = tp.m_OP;
-              btQNext.m_bLast = false;
-              if(btQNext.m_end == num.length()-1)
-              {
-                  btQNext.m_bLast = true;
-              }
-              btQ.push_back(btQNext);
-              
-              if(btQNext.m_bLast)
-              {
-                  CalculateExpress(btQ,num,target);
-              }
-              // put the next segment into stack.
-              btDesc btSNext;
-              btSNext.m_Start = btQNext.m_end+1;
-              btStack.push(btSNext); 
-            }
+			if (tp.m_bLast)
+			{
+				CalculateExpress(btQ, num, target);
+				btStack.pop();
+				btQ.pop_back();
+				
+				if (!btStack.empty())
+				{
+					btDesc& tp = btStack.top();
+					tp.m_Len += 1;
+					
+				}
+			}
+			else
+			{
+				tp.m_Len += 1;
+				
+			}
 		}
 	}
 private:
