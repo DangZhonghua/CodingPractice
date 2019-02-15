@@ -27,7 +27,8 @@ What is the difference between DP and BT
 
 /*
 As we need to generate all possible output we will backtrack among all states by removing one opening or closing bracket and
-check if they are valid if invalid then add the removed bracket back and go for next state.
+check whether they are valid.
+If invalid then add the removed bracket back and go for next state.
 We will use BFS for moving through states, use of BFS will assure removal of minimal number of brackets
 because we traverse into states level by level and each level corresponds to one extra bracket removal.
 Other than this BFS involve no recursion so overhead of passing parameters is also saved.
