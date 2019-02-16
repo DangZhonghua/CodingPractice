@@ -232,6 +232,80 @@ private:
 	static const int DC = 2;
 };
 
+class Solution1
+{
+	enum enDirect
+	{
+		EN_INVALID,
+		EN_DOWN,
+		EN_RIGHT
+	};
+public:
+	int cherryPickup(vector<vector<int>> &grid)
+	{
+		if (grid.empty())
+		{
+			return 0;
+		}
+		if (grid.size() == 1)
+		{
+			return grid[0][0];
+		}
+		int N = grid.size();
+		vector< vector<int> > ematrix(N, vector<int>(N,0));
+		vector< vector<int> > emark(N, vector<int>(N,0));
+		ematrix[0][0] = grid[0][0];
+		
+		for(int r = 0; r<N; ++r)
+		{
+			for(int c = 0; c<N; ++c)
+			{
+				if(c-1>=0)
+				{
+					if( -1 != grid[r][c] )
+					{
+						if(ematrix[r][c]<= ematrix[r][c-1] + grid[r][c])
+						{
+							ematrix[r][c] = (ematrix[r][c-1] + grid[r][c]);
+							emark[r][c] = EN_RIGHT;
+						}	
+					}
+				}
+				if(r-1 >= 0)
+				{
+					if( -1 != grid[r][c] )
+					{
+						if(ematrix[r][c]<= ematrix[r-1][c] + grid[r][c])
+						{
+							ematrix[r][c] = (ematrix[r-1][c] + grid[r][c]);
+							emark[r][c] = EN_DOWN;
+						}	
+					}
+				}
+			}
+		}
+		int r = N-1;
+		int c = N-1;
+		while(r>=0 && c>=0)
+		{
+			grid[r][c] = 0;
+			if( EN_DOWN == emark[r][c])
+			{
+				r = r-1;
+			}
+			else if(EN_RIGHT == emark[r][c])
+			{
+				c = c-1;
+			}
+		}
+
+
+		return 0;
+
+	}
+
+};
+
 
 
 
@@ -278,6 +352,7 @@ int main()
 		{ 0, 0, -1, 0, 1, 0, 1, 0, 0, 1 }
 	};
 
-	cout << sol.cherryPickup(grid3) << endl;
+   Solution1 sol1;
+	cout << sol1.cherryPickup(grid3) << endl;
 	return 0;
 }

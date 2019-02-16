@@ -28,7 +28,7 @@ S consists only of characters from the set {'D', 'I'}.
 /*
 
 			Sum (DP[n][i-1]) for all n>m  if s[i-1] = 'D'
-DP[m][i] = 
+DP[m][i] =
 			Sum (DP[p][i-1]) for all p<m  if s[i-1] = 'I'
 
 */
@@ -53,35 +53,31 @@ public:
 		vector< vector<unsigned long long > > dp(Len + 1, vector<unsigned long long>(Len + 1, 0));
 		for (int i = 0; i <= Len; ++i)
 		{
-			dp[i][0] = 1;
+			dp[0][i] = 1;
 		}
 
-		for (int i = 1; i <= Len; ++i)
+		for (int i = 1; i <= Len; ++i) // string cursor
 		{
-			if ('D' == s[i - 1])
+			for (int j = 0; j <= i; ++j) // digital cursor: j<i ensure the number only use once.
 			{
-				for (int m = 0; m <= Len; ++m)
+				if ('D' == s[i - 1])
 				{
-					for (int n = m + 1; n <= Len; ++n)
+					for (int k = j; k < i; ++k)
 					{
-						dp[m][i] += dp[n][i - 1];
+						dp[i][j] += dp[i - 1][k];
+						dp[i][j] %= mode;
 					}
-					dp[m][i] %= mode;
 				}
-			}
-			else if ('I' == s[i - 1])
-			{
-				for (int p = 1; p <= Len; ++p)
+				else // 'I' case
 				{
-					for (int n = 0; n < p; ++n)
+					for (int k = 0; k < j; ++k)
 					{
-						dp[p][i] += dp[n][i - 1];
+						dp[i][j] += dp[i - 1][k];
+						dp[i][j] %= mode;
 					}
-					dp[p][i] %= mode;
 				}
 			}
 		}
-
 
 		for (auto v : dp)
 		{
@@ -95,14 +91,14 @@ public:
 
 		for (int i = 0; i <= Len; ++i)
 		{
-			numPerm += dp[i][Len];
+			numPerm += dp[Len][i];
 			numPerm %= mode;
 		}
 		return numPerm;
 	}
 
 private:
-	static const unsigned long long mode = 1000000007;
+	static const unsigned long long mode = 1e9 + 7;//1000000007;
 };
 
 int main()

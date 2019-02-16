@@ -35,7 +35,7 @@ Output: []
 
 /*
 
-this can be solved by backtracking technique.
+this can be solved by backtrcking technique.
 
 */
 
@@ -45,7 +45,6 @@ this can be solved by backtracking technique.
 #include<vector>
 #include<stack>
 #include<deque>
-#include <set>
 using namespace std;
 
 class Solution
@@ -84,7 +83,6 @@ public:
 		string  strExp;
 		btDesc btd;
 
-		btd.m_end = btd.m_Start + btd.m_Len - 1;
 		if ((btd.m_Start + btd.m_Len) == num.length())
 		{
 			btd.m_bLast = true;
@@ -92,122 +90,63 @@ public:
 		btStack.push(btd);
 		btQ.push_back(btd);
 
-		//#1:Keep the sub-string length unchanged, chang the operator
-		//#2: change the operator, if all operator have been tried, increase the length go to the step 1.
+		//#1: Keep the operator unchanged, change the digital length
+		//#2: change the operator, then step 1
 
 		while (!btStack.empty())
 		{
 			btDesc& tp = btStack.top();
 			if (tp.m_bLast)
 			{
-				CalculateExpress(btQ, num, vExp, target);
+				CalculateExpress(btQ, num, target);
 				btStack.pop();
 				btQ.pop_back();
+				
 				if (!btStack.empty())
 				{
-					btQ.pop_back();
-
-					bool bLast = false;
-					btDesc& ntp = btStack.top();
-
-					btDesc btQNext;
-					ntp.m_OP++;
-					if (ntp.m_OP > 2)
-					{
-						//has try all operator with the same length, now we try to change the length.
-						btQNext.m_Len = (ntp.m_Len + 1);
-						btQNext.m_Start = ntp.m_Start;
-						btQNext.m_OP = 0;
-						btQNext.m_end = btQNext.m_Start + btQNext.m_Len - 1;
-					}
-					else
-					{
-						btQNext.m_Len = ntp.m_Len;
-						btQNext.m_Start = ntp.m_Start;
-						btQNext.m_OP = ntp.m_OP;
-						btQNext.m_end = btQNext.m_Start + btQNext.m_Len - 1;
-
-					}
-					btStack.pop();
-					if (btQNext.m_end == num.length() - 1)
-					{
-						bLast = true;
-					}
-					btQNext.m_bLast = bLast;
-
-					btQ.push_back(btQNext);
-					btStack.push(btQNext);
+					btDesc& tp = btStack.top();
+					tp.m_Len += 1;			
 				}
 			}
 			else
 			{
-				btDesc btQNext;
-				btQNext.m_Start = (tp.m_end + 1);
-				btQNext.m_end = btQNext.m_Start + btQNext.m_Len - 1;
-
-				bool bLast = false;
-				if (btQNext.m_end == num.length() - 1)
-				{
-					bLast = true;
-				}
-				btQNext.m_bLast = bLast;
-				btQ.push_back(btQNext);
-				btStack.push(btQNext);
+				tp.m_Len += 1;
 			}
 		}
-
-		// for (string& exp : vExp)
-		// {
-		// 	cout << exp << endl;
-		// }
-
-		return vExp;
 	}
 private:
-	int CalculateExpress(deque<btDesc>& Q, string& num, vector<string>& vExp, int target)
+	int CalculateExpress(deque<btDesc>& Q, string& num, int target)
 	{
-
-		long long nProduct = 1;
-		long long sum = 0;
+		int nProduct = 1;
+		int sum = 0;
 		int i = 0;
-		long long bPositive = 1;
+		int bPositive = 1;
 		string  strExp;
-		bool bVaild = true;
 
 		while (i < Q.size())
 		{
-
 			if (!Q[i].m_bLast)
 			{
-				long long d = GetNumber(Q[i], num, strExp, bVaild);
-				if (0 == Q[i].m_OP) // '*' case
+				int d = GetNumber(Q[i], num, strExp);
+				if (2 == Q[i].m_OP) // '*' case
 				{
-					nProduct = 1;
-					nProduct *= (d*bPositive);
+					nProduct *= d;
 					int j = i + 1;
-					while (j < Q.size() && 0 == Q[j].m_OP && bVaild)
+					while (2 == Q[j].m_OP && j < Q.size())
 					{
-						d = GetNumber(Q[j], num, strExp, bVaild);
+						d = GetNumber(Q[j], num, strExp);
 						nProduct *= d;
 						++j;
 					}
-					if (j < Q.size() && bVaild)
+					if (j < Q.size())
 					{
-						d = GetNumber(Q[j], num, strExp, bVaild);
+						d = GetNumber(Q[j], num, strExp);
 						nProduct *= d;
-						sum += nProduct;
+						sum += (bPositive)*nProduct;
 						if (1 == Q[j].m_OP)
 						{
-							bPositive = -1;
+							nProduct = -1;
 						}
-						else
-						{
-							bPositive = 1;
-						}
-					}
-					else
-					{
-						sum += nProduct;
 					}
 					i = (j + 1);
 				}
@@ -224,45 +163,28 @@ private:
 			}
 			else
 			{
-				sum += (bPositive)*GetNumber(Q[i], num, strExp, bVaild);
+				sum += (bPositive)*GetNumber(Q[i], num, strExp);
 				++i;
 			}
 		}
 
-		//if (!strExp.compare("1+23*4+5-6-7*8+9"))
-		//{
-		//	cout << "find"<<endl;
-		//}
-
-		if (sum == target && bVaild)
+		if (sum == target)
 		{
-			//auto it = m_Dict.find(strExp);
-			//if (it == m_Dict.end())
-			{
-			//	m_Dict.insert(strExp);
-				vExp.push_back(strExp);
-			}
-			//cout << strExp << endl;
- 			
+			cout << strExp << endl;
 		}
 		return 0;
 	}
 
-	long long GetNumber(btDesc& e, string& num, string& strExp, bool& bVaild)
+	int GetNumber(btDesc& e, string& num, string& strExp)
 	{
-		if ('0' == num[e.m_Start] && e.m_Len > 1)
-		{
-			bVaild = false;
-			return 0;
-		}
 		char c = num[e.m_end + 1];
 		num[e.m_end + 1] = '\0';
-		long long d = atol(num.c_str() + e.m_Start);
+		int d = atoi(num.c_str() + e.m_Start);
 
 		strExp += (num.c_str() + e.m_Start);
 		if (!e.m_bLast)
 		{
-			if (2 == e.m_OP)
+			if (0 == e.m_OP)
 			{
 				strExp += "+";
 			}
@@ -281,9 +203,6 @@ private:
 
 private:
 	//char arOP[3] = { '+', '-', '*' };
-	//char arOP[3] = { '*', '-', '+' };
-
-	set<string> m_Dict;
 };
 
 int main()
@@ -292,31 +211,7 @@ int main()
 	int target = 6;
 	string num = "123";
 
-	//sol.addOperators(num, target);
-
-	num = "232";
-	target = 8;
-	//sol.addOperators(num, target);
-
-	//num = "105";
-	//target = 5;
-	//sol.addOperators(num, target);
-
-
-	//num = "00";
-	//target = 0;
-	//sol.addOperators(num, target);
-
-	num = "3456237490";
-	target = 9191;
-
 	sol.addOperators(num, target);
-
-
-	//num = "123456789";
-	//target = 45;
-
-	//sol.addOperators(num,target);
 
 	return 0;
 }
