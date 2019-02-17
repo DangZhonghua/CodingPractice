@@ -30,3 +30,59 @@ depending on which choice offers more money.
 Now the problem has degenerated to the House Robber, which is already been solved.
 
 */
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+class Solution 
+{
+public:
+	int rob(vector<int>& nums)
+	{
+		if (nums.empty())
+		{
+			return 0;
+		}
+		if (nums.size() == 1)
+		{
+			return nums[0];
+		}
+		if (nums.size() == 2)
+		{
+			return max(nums[0], nums[1]);
+		}
+
+		int maxs = robInternal(nums.data(), nums.size() - 1);
+		int maxe = robInternal(nums.data() + 1, nums.size() - 1);
+
+		return max(maxs, maxe);
+	}
+private:
+	int robInternal(const int*a, int N)
+	{
+		vector<int> vr(N + 1, 0);
+		if (1 == N)
+		{
+			return a[0];
+		}
+		if (2 == N)
+		{
+			return max(a[0], a[1]);
+		}
+
+		vr[0] = a[0];
+		vr[1] = max(a[0], a[1]);
+
+		for (int i = 2; i < N; ++i)
+		{
+			vr[i] = vr[i - 2] + a[i];
+			if (vr[i] < vr[i - 1])
+			{
+				vr[i] = vr[i - 1];
+			}
+		}
+		return vr[N - 1];
+	}
+};

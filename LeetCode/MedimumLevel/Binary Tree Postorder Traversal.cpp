@@ -38,54 +38,101 @@ using namespace std;
       TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
+
 class Solution 
 {
 public:
-    vector<int> postorderTraversal(TreeNode* root) 
+    int rob(TreeNode* root) 
     {
-        vector<int> vpr;
-        stack<TreeNode*>  pos;
-        TreeNode* pre = NULL; // the mark which is the flag means all sub-trees have finished traversal.
+        unordered_map<TreeNode*, int> mapNodeC;
+        stack<TreeNode*> pos;
+        TreeNode* pre = NULL;
+
+        mapNodeC[NULL] = 0;
         if(root)
         {
             pos.push(root);
         }
+        
         while(!pos.empty())
         {
-            TreeNode* h = pos.top();
-            
-            if(   NULL == pre  || ( pre != h->left && pre != h->right) ) // the subtrees root at the h is not finished traversal
+            TreeNode* ht = pos.top();
+
+            //push into stack
+            if(NULL == pre || (pre != ht->left && pre != ht->right))
             {
-                if(h->right)
+                if(ht->right)
                 {
-                    pos.push(h->right);
+                    pos.push(ht->right);
                 }
-                if(h->left)
+                if(ht->left)
                 {
-                    pos.push(h->left);
+                    pos.push(ht->left);
                 }
-            }
-            if( (NULL == h->left &&  NULL == h->right) ) //there are no sub-trees
+            } 
+
+            // pop out stack
+            if(NULL == ht->left && NULL == ht->right)
             {
-                vpr.push_back(h->val);
-                pos.pop();
+                mapNodeC[ht] = ht->val;
+                pos.pop();    
             }
             else
             {
-                if( h->right && pre == h->right)
+                if(ht->right && pre == ht->right)
                 {
-                    vpr.push_back(h->val);
                     pos.pop();
+                    int nodeMaxc = ht->val;
+                    if(ht->left)
+                    {
+                        if(ht->left->left)
+                        {
+                            nodeMaxc += mapNodeC[ht->left->left];
+                        }
+                        if(ht->left->right)
+                        {
+                            nodeMaxc += mapNodeC[ht->left->right];
+                        }
+                    }
+                    if(ht->right)
+                    {
+                        if(ht->right->left)
+                        {
+                            nodeMaxc += mapNodeC[ht->right->left];
+                        }
+                        if(ht->right->right)
+                        {
+                            nodeMaxc += mapNodeC[ht->right->right];
+                        }
+                    }
+
+                    if(nodeMaxc<(mapNodeC[ht->right] + mapNodeC[ht->left]) )
+                    {
+                        nodeMaxc = (mapNodeC[ht->right] + mapNodeC[ht->left]);
+                    }
+                    mapNodeC[ht] = nodeMaxc;
                 }
-                else if( h->left && pre == h->left)
+                else if(ht->left && pre == ht->left)
                 {
-                    vpr.push_back(h->val);
                     pos.pop();
+                    int nodeMaxc = ht->val;
+                    if(ht->left->left)
+                    {
+                        nodeMaxc += mapNodeC[ht->left->left];
+                    }
+                    if(ht->left->right)
+                    {
+                        nodeMaxc += mapNodeC[ht->left->right];
+                    }
+                    if(nodeMaxc < mapNodeC[ht->left] + mapNodeC[ht->right])
+                    {
+                        nodeMaxc = mapNodeC[ht->left] + mapNodeC[ht->right];
+                    }
+                    mapNodeC[ht] = nodeMaxc;
                 }
-            }
-            pre = h;
+            }  
+            pre = ht;
         }
-        
-        return vpr;
+        return mapNodeC[root];
     }
 };
