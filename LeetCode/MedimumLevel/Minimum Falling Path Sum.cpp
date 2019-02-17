@@ -25,10 +25,51 @@ The falling path with the smallest sum is [1,4,7], so the answer is 12.
 
 #include<vector>
 using namespace std;
-
 class Solution {
 public:
-    int minFallingPathSum(vector<vector<int>>& A) {
+    int minFallingPathSum(vector<vector<int>>& A) 
+    {
+        if(A.empty())
+        {
+            return 0;
+        }
+         int minv = 0;
+        int N = A.size();
+        vector<vector<int>> matrix(N,vector<int>(N,0));
+        for(int c = 0; c<N; ++c)
+        {
+            matrix[0][c] = A[0][c];
+        }
         
+        for(int r = 1; r<N; ++r)
+        {
+            for(int c = 0; c<N; ++c)
+            {
+                matrix[r][c] = matrix[r-1][c]+A[r][c];
+                if(c-1>=0)
+                {
+                    if(matrix[r][c]> (matrix[r-1][c-1]+A[r][c]) )
+                    {
+                        matrix[r][c]= (matrix[r-1][c-1]+A[r][c]);
+                    }
+                }
+                if(c+1<N)
+                {
+                     if(matrix[r][c]> (matrix[r-1][c+1]+A[r][c]) )
+                     {
+                         matrix[r][c] = (matrix[r-1][c+1]+A[r][c]);
+                     }
+                }
+            }         
+        }
+        minv = matrix[N-1][0];
+        for(int c = 1; c<N;++c)
+        {
+                if(minv>matrix[N-1][c])
+                {
+                    minv = matrix[N-1][c];
+                }
+        }  
+        return minv;
     }
 };

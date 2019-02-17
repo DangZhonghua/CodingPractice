@@ -34,5 +34,12 @@ Output: 2
 Follow up:
 Can you do it in O(n) time?
 
-
 */
+class Solution 
+{
+public:
+    int wiggleMaxLength(vector<int>& nums) 
+    {
+        
+    }
+};

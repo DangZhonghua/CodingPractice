@@ -17,6 +17,33 @@ Given n = 3, there are a total of 5 unique BST's:
     /     /       \                 \
    2     1         2                 3
 
-
-
 */
+
+#include<vector>
+#include<iostream>
+using namespace std;
+
+class Solution 
+{
+public:
+    int numTrees(int n) 
+    {
+       if(n<=1)
+       {
+          return n;
+       }
+        vector<int> tc(n+1,0);
+        tc[0] = 1;
+        tc[1] = 1;
+        
+        for(int i = 2; i<=n; ++i) // total node number
+        {
+           for(int j = 1; j<=i; ++j) // root node ID
+           {
+              //root at j
+            tc[i] += (tc[j-1]*tc[i-j]);
+           }
+        }
+      return tc[n];
+    }
+};
