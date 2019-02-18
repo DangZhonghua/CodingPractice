@@ -13,7 +13,6 @@ at which point the person with the most stones wins.
 
 Assuming Alex and Lee play optimally, return True if and only if Alex wins the game.
 
- 
 
 Example 1:
 
@@ -26,7 +25,6 @@ If Lee takes 3, then the board is [4, 5], and Alex takes 5 to win with 10 points
 If Lee takes the last 5, then the board is [3, 4], and Alex takes 4 to win with 9 points.
 This demonstrated that taking the first 5 was a winning move for Alex, so we return true.
 
- 
 
 Note:
 
@@ -34,7 +32,5 @@ Note:
     piles.length is even.
     1 <= piles[i] <= 500
     sum(piles) is odd.
-
-
 
 */
