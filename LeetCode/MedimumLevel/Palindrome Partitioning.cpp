@@ -33,13 +33,41 @@ public:
     {
         int N = s.length();
         vector< vector<bool> > lps(N+1, vector<bool>(N+1,false));
+        vector< vector<int> >  psm(N+1, vector<int>(N+1,0));
+
         for(int i = 0; i<=N; ++i)
         {
             lps[i][i] = true;
         }
+
         for(int L = 2; L<N; ++L)
         {
-            
+            for(int i = 0; i<=N-L; ++i)
+            {
+                int j = i+L-1;
+                if( 2 == L)
+                {
+                    if(s[i] == s[j])
+                    {
+                        lps[i][j] = true;
+                        psm[j][i] = L;
+                    }
+                }
+                else
+                {
+                    if(s[i] == s[j] && lps[i+1][j-1])
+                    {
+                        lps[i][j] = true;
+                        psm[j][i] = L;
+                    }
+                }
+            }               
         }
+        
+        for(int i = 0; i<N; ++i)
+        {
+            for(int j = 0; j )
+        }
+
     }
 };

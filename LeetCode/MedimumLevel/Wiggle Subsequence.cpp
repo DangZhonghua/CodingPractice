@@ -35,6 +35,10 @@ Follow up:
 Can you do it in O(n) time?
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
 class Solution 
 {
 public:
