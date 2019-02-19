@@ -56,7 +56,7 @@ public:
 			psm[i][0] = 1;  //the PS count which starting from i.
 		}
 
-		for (int L = 2; L<N; ++L)
+		for (int L = 2; L <= N; ++L)
 		{
 			for (int i = 0; i <= N - L; ++i)
 			{
@@ -67,7 +67,7 @@ public:
 					{
 						lps[i][j] = true;
 					}
-					else if (lps[i+1][j-1])
+					else if (lps[i + 1][j - 1])
 					{
 						lps[i][j] = true;
 					}
@@ -80,36 +80,39 @@ public:
 			}
 		}
 
-		start.m_s		 = 0;
-		start.m_lenIndex = 1;
+		start.m_s = 0;
+		start.m_lenIndex = 0;
 
 		// push them at the same time: this is important to keep vps and psStack consistent.
 		psStack.push(start);
-		vps.push_back(s.substr(0, psm[0][start.m_lenIndex]));
+		//vps.push_back(s.substr(0, psm[0][start.m_lenIndex]));
 
 		while (!psStack.empty())
 		{
 			stPS& tp = psStack.top();
+			if (tp.m_lenIndex)
+			{
+				vps.pop_back();
+			}
 
+			tp.m_lenIndex += 1;
 			if (tp.m_lenIndex > psm[tp.m_s][0])
 			{
-				vps.pop_back();
-				psStack.pop();
-				continue;
-			}
-			if ( tp.m_s + psm[tp.m_s][tp.m_lenIndex] == N) //reach the end
-			{
-				vvps.push_back(vps);
-				vps.pop_back();
 				psStack.pop();
 			}
 			else
 			{
-				start.m_s		 = tp.m_s + psm[tp.m_s][tp.m_lenIndex];
-				start.m_lenIndex = 1;
-				tp.m_lenIndex += 1;
-				vps.push_back(s.substr(start.m_s, psm[start.m_s][start.m_lenIndex]));
-				psStack.push(start);
+				vps.push_back(s.substr(tp.m_s, psm[tp.m_s][tp.m_lenIndex]));
+				start.m_s = tp.m_s + psm[tp.m_s][tp.m_lenIndex];
+				start.m_lenIndex = 0;
+				if (start.m_s == N)
+				{
+					vvps.push_back(vps);
+				}
+				else
+				{
+					psStack.push(start);
+				}
 			}
 		}
 
@@ -119,7 +122,7 @@ public:
 			{
 				cout << s << " ";
 			}
-			cout<<endl;
+			cout << endl;
 		}
 
 		return vvps;
@@ -128,7 +131,7 @@ public:
 
 int main()
 {
-	string s = "aab";
+	string s = "aa";
 	Solution sol;
 
 	sol.partition(s);
