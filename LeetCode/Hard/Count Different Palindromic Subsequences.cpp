@@ -31,3 +31,10 @@ Note:
 The length of S will be in the range [1, 1000].
 Each character S[i] will be in the set {'a', 'b', 'c', 'd'}.
 */
+
+class Solution {
+public:
+    int countPalindromicSubsequences(string S) {
+        
+    }
+};

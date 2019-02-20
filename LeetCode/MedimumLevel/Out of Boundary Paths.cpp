@@ -8,3 +8,10 @@ However, you can at most move N times.
 Find out the number of paths to move the ball out of grid boundary. The answer may be very large, return it after mod 109 + 7.
 
 */
+
+class Solution {
+public:
+    int findPaths(int m, int n, int N, int i, int j) {
+        
+    }
+};
