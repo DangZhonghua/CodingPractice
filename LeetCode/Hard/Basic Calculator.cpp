@@ -18,3 +18,17 @@ You may assume that the given expression is always valid.
 Do not use the eval built-in library function.
 
 */
+
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+class Solution 
+{
+public:
+    int calculate(string s) 
+    {
+        
+    }
+};
