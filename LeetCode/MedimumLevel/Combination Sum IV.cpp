@@ -26,10 +26,44 @@ Therefore the output is 7.
 
 */
 
-class Solution {
+#include<vector>
+#include<iostream>
+using namespace std;
+
+class Solution 
+{
 public:
     int combinationSum4(vector<int>& nums, int target) 
     {
-        
+        int N = nums.size();
+        vector< vector<int> > dp(target+1, vector<int>(N+1,0));
+        dp[0][0] = 1;
+
+        for(int t = 1; t<=target; ++t)
+        {
+            for(int i = 1; i<=N; ++i)
+            {
+                if(t>=nums[i-1] &&  dp[t-nums[i-1]][i-1])
+                {
+                    dp[t][i] += dp[t-nums[i-1]][i-1];
+                }
+                else
+                {
+                    dp[t][i] = dp[t][i-1];
+                }
+            }
+        }
+        return dp[target][N];        
     }
 };
+
+int main()
+{
+    int target = 4;
+    vector<int> nums{1, 2, 3};
+    Solution sol;
+    cout<<sol.combinationSum4(nums,target)<<endl;
+
+    return 0;
+
+}
