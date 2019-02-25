@@ -22,6 +22,7 @@ Do not use the eval built-in library function.
 #include<iostream>
 #include<vector>
 #include<string>
+#include<stack>
 using namespace std;
 
 class Solution 
@@ -29,6 +30,33 @@ class Solution
 public:
     int calculate(string s) 
     {
+        int sum = 0;
+        stack<int> cs;
+        stack<int> sumStack;
+        if(s[0] == '(')
+        {
+            cs.push(s[0]);
+        }
+
+        int i = 1;
+        while( !cs.empty() || i< s.length() )
+        {
+            if(cs.empty())
+            {
+                int d = 0;
+                if( '0'<=s[i] && '9' >= s[i])
+                {
+                    if(i-1<0)
+                    {
+                        d = s[i]-'0'; 
+                    }
+                    else
+                    {
+                        
+                    }   
+                }
+            }
+        }
         
     }
 };
