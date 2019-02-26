@@ -17,14 +17,15 @@ Explanation: It's possible to divide it into 4 subsets (5), (1, 4), (2,3), (2,3)
 
 Note:
 
-	1 <= k <= len(nums) <= 16.
-	0 < nums[i] < 10000.
+1 <= k <= len(nums) <= 16.
+0 < nums[i] < 10000.
 
 */
 
 
 #include<iostream>
 #include<vector>
+#include <algorithm>
 using namespace std;
 
 class Solution
@@ -32,6 +33,7 @@ class Solution
 public:
 	bool canPartitionKSubsets(vector<int>& nums, int K)
 	{
+		std::sort(nums.begin(), nums.end());
 		bool bPartition = true;
 		int S = 0;
 		for (int e : nums)
@@ -42,57 +44,52 @@ public:
 		{
 			return false;
 		}
+
 		S /= K;
-
 		int N = nums.size();
+		vector< vector<int> >  vpart(K, vector<int>(S + 1, -1));
+		vector< bool > vBits(N + 1, false);
 
-		vector<int> a = nums;
 		for (int k = 0; k < K; ++k)
 		{
-			N = a.size();
-			vector< vector<int>> dp(N + 1, vector<int>(S + 1, -1));
-			for (int i = 0; i <= N; ++i)
-			{
-				dp[i][0] = 0;
-			}
-			
+			vpart[k][0] = 0;
+		}
 
+		for (int k = 0; k<K; ++k)
+		{
+			vector<int> vcBits(N + 1, false);
 			for (int i = 1; i <= N; ++i)
 			{
+				if (vBits[i] || vcBits[i])
+				{
+					continue;
+				}
 				for (int s = 1; s <= S; ++s)
 				{
-					dp[i][s] = dp[i - 1][s];
-					if (s >= a[i - 1] && -1 != dp[i - 1][s - a[i - 1]])
+					if (!vcBits[i]  && s >= nums[i - 1] && -1 != vpart[k][s - nums[i - 1]])
 					{
-						dp[i][s] = i;
+						vpart[k][s] = i;
+						vcBits[i] = true;
 					}
 				}
 			}
 
-			if (-1 == dp[N][S])
+			if (-1 == vpart[k][S])
 			{
 				bPartition = false;
 				break;
 			}
 
-			vector<bool> vbits(N + 1, false);
-			int m = S;
-			int j = dp[N][m];
-			while (m)
+			int s = S;
+			int j = 0;
+			while (s)
 			{
-				vbits[j] = true;
-				m = m - a[j - 1];
-				j = dp[j-1][m];
+				j = vpart[k][s];
+				s -= nums[j - 1];
+				vBits[j] = true;
+				cout << nums[j - 1] << " ";
 			}
-			vector<int> b;
-			for (int j = 1; j <= N; ++j)
-			{
-				if (!vbits[j])
-				{
-					b.push_back(a[j - 1]);
-				}
-			}
-			a = b;
+			cout << endl;
 		}
 
 		return bPartition;
@@ -117,6 +114,17 @@ int main()
 
 
 	cout << sol.canPartitionKSubsets(nums2, k) << endl;
+
+
+	vector<int> nums3{ 4, 5, 3, 2, 5, 5, 5, 1, 5, 5, 5, 5, 3, 5, 5, 2 };
+
+	//{ 4,  3, 2, 1, 3, 2 }
+	k = 13;
+
+	//vector<int> nums4{ 7, 2, 2, 2, 2, 2, 2, 2, 3 };
+	//k = 3;
+
+	//cout << sol.canPartitionKSubsets(nums4, k) << endl;
 
 	return 0;
 }

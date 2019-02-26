@@ -48,7 +48,6 @@ void PermutationsofString(char* szText, int Len, int index, vector<string>& vp)
 {
     if(index == Len)
     {
-        //cout<<szText<<" ";
         vp.push_back(szText);
 
     }
@@ -83,7 +82,6 @@ int main()
     {
         char szText[10];
         cin>>szText;
-        //std::sort(szText,szText+strlen(szText));
         vector<string> vp;
         PermutationsofString(szText,strlen(szText)-1,0,vp);
         outputPermutation(vp);
