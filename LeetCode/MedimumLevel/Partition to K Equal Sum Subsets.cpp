@@ -78,7 +78,7 @@ public:
 				bPartition = false;
 				break;
 			}
-			
+
 			int m = S;
 			int j = dp[k][N][S];
 			while (m && j)
@@ -86,7 +86,7 @@ public:
 				cout << nums[j - 1] << " ";
 				vBits[j] = true;
 				m -= nums[j - 1];
-				j = dp[k][j-1][m];
+				j = dp[k][j - 1][m];
 			}
 			cout << endl;
 		}
@@ -95,26 +95,38 @@ public:
 	}
 	bool canPartitionKSubsets(vector<int>& nums, int K)
 	{
-		
-	}
-
-	bool PartitionKSubsets(vector<int>& nums, vector<bool>& vBits, vector< vector<int> > vsets, int k, vector<int>& vsum)
-	{
-		if (k = m_K)
+		std::sort(nums.begin(), nums.end());
+		bool bPartition = true;
+		int S = 0;
+		bPartition = CalAverage(nums, S, K);
+		if (!bPartition)
 		{
-			return true;
+			return bPartition;
 		}
-		for (int i = 0; i < nums.size(); ++i)
+		int N = nums.size();
+		vector< vector<int> > vs(N + 1, vector<int>(S + 1, 0));
+		vector< vector<int> > vi(S + 1, vector<int>());
+		for (int i = 0; i <= N; ++i)
 		{
-			if (!vBits[i])
+			vs[i][0] = 1;
+		}
+
+		for (int i = 1; i <= N; ++i)
+		{
+			for (int s = 1; s <= S; ++s)
 			{
-				vsum[k] += nums[i];
-				if (vsum[k] == m_S)
+				vs[i][s] = vs[i-1][s];
+				if (s >= nums[i - 1] && vs[i - 1][s - nums[i - 1]])
 				{
-					vBits[i] = true;	
+					vs[i][s] += 1;
+					vi[s].push_back(i);
 				}
 			}
 		}
+		
+
+
+		return vs[N][S] == K;
 	}
 
 private:
@@ -151,7 +163,7 @@ int main()
 
 	vector<int> nums2{ 4, 3, 2, 3, 5, 2, 1 };
 	k = 4;
-	//cout << sol.canPartitionKSubsets(nums2, k) << endl;
+	cout << sol.canPartitionKSubsets(nums2, k) << endl;
 
 
 	vector<int> nums3{ 2, 2, 2, 2, 3, 4, 5 };
@@ -164,7 +176,7 @@ int main()
 	vector<int> nums4{ 10, 10, 10, 7, 7, 7, 7, 7, 7, 6, 6, 6 };
 	k = 3;
 
-	cout << sol.canPartitionKSubsets(nums4, k) << endl;
+	//cout << sol.canPartitionKSubsets(nums4, k) << endl;
 
 	return 0;
 }

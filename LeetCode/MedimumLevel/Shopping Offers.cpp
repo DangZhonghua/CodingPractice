@@ -44,10 +44,31 @@ Note:
 #include<vector>
 using namespace std;
 
-class Solution {
+class Solution 
+{
 public:
     int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) 
     {
+        for(int i = 0; i<price.size(); ++i)
+        {
+            vector<int> npv;
+            npv.push_back(1);
+            for(int j = 1; j<price.size();++j)
+            {
+                npv.push_back(0);
+            }
+            npv.push_back(price[i]);
+            special.push_back(npv);
+        }
+
+        int N = special.size();
         
+        vector< vector< int > > dp( N+1, vector<int>(price.size(),0));
+
+
+        for(int i = 1;i<=N; ++i)
+        {
+            
+        }
     }
 };
