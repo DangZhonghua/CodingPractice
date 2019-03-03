@@ -26,73 +26,12 @@ Note:
 #include<iostream>
 #include<vector>
 #include<algorithm>
+#include<stack>
 using namespace std;
 
 class Solution
 {
 public:
-	bool canPartitionKSubsetsDP(vector<int>& nums, int K)
-	{
-		std::sort(nums.begin(), nums.end());
-		bool bPartition = true;
-		int S = 0;
-		bPartition = CalAverage(nums, S, K);
-		if (!bPartition)
-		{
-			return bPartition;
-		}
-
-		int N = nums.size();
-		vector< vector< vector<int> > > dp(K, vector< vector<int > >(N + 1, vector<int>(S + 1, -1)));
-		vector<bool> vBits(N + 1, false);
-
-		for (int k = 0; k < K; ++k)
-		{
-			for (int i = 0; i <= N; ++i)
-			{
-				dp[k][i][0] = 0;
-			}
-		}
-
-		for (int k = 0; k < K; ++k)
-		{
-			dp[k][0][0] = 0;
-
-			for (int i = 1; i <= N; ++i)
-			{
-				for (int s = 1; s <= S; ++s)
-				{
-
-					if (!vBits[i] && s >= nums[i - 1] && -1 != dp[k][i - 1][s - nums[i - 1]])
-					{
-						dp[k][i][s] = i;
-					}
-					else
-					{
-						dp[k][i][s] = dp[k][i - 1][s];
-					}
-				}
-			}
-			if (-1 == dp[k][N][S])
-			{
-				bPartition = false;
-				break;
-			}
-
-			int m = S;
-			int j = dp[k][N][S];
-			while (m && j)
-			{
-				cout << nums[j - 1] << " ";
-				vBits[j] = true;
-				m -= nums[j - 1];
-				j = dp[k][j - 1][m];
-			}
-			cout << endl;
-		}
-
-		return bPartition;
-	}
 	bool canPartitionKSubsets(vector<int>& nums, int K)
 	{
 		std::sort(nums.begin(), nums.end());
@@ -106,6 +45,11 @@ public:
 		int N = nums.size();
 		vector< vector<int> > vs(N + 1, vector<int>(S + 1, 0));
 		vector< vector<int> > vi(S + 1, vector<int>());
+		vector< bool > vBits(N + 1, false);
+
+		m_S = S;
+		m_K = K;
+
 		for (int i = 0; i <= N; ++i)
 		{
 			vs[i][0] = 1;
@@ -115,7 +59,7 @@ public:
 		{
 			for (int s = 1; s <= S; ++s)
 			{
-				vs[i][s] = vs[i-1][s];
+				vs[i][s] = vs[i - 1][s];
 				if (s >= nums[i - 1] && vs[i - 1][s - nums[i - 1]])
 				{
 					vs[i][s] += 1;
@@ -123,10 +67,39 @@ public:
 				}
 			}
 		}
-		
+		int count = 0;
+		return findKPartitionSubsets(nums, vBits, vi, S, count);
+	}
 
+	bool findKPartitionSubsets(vector<int>& nums, vector<bool>& vBits, vector< vector<int> >& vi, int S, int & count)
+	{
+		for (int i = 0; i < vi[S].size(); ++i)
+		{
+			if (!vBits[vi[S][i]])
+			{
+				vBits[vi[S][i]] = true;
+				int NS = S-nums[vi[S][i] - 1];
+				if (0 == NS)
+				{
+					++count;
+				}
+				if (m_K == count)
+				{
+					return true;
+				}
 
-		return vs[N][S] == K;
+				if (findKPartitionSubsets(nums, vBits, vi, NS ? NS : m_S, count))
+				{
+					return true;
+				}
+				if (0 == NS)
+				{
+					--count;
+				}
+				vBits[vi[S][i]] = false;
+			}
+		}
+		return false;
 	}
 
 private:
@@ -144,6 +117,7 @@ private:
 		S = sum / K;
 		return true;
 	}
+
 private:
 	int m_S{ 0 };
 	int m_K{ 0 };
@@ -163,7 +137,7 @@ int main()
 
 	vector<int> nums2{ 4, 3, 2, 3, 5, 2, 1 };
 	k = 4;
-	cout << sol.canPartitionKSubsets(nums2, k) << endl;
+	//cout << sol.canPartitionKSubsets(nums2, k) << endl;
 
 
 	vector<int> nums3{ 2, 2, 2, 2, 3, 4, 5 };
@@ -178,5 +152,8 @@ int main()
 
 	//cout << sol.canPartitionKSubsets(nums4, k) << endl;
 
+	vector<int> nums5{ 4, 5, 3, 2, 5, 5, 5, 1, 5, 5, 5, 5, 3, 5, 5, 2 };
+	k = 13;
+	cout << sol.canPartitionKSubsets(nums4, k) << endl;
 	return 0;
 }

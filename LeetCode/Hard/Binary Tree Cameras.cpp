@@ -19,9 +19,35 @@ Calculate the minimum number of cameras needed to monitor all nodes of the tree.
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-class Solution {
+
+/*
+
+DP[a] = DP[ a->parent->parent] + DP[ a->left->left ] + DP[a->left->right] + DP[a->right->left] + DP[a->right->right]
+        DP[a->parent], DP[a->left], DP[a->right]
+
+DP[NULL] = 0;
+
+*/
+
+
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+using namespace std;
+
+ struct TreeNode 
+ {
+     int val;
+     TreeNode *left;
+     TreeNode *right;
+     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+
+class Solution 
+{
 public:
-    int minCameraCover(TreeNode* root) {
-        
+    int minCameraCover(TreeNode* root) 
+    {
+        unordered_map<TreeNode*, TreeNode*> mapChild2Parent;
     }
 };

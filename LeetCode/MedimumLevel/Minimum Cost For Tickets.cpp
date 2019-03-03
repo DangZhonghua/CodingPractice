@@ -2,7 +2,8 @@
 https://leetcode-cn.com/problems/minimum-cost-for-tickets/
 Minimum Cost For Tickets
 
-In a country popular for train travel, you have planned some train travelling one year in advance.  The days of the year that you will travel is given as an array days.  Each day is an integer from 1 to 365.
+In a country popular for train travel, you have planned some train travelling one year in advance.  
+The days of the year that you will travel is given as an array days.  Each day is an integer from 1 to 365.
 
 Train tickets are sold in 3 different ways:
 
@@ -40,22 +41,26 @@ In total you spent $17 and covered all the days of your travel.
 
  
 
-Note:
-
+Note:0
+                                                                                        
     1 <= days.length <= 365
     1 <= days[i] <= 365
     days is in strictly increasing order.
     costs.length == 3
     1 <= costs[i] <= 1000
 
-
-
-
 */
 
-class Solution {
+#include<vector>
+#include<iostream>
+using namespace std;
+
+class Solution 
+{
 public:
-    int mincostTickets(vector<int>& days, vector<int>& costs) {
+    int mincostTickets(vector<int>& days, vector<int>& costs) 
+    {
+        vector<int> mc(366,0);
         
     }
 };
