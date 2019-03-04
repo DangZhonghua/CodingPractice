@@ -32,10 +32,28 @@
  * 
  * 
  */
-class Solution {
+
+#include<vector>
+using namespace std;
+class Solution 
+{
 public:
-    void sortColors(vector<int>& nums) {
-        
+    void sortColors(vector<int>& nums) 
+    {
+        vector<int> vCount(3,0);
+        for(int i = 0; i<nums.size(); ++i)
+        {
+            vCount[nums[i]] += 1;
+        }    
+        int C = nums.size()-1;
+        for(int i = 2; i>=0; --i)
+        {
+            for(int j = 0; j<vCount[i];++j)
+            {
+                nums[C] = i;
+                --C;
+            }
+        }
     }
 };
 

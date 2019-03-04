@@ -61,7 +61,7 @@ int MinimumDeletion(string& strText)
 	int L = strText.length();
 	vector< vector<int> > md(L + 1, vector<int>(L + 1, 0));
 
-	for (int i = 0; i<L; ++i)
+	for (int i = 0; i<L; ++i)A:
 	{
 		md[i][i] = 1;
 	}

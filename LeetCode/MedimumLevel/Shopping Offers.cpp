@@ -42,7 +42,6 @@ Note:
 
 #include<iostream>
 #include<vector>
-#include<climits>
 using namespace std;
 
 class Solution 
@@ -50,10 +49,6 @@ class Solution
 public:
     int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) 
     {
-        if(needs.empty())
-        {
-            return false;
-        }
         for(int i = 0; i<price.size(); ++i)
         {
             vector<int> npv;
@@ -68,16 +63,12 @@ public:
 
         int N = special.size();
         
-        vector< vector< int > > dp( N+1, vector<int>(needs[0]+1,INT_MAX));
-        
-        dp[0][0] = 0;
+        vector< vector< int > > dp( N+1, vector<int>(price.size(),0));
+
 
         for(int i = 1;i<=N; ++i)
         {
-            for(int c = 1; c<= needs[0];++c)
-            {
-                
-            }
+            while 
         }
     }
 };
