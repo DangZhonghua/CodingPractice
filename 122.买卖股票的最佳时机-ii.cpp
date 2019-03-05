@@ -52,15 +52,28 @@ class Solution
 public:
     int maxProfit(vector<int>& prices) 
     {
-        int maxp = 0;
+        long long maxp = 0;
         if(prices.empty())
         {
             return 0;
         }
         int i = 0;
-        int j = 0;
-
-
+        int j = 1;
+        int N = prices.size();
+        while(j<N)
+        {
+            if(prices[j]<prices[j-1])
+            {
+                maxp += prices[j-1]-prices[i];
+                i = j;
+            }
+            ++j;
+        }
+        if(i != N-1)
+        {
+            maxp += prices[j-1] - prices[i];
+        }
+        return maxp;
     }
 };
 
