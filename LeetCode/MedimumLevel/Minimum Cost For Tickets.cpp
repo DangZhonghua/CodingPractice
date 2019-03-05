@@ -51,6 +51,8 @@ Note:0
 
 */
 
+
+
 #include<vector>
 #include<iostream>
 using namespace std;
@@ -61,6 +63,12 @@ public:
     int mincostTickets(vector<int>& days, vector<int>& costs) 
     {
         vector<int> mc(366,0);
-        
+        for(int i = 0; i<days.size(); ++i)
+        {
+            mc[days[i]] = mc[days[i]-1] + costs[0];
+            mc[days[i]] 
+        }
+
+
     }
 };
