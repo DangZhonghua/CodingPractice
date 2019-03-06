@@ -87,9 +87,10 @@ public:
 			}
 			if (i + 1 < days.size())
 			{
+                // The following is important.
 				for (int j = days[i] + 1; j < days[i + 1]; ++j)
 				{
-					mc[j] = mc[j - 1];
+					mc[j] = mc[j - 1]; 
 				}
 			}
 

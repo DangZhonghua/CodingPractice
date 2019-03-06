@@ -19,7 +19,9 @@ Note: You may assume that n is not less than 2 and not larger than 58.
 
 this is similar to matrix multiply chain problem.
 
-dp[i,j] = max{ dp[i,k]*dp[k+1, j]}
+dp[n] = max{ dp[a]*dp[b]} for any a+b = n
+
+1+ n-1
 
 */
 
@@ -27,12 +29,37 @@ dp[i,j] = max{ dp[i,k]*dp[k+1, j]}
 #include <iostream>
 using namespace std;
 
+
 class Solution 
 {
 public:
     int integerBreak(int n) 
     {
-        vector< vector<int> > dp(n+1, vector<int>(n+1,0));
-        
+        if(2 == n)
+        {
+            return 1;
+        }
+
+        vector<int> dp(n+1,0);
+        dp[1] = 1;
+        dp[2] = 2;
+
+        for(int i = 3; i<=n; ++i)
+        {
+            for(int j = 1; j<= i/2; ++j)
+            {
+                if(dp[i] < dp[j]*dp[i-j] )
+                {
+                     dp[i] = dp[j]*dp[i-j];
+                }
+            }
+            if(dp[i]<i && i != n ) //this is important for that is not the final n which means it can NOT be divid
+            {
+                dp[i] = i;
+            }
+            
+           // cout<<i<<":"<<dp[i]<<endl;
+        }
+        return dp[n];
     }
 };

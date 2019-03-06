@@ -42,6 +42,7 @@ Note:
 
 #include<iostream>
 #include<vector>
+#include<climits>
 using namespace std;
 
 class Solution 
@@ -61,14 +62,16 @@ public:
             special.push_back(npv);
         }
 
-        int N = special.size();
-        
-        vector< vector< int > > dp( N+1, vector<int>(price.size(),0));
-
+        int N = special.size();   
+        vector< vector< int > > dp( N+1, vector<int>(needs[0]+1,INT_MAX));
 
         for(int i = 1;i<=N; ++i)
         {
-            while 
+            for( int j = 1; j<=needs[0]; ++j)
+            {
+                
+
+            }
         }
     }
 };

@@ -33,10 +33,82 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
+
+
+
 class Solution {
 public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) 
+    {
+        int s = 0;
+        int step = 0;
+        ListNode* head = NULL;
+        ListNode* tail = NULL;
+
+        while(NULL != l1 && NULL != l2)
+        {
+            s = step + l1->val + l2->val;
+            step = s/10;
+            s = s%10;
+            if(NULL == tail)
+            {
+                head = tail = new ListNode(s);
+            }
+            else
+            {
+                tail->next = new ListNode(s);
+                tail = tail->next;
+            }
+            l1 = l1->next;
+            l2 = l2->next;
+        }
+        while( NULL != l1)
+        {
+            s = step + l1->val;
+            step = s/10;
+            s = s%10;
+            if(NULL == tail)
+            {
+                head = tail = new ListNode(s);
+            }
+            else
+            {
+                tail->next = new ListNode(s);
+                tail = tail->next;
+            }
+            l1 = l1->next;
+        }
+        while( NULL != l2)
+        {
+            s = step + l2->val;
+            step = s/10;
+            s = s%10;
+            if(NULL == tail)
+            {
+                head = tail = new ListNode(s);
+            }
+            else
+            {
+                tail->next = new ListNode(s);
+                tail = tail->next;
+            }
+            l2 = l2->next;
+        } 
+        if(step) // This is important case.
+        {
+            if(NULL == tail)
+            {
+                head = tail = new ListNode(step);
+            }
+            else
+            {
+                tail->next = new ListNode(step);
+                tail = tail->next;
+            }
+        }
+
+        return head;     
     }
+
 };
 
