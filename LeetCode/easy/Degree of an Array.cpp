@@ -22,24 +22,57 @@ nums.length will be between 1 and 50,000.
 nums[i] will be an integer between 0 and 49,999.
 */
 
-class Solution {
+#include<iostream>
+#include<unordered_map>
+#include<vector>
+using namespace std;
+
+class Solution 
+{
+
+    struct stRange
+    {
+        int count;
+        int start;
+        int end;
+    };
+
 public:
     int findShortestSubArray(vector<int>& nums) 
     {
-       unordered_map<int,int> mapNum2Count;
-       int degree = 0;
-       for(auto e: nums)
+       unordered_map<int,stRange> mapNum2Count;
+       int degree = 1;
+
+       for(int i = 0; i<nums.size(); ++i)
        {
-           mapNum2Count[e] += 1;
-           if(mapNum2Count[e]>degree)
+           auto it = mapNum2Count.find(nums[i]);
+           if(mapNum2Count.end() == it)
            {
-               degree = mapNum2Count[e];
+               stRange r;
+               r.start = i;
+               r.end   = i;
+               r.count = 1;
+               mapNum2Count[nums[i]] = r;
+           }
+           else
+           {
+               it->second.end   = i;
+               it->second.count += 1;
+               if( it->second.count>degree)
+               {
+                   degree = it->second.count;
+               }
            }
        }
-       
-       while()
-        
-        
-        
+
+       int minimumRange = nums.size() + 1;
+       for(auto it = mapNum2Count.begin(); it != mapNum2Count.end(); ++it)
+       {
+           if(it->second.count == degree && (it->second.end-it->second.start+1)<minimumRange)
+           {
+               minimumRange = (it->second.end-it->second.start+1);
+           }
+       }
+       return minimumRange;    
     }
 };

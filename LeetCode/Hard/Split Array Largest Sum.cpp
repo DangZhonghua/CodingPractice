@@ -22,10 +22,28 @@ where the largest sum among the two subarrays is only 18.
 
 */
 
+/*
+use knapsnack technique to solve this.
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
 class Solution {
 public:
     int splitArray(vector<int>& nums, int m) 
     {
-        
+        unsigned long long sum = 0;
+        for(int e:nums)
+        {
+            sum += e;
+        }
+        sum /= m;
+        vector<unsigned long long> vf(sum+1,0);
+        for(int i = 1; i<= nums.size(); ++i)
+        {
+            
+        }
     }
 };
