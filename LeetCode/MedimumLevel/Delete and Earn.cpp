@@ -30,31 +30,16 @@ Each element nums[i] is an integer in the range [1, 10000].
 */
 
 
+#include <iostream>
+#include <vector>
+using namespace std;
+
 
 class Solution 
 {
 public:
     int deleteAndEarn(vector<int>& nums) 
     {
-        int N = nums.size();
-        vector<int> numc(10001,0);
         
-        for(int i = 0; i<nums.size(); ++i)
-        {
-            numc[nums[i]] += nums[i];
-        }
-        
-        int maxp = 0;
-        int p = 0;
-        for(int i = 0; i<nums.size(); ++i)
-        {
-            p = nums[i];
-            p += (numc[nums[i]-1] + numc[nums[i]+1]);
-            if(p>maxp)
-            {
-                maxp = p;
-            }
-        }
-        return maxp;
     }
 };

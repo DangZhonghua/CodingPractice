@@ -24,6 +24,9 @@ where the largest sum among the two subarrays is only 18.
 
 /*
 use knapsnack technique to solve this.
+
+https://segmentfault.com/a/1190000008377782
+
 */
 
 #include<iostream>

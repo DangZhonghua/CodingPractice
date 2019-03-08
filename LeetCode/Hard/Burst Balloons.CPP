@@ -28,6 +28,18 @@ which ballon should be bursted lastly ( consider firstly is very complicated)? w
 coin[i,j] = max{ coin[i,k-1] + nums[im]*nums[k]*nums[jm] + coin[k+1,j] }  the last bursted ballon is supposed to k
 This is dynamic programming: this is similar with matrix chain muliply problem.
 
+
+From the GeeksForGeeks:
+A recursive solution is discussed here. We can solve this problem using dynamic programming.
+First, consider a sub-array from indices Left to Right(inclusive).
+If we assume the balloon at index Last to be the last balloon to be burst in this sub-array, 
+we would say the coined gained to be-A[left-1]*A[last]*A[right+1].
+Also, the total Coin Gained would be this value, plus dp[left][last – 1] + dp[last + 1][right], 
+where dp[i][j] means maximum coin gained for sub-array with indices i, j.
+Therefore, for each value of Left and Right, 
+we need find and choose a value of Last with maximum coin gained, and update the dp array.
+Our Answer is the value at dp[1][N].
+
 */
 
 
@@ -104,6 +116,15 @@ Explanation: nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
 which ballon should be bursted lastly ( consider firstly is very complicated)? we don't know, so we try every possible.
 coin[i,j] = max{ coin[i,k-1] + nums[i]*nums[k]*nums[j] + coin[k+1,j] }  the last bursted ballon is supposed to k
 This is dynamic programming: this is similar with matrix chain muliply problem.
+
+
+A recursive solution is discussed here. We can solve this problem using dynamic programming.
+First, consider a sub-array from indices Left to Right(inclusive).
+If we assume the balloon at index Last to be the last balloon to be burst in this sub-array, 
+we would say the coined gained to be-A[left-1]*A[last]*A[right+1].
+Also, the total Coin Gained would be this value, plus dp[left][last – 1] + dp[last + 1][right], where dp[i][j] means maximum coin gained for sub-array with indices i, j.
+Therefore, for each value of Left and Right, we need find and choose a value of Last with maximum coin gained, and update the dp array.
+Our Answer is the value at dp[1][N].
 
 */
 
