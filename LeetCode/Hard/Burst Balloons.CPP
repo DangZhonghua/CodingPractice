@@ -9,15 +9,15 @@ Find the maximum coins you can collect by bursting the balloons wisely.
 
 Note:
 
-	You may imagine nums[-1] = nums[n] = 1. They are not real therefore you can not burst them.
-	0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100
+You may imagine nums[-1] = nums[n] = 1. They are not real therefore you can not burst them.
+0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100
 
 Example:
 
 Input: [3,1,5,8]
 Output: 167
 Explanation: nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
-			 coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
+coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
 
 
 */
@@ -32,11 +32,11 @@ This is dynamic programming: this is similar with matrix chain muliply problem.
 From the GeeksForGeeks:
 A recursive solution is discussed here. We can solve this problem using dynamic programming.
 First, consider a sub-array from indices Left to Right(inclusive).
-If we assume the balloon at index Last to be the last balloon to be burst in this sub-array, 
+If we assume the balloon at index Last to be the last balloon to be burst in this sub-array,
 we would say the coined gained to be-A[left-1]*A[last]*A[right+1].
-Also, the total Coin Gained would be this value, plus dp[left][last – 1] + dp[last + 1][right], 
+Also, the total Coin Gained would be this value, plus dp[left][last – 1] + dp[last + 1][right],
 where dp[i][j] means maximum coin gained for sub-array with indices i, j.
-Therefore, for each value of Left and Right, 
+Therefore, for each value of Left and Right,
 we need find and choose a value of Last with maximum coin gained, and update the dp array.
 Our Answer is the value at dp[1][N].
 
@@ -98,31 +98,31 @@ Find the maximum coins you can collect by bursting the balloons wisely.
 
 Note:
 
-	You may imagine nums[-1] = nums[n] = 1. They are not real therefore you can not burst them.
-	0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100
+You may imagine nums[-1] = nums[n] = 1. They are not real therefore you can not burst them.
+0 ≤ n ≤ 500, 0 ≤ nums[i] ≤ 100
 
 Example:
 
 Input: [3,1,5,8]
 Output: 167
 Explanation: nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
-			 coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
+coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
 
 
 */
 
 /*
 
-which ballon should be bursted lastly ( consider firstly is very complicated)? we don't know, so we try every possible.
+which balloon should be burst lastly ( consider firstly is very complicated)? we don't know, so we try every possible.
 coin[i,j] = max{ coin[i,k-1] + nums[i]*nums[k]*nums[j] + coin[k+1,j] }  the last bursted ballon is supposed to k
-This is dynamic programming: this is similar with matrix chain muliply problem.
+This is dynamic programming: this is similar with matrix chain multiply problem.
 
 
 A recursive solution is discussed here. We can solve this problem using dynamic programming.
 First, consider a sub-array from indices Left to Right(inclusive).
-If we assume the balloon at index Last to be the last balloon to be burst in this sub-array, 
-we would say the coined gained to be-A[left-1]*A[last]*A[right+1].
-Also, the total Coin Gained would be this value, plus dp[left][last – 1] + dp[last + 1][right], where dp[i][j] means maximum coin gained for sub-array with indices i, j.
+If we assume the balloon at index Last to be the last balloon to be burst in this sub-array,
+we would say the coined gained to be-A[left-1]*A[last]*A[right+1].Also, the total Coin Gained would be this value, 
+plus dp[left][last – 1] + dp[last + 1][right], where dp[i][j] means maximum coin gained for sub-array with indices i, j.
 Therefore, for each value of Left and Right, we need find and choose a value of Last with maximum coin gained, and update the dp array.
 Our Answer is the value at dp[1][N].
 
@@ -140,41 +140,57 @@ public:
 		unsigned long long nMax = 0;
 		int N = nums.size();
 		vector< vector<unsigned long long> > maxCoins(N + 2, vector<unsigned long long>(N + 2, 0));
+		vector<int> vp(N + 2, 1);
+		for (int i = 0; i < nums.size(); ++i)
+		{
+			vp[i + 1] = nums[i];
+		}
 
-		vector<int> cnums(N + 2, 0);
 		for (int i = 1; i <= N; ++i)
 		{
-			cnums[i] = nums[i - 1];
-		}
-		cnums[0] = 1;
-		cnums[N + 1] = 1;
-		
-		for (int i = 0; i < N + 2; ++i)
-		{
-			//maxCoins[i][i] = cnums[i];
+			maxCoins[i][i] = vp[i];
 		}
 
-		for (int L = 2; L <= N+1; ++L)
+		for (int L = 2; L <= N; ++L)
 		{
-			for (int i = 0; i < N + 2 - L; ++i)
+			for (int i = 1; i <= N - L + 1; ++i)
 			{
 				int j = i + L - 1;
-				for (int k = i+1; k <= j; ++k) // k is the last to burst in range [i,j]
+
+				for (int k = i; k <= j; ++k)
 				{
-					maxCoins[i][j] = max(maxCoins[i][j],
-						maxCoins[i][k] + nums[i] * nums[k] * nums[j] + maxCoins[k][j]);
+					if (maxCoins[i][j] < vp[i - 1] * vp[k] * vp[j+1] + maxCoins[i][k - 1] + maxCoins[k + 1][j])
+					{
+						maxCoins[i][j] = vp[i - 1] * vp[k] * vp[j+1] + maxCoins[i][k - 1] + maxCoins[k + 1][j];
+					}
 				}
 			}
 		}
-		return maxCoins[0][N + 1];
+
+		for (auto v : maxCoins)
+		{
+			for (auto e : v)
+			{
+				cout << e << " ";
+			}
+			cout << endl;
+		}
+
+		return maxCoins[1][N];
 	}
 };
+
+
 
 int main()
 {
 	Solution sol;
-	vector<int> nums{ 3,1,5,8 };
+	vector<int> nums{ 3, 1, 5, 8 };
 	cout << sol.maxCoins(nums) << endl;
+
+	vector<int> nums1{ 1, 2, 3, 4, 5 };
+	//cout << sol.maxCoins(nums1) << endl;
+
 
 	return 0;
 }
