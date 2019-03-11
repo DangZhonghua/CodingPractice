@@ -38,8 +38,23 @@ babgbag
 
 */
 
+
+/*
+
+            dp[i-1,j-1]+ dp[i-1,j] if x[i] = y[j]
+
+DP[i,j] =   
+            dp[i-1,j]               if x[i] != y[j]
+
+DP[i,0] = 1
+*/
+
+
+
+
 #include<string>
 #include<iostream>
+#include<vector>
 using namespace std;
 
 class Solution 
@@ -49,6 +64,34 @@ public:
     {
         int M = s.length();
         int N = t.length();
+        vector< vector<long long> > dp(M+1, vector<long long>(N+1, 0));
+
+        for(int i = 0; i<= M; ++i)
+        {
+            dp[i][0] = 1;
+        }
         
+        for(int i = 1; i<=M; ++i)
+        {
+            for(int j = 1; j<=N; ++j)
+            {
+                if(i<j) // there is no chance for including t[1..j] in s[1...i]
+                {
+                    dp[i][j] = 0;
+                }
+                else
+                {
+                    if(s[i-1] == t[j-1])
+                    {
+                        dp[i][j] = dp[i-1][j-1] + dp[i-1][j];
+                    }
+                    else
+                    {
+                        dp[i][j] = dp[i-1][j];
+                    }
+                }
+            }
+        }
+        return dp[M][N];  
     }
 };
