@@ -27,6 +27,8 @@ use knapsnack technique to solve this.
 
 https://segmentfault.com/a/1190000008377782
 
+https://blog.csdn.net/u014688145/article/details/69525838
+
 */
 
 #include<iostream>

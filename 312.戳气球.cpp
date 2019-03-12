@@ -34,10 +34,53 @@
  * 
  * 
  */
+
+
+
 class Solution {
 public:
-    int maxCoins(vector<int>& nums) {
-        
-    }
-};
+	int maxCoins(vector<int>& nums)
+	{
+		unsigned long long nMax = 0;
+		int N = nums.size();
+		vector< vector<unsigned long long> > maxCoins(N + 2, vector<unsigned long long>(N + 2, 0));
+		vector<int> vp(N + 2, 1);
+		for (int i = 0; i < nums.size(); ++i)
+		{
+			vp[i + 1] = nums[i];
+		}
 
+		for (int i = 1; i <= N; ++i)
+		{
+			//this is the right way to initialize the 1-size array.
+			maxCoins[i][i] = vp[i-1]*vp[i]*vp[i+1];
+		}
+
+		for (int L = 2; L <= N; ++L)
+		{
+			for (int i = 1; i <= N - L + 1; ++i)
+			{
+				int j = i + L - 1;
+
+				for (int k = i; k <= j; ++k)
+				{
+					if (maxCoins[i][j] < vp[i - 1] * vp[k] * vp[j+1] + maxCoins[i][k - 1] + maxCoins[k + 1][j])
+					{
+						maxCoins[i][j] = vp[i - 1] * vp[k] * vp[j+1] + maxCoins[i][k - 1] + maxCoins[k + 1][j];
+					}
+				}
+			}
+		}
+
+		// for (auto v : maxCoins)
+		// {
+		// 	for (auto e : v)
+		// 	{
+		// 		cout << e << " ";
+		// 	}
+		// 	cout << endl;
+		// }
+
+		return maxCoins[1][N];
+	}
+};

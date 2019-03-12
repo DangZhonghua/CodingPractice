@@ -106,7 +106,7 @@ Example:
 Input: [3,1,5,8]
 Output: 167
 Explanation: nums = [3,1,5,8] --> [3,5,8] -->   [3,8]   -->  [8]  --> []
-coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
+			 coins =  3*1*5      +  3*5*8    +  1*3*8      + 1*8*1   = 167
 
 
 */
@@ -148,7 +148,8 @@ public:
 
 		for (int i = 1; i <= N; ++i)
 		{
-			maxCoins[i][i] = vp[i];
+			//this is the right way to initialize the 1-size array.
+			maxCoins[i][i] = vp[i-1]*vp[i]*vp[i+1];
 		}
 
 		for (int L = 2; L <= N; ++L)
@@ -189,7 +190,7 @@ int main()
 	cout << sol.maxCoins(nums) << endl;
 
 	vector<int> nums1{ 1, 2, 3, 4, 5 };
-	//cout << sol.maxCoins(nums1) << endl;
+	cout << sol.maxCoins(nums1) << endl;
 
 
 	return 0;
