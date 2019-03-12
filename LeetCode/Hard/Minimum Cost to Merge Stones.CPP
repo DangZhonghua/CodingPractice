@@ -35,3 +35,15 @@ Note:
 1 <= stones[i] <= 100
 
 */
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+class Solution {
+public:
+    int mergeStones(vector<int>& stones, int K) 
+    {
+        
+    }
+};

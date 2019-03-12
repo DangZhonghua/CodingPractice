@@ -52,11 +52,36 @@
 #include<iostream>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    int deleteAndEarn(vector<int>& nums) 
-    {
-        
-    }
+	int deleteAndEarn(vector<int>& nums)
+	{
+		unordered_map<int, int> mapNum2Count;
+		int maxv = 0;
+
+		for (int n : nums)
+		{
+			mapNum2Count[n] += 1;
+			if (n > maxv)
+			{
+				maxv = n;
+			}
+		}
+
+		vector<int> dp(maxv + 1, 0);
+		for (int i = 1; i <= maxv; ++i)
+		{
+			if (i >= 2)
+			{
+				dp[i] = max(dp[i - 2] + mapNum2Count[i] * i, dp[i - 1]);
+			}
+			else
+			{
+				dp[i] = max(mapNum2Count[i] * i, dp[i - 1]);
+			}
+		}
+		return dp[maxv];
+	}
 };
 

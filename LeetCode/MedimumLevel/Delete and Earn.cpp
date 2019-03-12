@@ -30,9 +30,13 @@ Each element nums[i] is an integer in the range [1, 10000].
 */
 
 
+
 #include <iostream>
 #include <vector>
+#include <unordered_map>
+#include <algorithm>
 using namespace std;
+
 
 
 class Solution 
@@ -40,6 +44,39 @@ class Solution
 public:
     int deleteAndEarn(vector<int>& nums) 
     {
-        
+        unordered_map<int, int> mapNum2Count;
+        int maxv = 0;
+
+        for(int n:nums)
+        {
+            mapNum2Count[n] += 1;
+            if(n>maxv)
+            {
+                maxv = n;
+            }
+        }
+
+        vector<int> dp(maxv+1,0);   
+        for(int i = 1; i<=maxv; ++i)
+        {
+            if(i>=2)
+            {
+                 dp[i] = max( dp[i-2] + mapNum2Count[i]*i, dp[i-1]);
+            }
+            else
+            {
+                 dp[i] = max(mapNum2Count[i]*i, dp[i-1]);
+            }
+        }
+        return dp[maxv];
     }
 };
+
+int main()
+{
+    vector<int> nums1{2, 2, 3, 3, 3, 4};
+    Solution sol;
+    cout<<sol.deleteAndEarn(nums1)<<endl;
+
+    return 0;
+}
