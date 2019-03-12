@@ -59,10 +59,36 @@
  * 因此，无论怎样，你都不可能绕环路行驶一周。
  * 
  */
-class Solution {
+
+#include<algorithm>
+#include<vector>
+#include<iostream>
+using namespace std;
+
+
+class Solution 
+{
+    struct stGC
+    {
+        int index;
+        int m_g;
+        int m_c;
+        stGC(int i,int g,int c)
+        {
+            index = i;
+            m_g = g;
+            m_c = c;
+        }
+        bool operator < (const stGC& rhs) const 
+        {
+            return ( m_g-m_c)<(rhs.m_g-rhs.m_c);
+        }
+    };
+
 public:
-    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
-        
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) 
+    {
+      vector <stGC> vscanf(gas.size(),stGC(0,0,0));  
     }
 };
 
