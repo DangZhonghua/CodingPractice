@@ -46,14 +46,18 @@
 #include <iostream>
 using namespace std;
 
+
+
+
 class Solution
 {
 
 public:
 	int longestSubstring(string s, int k)
 	{
-		unordered_map<char, int> mapChar2Count;
+		unordered_map<char, int>  mapChar2Count;
 		unordered_map<char, int>  mapChar2Pos;
+
 		vector<bool> setCharLessK(256, false);
 		for (auto c : s)
 		{
@@ -114,8 +118,6 @@ public:
 				maxl = (i - largestPos - 1);
 			}
 		}
-
-
 
 		return maxl;
 	}

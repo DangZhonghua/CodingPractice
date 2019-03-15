@@ -1,5 +1,7 @@
 /*
 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
+http://www.cnblogs.com/grandyang/p/10493371.html
+
 Minimum Cost to Merge Stones
 
 There are N piles of stones arranged in a row.  The i-th pile has stones[i] stones.
@@ -36,14 +38,78 @@ Note:
 
 */
 
+/*
+
+dp[i][j] = min(dp[i][j], dp[i][t] + dp[t + 1][j]); -> (i <= t < j)
+dp[i][j] += sums[j + 1] - sums[i]; -> if ((j - i) % (K - 1) == 0)
+
+*/
+
 #include<iostream>
 #include<vector>
+#include<algorithm>
+#include<climits>
 using namespace std;
+
 
 class Solution {
 public:
     int mergeStones(vector<int>& stones, int K) 
     {
+        int N = stones.size();
+        if((N-1)%(K-1)) //can't be merged in K units
+        {
+            return -1;
+        }
+
+        vector<int> presum(N+1,0);
+        vector<vector<int> > dp(N,vector<int>(N,0));
+        for(int i = 0; i<N; ++i)
+        {
+            presum[i+1] = presum[i] + stones[i];
+        }
         
+        for(int L = K; L<=N; ++L) // range size 
+        {
+            for(int i = 0; i+L<=N; ++i ) //range start point
+            {
+                int j = i+L-1;   // range end point
+                dp[i][j] = INT_MAX;
+                for(int r = i;r< j; r += (K-1))
+                {
+                    //search the smallest value.
+                    dp[i][j] = min(dp[i][j], dp[i][r] + dp[r+1][j]);
+                }
+                if( 0 == ( (L-1)%(K-1) ) )
+                {
+                    dp[i][j] += (presum[j+1]-presum[i]);
+                }
+            }
+        }
+        return dp[0][N-1];
     }
 };
+
+
+int mergeStones(vector<int>& stones, int K) 
+{
+    int n = stones.size();
+    if ((n - 1) % (K - 1)) return -1;
+    vector<int> prefix(n + 1);
+    for (int i = 0; i <  n; i++)
+        prefix[i + 1] = prefix[i] + stones[i];
+    vector<vector<int> > dp(n, vector<int>(n));
+    for (int m = K; m <= n; ++m)
+    {
+        for (int i = 0; i + m <= n; ++i) 
+        {
+            int j = i + m - 1;
+            dp[i][j] = INT_MAX;
+            for (int mid = i; mid < j; mid += K - 1)
+                dp[i][j] = min(dp[i][j], dp[i][mid] + dp[mid + 1][j]);
+            if ((j - i) % (K - 1) == 0)
+                dp[i][j] += prefix[j + 1] - prefix[i];
+        }
+    }
+    return dp[0][n - 1];
+}
