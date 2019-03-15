@@ -1,5 +1,8 @@
 /*
 https://leetcode-cn.com/problems/cherry-pickup/
+
+http://www.cnblogs.com/grandyang/p/8215787.html
+
 Cherry Pickup
 
 In a N x N grid representing a field of cherries, each cell is one of three possible integers.
