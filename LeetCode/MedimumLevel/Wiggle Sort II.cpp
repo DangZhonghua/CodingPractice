@@ -28,11 +28,105 @@ After partition, interval these two parts.
 #include<vector>
 using namespace std;
 
+
+
 //[5,8,5,7,3,6,2,5,1]
 class Solution
 {
 public:
+	//void wiggleSort(vector<int>& nums)
+	//{
+	//	int N = nums.size();
+	//	int K = N / 2;
+	//	int s = 0;
+	//	int e = N - 1;
+	//	int p = 0;
+
+	//	while (K)
+	//	{
+	//		p = partitionArray(nums, s, e);
+	//		int C = p - s + 1;
+	//		if (C == K)
+	//		{
+	//			break;
+	//		}
+	//		else if (C > K) // continue to partition in the first half
+	//		{
+	//			e = p - 1;
+	//		}
+	//		else
+	//		{
+	//			s = p + 1;
+	//			K = K - C;
+	//		}
+	//	}
+
+	//	//Now i is the pivot position
+	//	int i = p + 1;
+	//	int j = N - 1;
+	//	while (i < j)
+	//	{
+	//		int t = nums[i];
+	//		nums[i] = nums[j];
+	//		nums[j] = t;
+	//		++i;
+	//		--j;
+	//	}
+
+	//	i = 0;
+	//	j = p;
+
+	//	while (i < j)
+	//	{
+	//		int t = nums[i];
+	//		nums[i] = nums[j];
+	//		nums[j] = t;
+	//		++i;
+	//		--j;
+	//	}
+
+	//	i = 1;
+	//	j = p + 1;
+	//	while (i != j)
+	//	{
+	//		int t = nums[i];
+	//		nums[i] = nums[j];
+	//		nums[j] = t;
+	//		i += 2;
+	//		j += 1;
+	//	}
+
+	//	//int i = 1;
+	//	//int j = N-1;
+	//	//while (i < j)
+	//	//{
+	//	//	int t = nums[i];
+	//	//	nums[i] = nums[j];
+	//	//	nums[j] = t;
+	//	//	i += 2;
+	//	//	j -= 1;
+	//	//}
+	//	//
+	//	//int t = nums[N - 1];
+	//	//nums[N - 1] = nums[N - 2];
+	//	//nums[N - 2] = t;
+
+
+	//	for (auto e : nums)
+	//	{
+	//		cout << e << " ";
+	//	}
+	//	cout << endl;
+	//}
+
+public:
 	void wiggleSort(vector<int>& nums)
+	{
+		wiggleSortNspace(nums);
+	}
+
+private:
+	void wiggleSortNspace(vector<int>& nums)
 	{
 		int N = nums.size();
 		int K = N / 2;
@@ -60,56 +154,26 @@ public:
 		}
 
 		//Now i is the pivot position
-		int i = p+1;
-		int j = N-1;
-		while (i < j)
-		{
-			int t = nums[i];
-			nums[i] = nums[j];
-			nums[j] = t;
-			++i;
-			--j;
-		}
+		int i = p;
+		int j = N - 1;
 
-		i = 0;
-		j = p;
+		vector<int> vws(N, 0);
+		int index = 0;
 		
-		while (i < j)
+		while (i >= 0 && j >p )
 		{
-			int t = nums[i];
-			nums[i] = nums[j];
-			nums[j] = t;
-			++i;
-			--j;
+			vws[index++] = nums[i--];
+			vws[index++] = nums[j--];
 		}
-
-		 i = 1;
-		 j = p + 1;
-		while (i != j)
+		if (i >= 0)
 		{
-			int t = nums[i];
-			nums[i] = nums[j];
-			nums[j] = t;
-			i += 2;
-			j += 1;
+			vws[index] = nums[i];
 		}
-
-		//int i = 1;
-		//int j = N-1;
-		//while (i < j)
-		//{
-		//	int t = nums[i];
-		//	nums[i] = nums[j];
-		//	nums[j] = t;
-		//	i += 2;
-		//	j -= 1;
-		//}
-		//
-		//int t = nums[N - 1];
-		//nums[N - 1] = nums[N - 2];
-		//nums[N - 2] = t;
-
-
+		if (j > p)
+		{
+			vws[index] = nums[j];
+		}
+		nums = vws;
 		for (auto e : nums)
 		{
 			cout << e << " ";
@@ -145,20 +209,20 @@ private:
 int main()
 {
 	Solution sol;
-	vector<int> nums1{ 1, 5, 1, 1, 6, 4 };
+	//vector<int> nums1{ 1, 5, 1, 1, 6, 4 };
 	//sol.wiggleSort(nums1);
 
-	vector<int> nums2{ 1, 3, 2, 2, 3, 1 };
+	//vector<int> nums2{ 1, 3, 2, 2, 3, 1 };
 	//sol.wiggleSort(nums2);
 
-	vector<int> nums3{ 1, 1, 2, 1, 2, 2, 1 };
+	//vector<int> nums3{ 1, 1, 2, 1, 2, 2, 1 };
 	//sol.wiggleSort(nums3);
 
-	vector<int> nums4{ 4, 5, 5, 6 };
+	//vector<int> nums4{ 4, 5, 5, 6 };
 
 	//sol.wiggleSort(nums4);
 
-	vector<int> nums5{5, 3, 1, 2, 6, 7, 8, 5, 5};
+	vector<int> nums5{ 5, 3, 1, 2, 6, 7, 8, 5, 5 };
 
 	sol.wiggleSort(nums5);
 

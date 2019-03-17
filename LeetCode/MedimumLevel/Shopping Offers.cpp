@@ -1,6 +1,6 @@
 /*
 https://leetcode-cn.com/problems/shopping-offers/
-Shopping Offers
+`
 
  In LeetCode Store, there are some kinds of items to sell. Each item has a price.
 
