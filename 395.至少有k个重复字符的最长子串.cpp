@@ -4,6 +4,7 @@
  * [395] 至少有K个重复字符的最长子串
  *
  * https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/description/
+ * http://www.cnblogs.com/grandyang/p/5852352.html
  *
  * algorithms
  * Medium (34.45%)
@@ -47,80 +48,108 @@
 using namespace std;
 
 
-
-
 class Solution
 {
-
 public:
 	int longestSubstring(string s, int k)
 	{
-		unordered_map<char, int>  mapChar2Count;
-		unordered_map<char, int>  mapChar2Pos;
-
-		vector<bool> setCharLessK(256, false);
-		for (auto c : s)
+		if(s.length()<k)
 		{
-			mapChar2Count[c] += 1;
+			return 0;
 		}
-		for (auto it = mapChar2Count.begin(); it != mapChar2Count.end(); ++it)
-		{
-			if (it->second < k)
-			{
-				setCharLessK[it->first] = true;
-			}
-		}
-		mapChar2Count.clear();
-		int i = 0;
-		int b = -1;
 		int maxl = 0;
+		int N = s.length();
+		unordered_map<char, int>  mapChar2Count;
+		int i = 0;
 
-		while (i < s.length())
+		while( i+k<= N )
 		{
-			if (setCharLessK[s[i]] )
+			int count = 0; // iff all char freq is larger than K, count == 0;
+			int nextIndex = i;
+			int mapChar2Count[256]= {0};
+			for(int j = i; j<N; ++j)
 			{
-				int largestPos = b;
-				for (auto it = mapChar2Count.begin(); it != mapChar2Count.end(); ++it)
+				char C = s[j];
+				//CalcCharCount(mapChar2Count,count,s[j],k);
+				mapChar2Count[C] += 1;
+				if(1 == mapChar2Count[C])
 				{
-					if (it->second < k && largestPos<mapChar2Pos[it->first])
-					{
-						largestPos = mapChar2Pos[it->first];
-					}
+					++count;
 				}
-				if (maxl < (i - largestPos-1) && k<= (i - largestPos - 1))
-				{
-					maxl = (i - largestPos-1);
-				}
-				mapChar2Count.clear();
-				mapChar2Pos.clear();
-				b = i + 1; //update the window start point
-			}
-			else
-			{
-				mapChar2Count[s[i]] += 1;
-				mapChar2Pos[s[i]] = i;
-			}
-			++i;
-		}
 
-		if (!mapChar2Count.empty())
-		{
-			int largestPos = b;
-			for (auto it = mapChar2Count.begin(); it != mapChar2Count.end(); ++it)
-			{
-				if (it->second < k && largestPos < mapChar2Pos[it->first])
+				if(k == mapChar2Count[C])
 				{
-					largestPos = mapChar2Pos[it->first];
+					--count;
+				}
+
+				if(0 == count)
+				{
+					maxl = max(maxl, j-i+1);
+					nextIndex = j;
 				}
 			}
-			if (maxl < (i - largestPos - 1) && k<=(i - largestPos - 1))
-			{
-				maxl = (i - largestPos - 1);
-			}
+			i = (nextIndex+1);
 		}
-
 		return maxl;
 	}
+
+private:
+	void  CalcCharCount(unordered_map<char, int>&  mapChar2Count, int& count, char C, int K)
+	{
+		mapChar2Count[C] += 1;
+		if(1 == mapChar2Count[C])
+		{
+			++count;
+		}
+
+		if(K == mapChar2Count[C])
+		{
+			--count;
+		}
+	}
+
+private:
+
 };
 
+/*
 
+我们遍历字符串，对于每一个字符，我们都将其视为起点，然后遍历到末尾，我们增加哈希表中字母的出现次数，
+如果其小于k，我们将mask的对应位改为1，如果大于等于k，将mask对应位改为0。然后看mask是否为0，是的话就更新res结果，
+然后把当前满足要求的子字符串的起始位置j保存到max_idx中，等内层循环结束后，将外层循环变量i赋值为max_idx+1，继续循环直至结束，参见代码如下：
+
+*/
+
+
+// class Solution {
+// public:
+//     int longestSubstring(string s, int k) 
+// 	{
+//         int res = 0, i = 0, n = s.size();
+//         while (i + k <= n) 
+// 		{
+//             int m[26] = {0}, mask = 0, max_idx = i;
+//             for (int j = i; j < n; ++j) 
+// 			{
+//                 int t = s[j] - 'a';
+//                 ++m[t];
+//                 if (m[t] < k) 
+// 				{
+// 					mask |= (1 << t);
+// 				}
+//                 else 
+// 				{
+// 					mask &= (~(1 << t));
+// 				}
+
+//                 if (mask == 0) 
+// 				{
+//                     res = max(res, j - i + 1);
+//                     max_idx = j;
+//                 }
+//             }
+//             i = max_idx + 1;
+//         }
+//         return res;
+//     }
+// };
