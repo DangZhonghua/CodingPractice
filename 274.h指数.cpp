@@ -31,11 +31,71 @@
  * 
  */
 
+#include<vector>
+#include<unordered_map>
+using namespace std;
+
 class Solution {
 public:
-    int hIndex(vector<int>& citations) 
-    {
-        
-    }
+	int hIndex(vector<int>& citations)
+	{
+		if (citations.empty())
+		{
+			return 0;
+		}
+		int N = citations.size();
+		vector<int> vc(N, 0);
+
+		for (int i = 0; i < N; ++i)
+		{
+			for (int j = 0; j < N; ++j)
+			{
+				if (citations[j] >= citations[i])
+				{
+					vc[i] += 1;
+				}
+			}
+		}
+
+		int hIndex = 0;
+		for (int i = 0; i < N; ++i)
+		{
+			if (vc[i] <= citations[i]) // vc[i] paper
+			{
+				if (hIndex < vc[i])
+				{
+					hIndex = vc[i];
+				}
+			}
+			else
+			{
+				if (hIndex < citations[i])
+				{
+					hIndex = citations[i];
+				}
+				for (int j = 0; j < N; ++j)
+				{
+					if (i != j)
+					{
+
+					}
+				}
+			}
+
+		}
+		return hIndex;
+	}
 };
 
+
+int main()
+{
+	Solution sol;
+	vector<int> citations{ 3, 0, 6, 1, 5 };
+	//sol.hIndex(citations);
+
+	vector<int> c1{ 1,1,1 };
+	sol.hIndex(c1);
+
+	return 0;
+}

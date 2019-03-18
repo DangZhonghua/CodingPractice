@@ -12,7 +12,8 @@ Empty cells are indicated by the character '.'.
 
 class Solution {
 public:
-    void solveSudoku(vector<vector<char>>& board) {
+    void solveSudoku(vector<vector<char>>& board) 
+    {
         
     }
 };
