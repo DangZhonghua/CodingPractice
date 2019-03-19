@@ -45,6 +45,7 @@ public:
 		}
 		int N = citations.size();
 		vector<int> vc(N, 0);
+        vector<int> vl(N,0);
 
 		for (int i = 0; i < N; ++i)
 		{
@@ -54,32 +55,29 @@ public:
 				{
 					vc[i] += 1;
 				}
+                if(citations[j]>citations[i])
+                {
+                    vl[i] += 1;
+                }
 			}
 		}
 
 		int hIndex = 0;
 		for (int i = 0; i < N; ++i)
 		{
-			if (vc[i] <= citations[i]) // vc[i] paper
+			if (vc[i] <= citations[i]) // at most vc[i] paper
 			{
 				if (hIndex < vc[i])
 				{
 					hIndex = vc[i];
 				}
 			}
-			else
+			else // vc[i] > citations[i]
 			{
-				if (hIndex < citations[i])
-				{
-					hIndex = citations[i];
-				}
-				for (int j = 0; j < N; ++j)
-				{
-					if (i != j)
-					{
-
-					}
-				}
+                if(vl[i]<= citations[i] && hIndex < citations[i] )
+                {
+                    hIndex = citations[i];
+                }
 			}
 
 		}
@@ -88,14 +86,14 @@ public:
 };
 
 
-int main()
-{
-	Solution sol;
-	vector<int> citations{ 3, 0, 6, 1, 5 };
-	//sol.hIndex(citations);
+// int main()
+// {
+// 	Solution sol;
+// 	vector<int> citations{ 3, 0, 6, 1, 5 };
+// 	//sol.hIndex(citations);
 
-	vector<int> c1{ 1,1,1 };
-	sol.hIndex(c1);
+// 	vector<int> c1{ 1,1,1 };
+// 	sol.hIndex(c1);
 
-	return 0;
-}
+// 	return 0;
+// }
