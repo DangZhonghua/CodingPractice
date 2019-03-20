@@ -97,9 +97,9 @@ class Solution
 {
     struct stNodeStatus
     {
-        int m_nNonMonitor{0};   // this node is not monitored
-        int m_nNonCamera{0};   //  this node is monitored but no camera on it
-        int m_nCamera{INT_MAX};      //  this node is monitored and camera on it
+        int m_nNonMonitor{0};    // this node is not monitored
+        int m_nNonCamera{0};     //  this node is monitored but no camera on it
+        int m_nCamera{INT_MAX};  //  this node is monitored and camera on it
     };
 
 using MAPSTATUS = unordered_map<TreeNode*,stNodeStatus>;
@@ -135,31 +135,13 @@ private:
             postOrderTraverse(stat,node->right);
         }
         
-        // if current node is settled
         stNodeStatus lstat = stat[node->left];
         stNodeStatus rstat = stat[node->right];
-        
         stNodeStatus cstat;
-        //Select both children.
-        cstat.m_nCamera = 1+lstat.m_nCamera + rstat.m_nCamera;
-        
 
 
-
-        // if current is not settled.
-
-
-
-
-
-
-
-
-
-
-
-
-        
+        // if current node is not monitored.
+        cstat.m_nCamera = 1+lstat.m_nCamera + rstat.m_nCamera;  
 
     }
     
