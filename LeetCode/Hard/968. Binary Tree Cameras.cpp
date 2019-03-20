@@ -74,14 +74,16 @@ class Solution {
     }
 }
 
-
 */
 
 
 #include<iostream>
 #include<vector>
 #include<unordered_map>
+#include<algorithm>
+#include<climits>
 using namespace std;
+
 
  struct TreeNode 
  {
@@ -95,8 +97,9 @@ class Solution
 {
     struct stNodeStatus
     {
-        int m_nNonCamera{0};
-        int m_nCamera{0};
+        int m_nNonMonitor{0};   // this node is not monitored
+        int m_nNonCamera{0};   //  this node is monitored but no camera on it
+        int m_nCamera{INT_MAX};      //  this node is monitored and camera on it
     };
 
 using MAPSTATUS = unordered_map<TreeNode*,stNodeStatus>;
@@ -106,12 +109,9 @@ public:
     {
        MAPSTATUS stat;
        stat[NULL] = stNodeStatus();
-    
       postOrderTraverse(stat, root);
       
-
-
-
+      return min(stat[root].m_nNonCamera,stat[root].m_nCamera);
     }
 private:
     void postOrderTraverse(MAPSTATUS& stat, TreeNode* node)
@@ -163,6 +163,5 @@ private:
 
     }
     
-
-
 };
+
