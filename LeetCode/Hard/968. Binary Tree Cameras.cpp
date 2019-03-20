@@ -119,8 +119,9 @@ private:
         if(NULL == node->left && NULL == node->right)
         {
             stNodeStatus nodeStatus;
-            nodeStatus.m_nCamera = 1;
-            nodeStatus.m_nNonCamera = 0;
+            nodeStatus.m_nNonMonitor    = 0;
+            nodeStatus.m_nNonCamera     = 0;
+            nodeStatus.m_nCamera        = 1;
             stat[node] = nodeStatus;
             return;
         }
@@ -139,10 +140,18 @@ private:
         stNodeStatus rstat = stat[node->right];
         stNodeStatus cstat;
 
+        int leftMonitorable     = min(lstat.m_nNonCamera,lstat.m_nCamera);
+        int rightMonitorable    = min(rstat.m_nCamera, rstat.m_nNonCamera);
 
         // if current node is not monitored.
-        cstat.m_nCamera = 1+lstat.m_nCamera + rstat.m_nCamera;  
+        cstat.m_nNonMonitor = lstat.m_nNonCamera + rstat.m_nNonCamera; // there are camera on the left/right children
+        
+        // if current node is monitored but is not assigned camera.
+         int leftC  = (lstat.m_nCamera == INT_MAX)?       L[2] + mR12;
+         int rightC = R[2] + mL12)
+       // cstat.m_nNonCamera  =   
 
+        
     }
     
 };
