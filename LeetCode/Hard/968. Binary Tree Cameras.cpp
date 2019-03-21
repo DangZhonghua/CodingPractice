@@ -85,21 +85,21 @@ class Solution {
 using namespace std;
 
 
- struct TreeNode 
- {
-     int val;
-     TreeNode *left;
-     TreeNode *right;
-     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- };
+//  struct TreeNode 
+//  {
+//      int val;
+//      TreeNode *left;
+//      TreeNode *right;
+//      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+//  };
 
 class Solution 
 {
     struct stNodeStatus
     {
-        int m_nNonMonitor{0};    // this node is not monitored
-        int m_nNonCamera{0};     //  this node is monitored but no camera on it
-        int m_nCamera{INT_MAX};  //  this node is monitored and camera on it
+        long long m_nNonMonitor{0};    // this node is not monitored
+        long long m_nNonCamera{0};     //  this node is monitored but no camera on it
+        long long m_nCamera{INT_MAX};  //  this node is monitored and camera on it
     };
 
 using MAPSTATUS = unordered_map<TreeNode*,stNodeStatus>;
@@ -107,10 +107,15 @@ using MAPSTATUS = unordered_map<TreeNode*,stNodeStatus>;
 public:
     int minCameraCover(TreeNode* root) 
     {
+        if(NULL == root)
+        {
+            return 0;
+        }
+
        MAPSTATUS stat;
        stat[NULL] = stNodeStatus();
       postOrderTraverse(stat, root);
-      
+
       return min(stat[root].m_nNonCamera,stat[root].m_nCamera);
     }
 private:
@@ -120,7 +125,7 @@ private:
         {
             stNodeStatus nodeStatus;
             nodeStatus.m_nNonMonitor    = 0;
-            nodeStatus.m_nNonCamera     = 0;
+            nodeStatus.m_nNonCamera     = INT_MAX;
             nodeStatus.m_nCamera        = 1;
             stat[node] = nodeStatus;
             return;
@@ -140,19 +145,51 @@ private:
         stNodeStatus rstat = stat[node->right];
         stNodeStatus cstat;
 
-        int leftMonitorable     = min(lstat.m_nNonCamera,lstat.m_nCamera);
-        int rightMonitorable    = min(rstat.m_nCamera, rstat.m_nNonCamera);
+        long long leftMonitorable     = min(lstat.m_nNonCamera,lstat.m_nCamera);
+        long long rightMonitorable    = min(rstat.m_nCamera, rstat.m_nNonCamera);
 
         // if current node is not monitored.
+        if(NULL == node->left && NULL == node->right )
+        {
+             cstat.m_nNonMonitor = 0;
+        }
+        else
+        {
+            if( NULL == node->left)
+            {
+                 cstat.m_nNonMonitor +=  rstat.m_nNonCamera;
+            }
+            else if( NULL == node->right)
+            {
+                cstat.m_nNonMonitor += lstat.m_nNonCamera;
+            }
+        }
+        
         cstat.m_nNonMonitor = lstat.m_nNonCamera + rstat.m_nNonCamera; // there are camera on the left/right children
         
         // if current node is monitored but is not assigned camera.
-         int leftC  = (lstat.m_nCamera == INT_MAX)?       L[2] + mR12;
-         int rightC = R[2] + mL12)
-       // cstat.m_nNonCamera  =   
-
-        
+        if(NULL == node->left && NULL == node->right )
+        {
+            cstat.m_nNonCamera = INT_MAX;
+        }
+        else
+        {
+            if(NULL == node->left)
+            {
+                cstat.m_nNonCamera = rstat.m_nCamera;
+            }
+            else if(NULL == node->right)
+            {
+                cstat.m_nNonCamera = lstat.m_nCamera;
+            }
+            else
+            {
+                cstat.m_nNonCamera = min(lstat.m_nCamera+rightMonitorable,rstat.m_nCamera+leftMonitorable);
+            }   
+        }
+        // if current node is assigned camera
+        cstat.m_nCamera = 1+ min(lstat.m_nNonMonitor,leftMonitorable) + min(rstat.m_nNonMonitor,rightMonitorable);
+        stat[node] = cstat;
     }
-    
 };
 
