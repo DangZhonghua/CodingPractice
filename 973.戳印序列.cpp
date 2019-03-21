@@ -55,11 +55,60 @@ use max heap to do this, the heap capacity is K.
 replace the heap top if incoming is samller the top.
 
 */
+class Solution
+{
+	struct PointIndex
+	{
+		long long m_d;
+		int m_index;
+	};
 
-class Solution {
+	struct PointCompare
+	{
+		bool operator()(const PointIndex& lhs, const PointIndex& rhs) const
+		{
+			return lhs.m_d < rhs.m_d;
+		}
+	};
+
+
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int K) {
-        
-    }
+	vector<vector<int>> kClosest(vector<vector<int>>& points, int K)
+	{
+		vector< PointIndex > ved(points.size());
+		for (int i = 0; i < points.size(); ++i)
+		{
+			ved[i].m_d = (points[i][0] * points[i][0] + points[i][1] * points[i][1]);
+			ved[i].m_index = i;
+		}
+		priority_queue<PointIndex, vector<PointIndex>, PointCompare>  maxHeap;
+
+		for (int i = 0; i < ved.size(); ++i)
+		{
+			if (maxHeap.size() < K)
+			{
+				maxHeap.push(ved[i]);
+			}
+			else
+			{
+				if (maxHeap.top().m_d > ved[i].m_d)
+				{
+					maxHeap.pop();
+					PointIndex t;
+					t.m_d = ved[i].m_d;
+					t.m_index = i;
+					maxHeap.push(t);
+				}
+			}
+		}
+
+		vector< vector<int> > vr;
+		while (!maxHeap.empty())
+		{
+			vr.push_back(points[maxHeap.top().m_index]);
+			maxHeap.pop();
+		}
+		return vr;
+	}
 };
 
