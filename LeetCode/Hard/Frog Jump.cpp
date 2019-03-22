@@ -43,13 +43,82 @@ the gap between the 5th and 6th stone is too large.
 https://www.cnblogs.com/ilovezyg/p/6901280.html
 */
 
+/*
+
+i and j is the unit number
+
+               dp[i][k-1]    
+dp[j][k] =     dp[i][k]
+               dp[i][k+1]
+
+dp[current stone][ step size]
+*/
+
+
+#include <iostream>
 #include<vector>
+#include<unordered_map>
+#include<unordered_set>
 using namespace std;
+
 
 class Solution
 {
-  public:
-    bool canCross(vector<int> &stones)
-    {
-    }
+public:
+	bool canCross(vector<int> &stones)
+	{
+		unordered_map<long long, unordered_set<long long> > dp;
+		
+		for (int i = 2; i < stones.size(); ++i)
+		{
+			dp[stones[i]] = unordered_set<long long>();
+		}
+
+		dp[0].insert(0);
+		dp[1].insert(1);
+
+		for (int i = 1; i < stones.size(); ++i)
+		{
+			unordered_set<long long>& dict = dp[stones[i]];
+			for (auto it = dict.begin(); it != dict.end(); ++it)
+			{
+				if (dp.end() != dp.find(stones[i] + (*it)))
+				{
+					dp[stones[i] + (*it)].insert(*it);
+				}
+				if (dp.end() != dp.find(stones[i] + (*it) + 1))
+				{
+					dp[stones[i] + (*it)+1].insert(*it+1);
+				}
+				if ((*it)>1 && dp.end() != dp.find(stones[i] + (*it) - 1))
+				{
+					dp[stones[i] + (*it) - 1].insert(*it - 1);
+				}
+			}
+		}
+
+		
+		bool bReach = false;
+		if (!dp[*stones.rbegin()].empty())
+		{
+			bReach = true;
+		}
+		return bReach;
+	}
 };
+
+
+int main()
+{
+	Solution sol;
+	vector<int> s1{0, 1, 3, 4, 5, 7, 9, 10, 12};
+
+	cout << sol.canCross(s1) << endl;
+
+	vector<int> s2{ 0, 1, 2, 3, 4, 8, 9, 11 };
+	
+	cout << sol.canCross(s2) << endl;
+
+	return 0;
+
+}
