@@ -27,25 +27,40 @@ DP[i][j] =
 #include<iostream>
 #include<vector>
 using namespace std;
-
 class Solution {
 public:
-    int findLength(vector<int>& A, vector<int>& B) 
-    {
-        int R = A.size();
-        int C = B.size();
-        vector<vector<int>> lcs(R+1,vector<int>(C+1,0));
-        
-        for(int i = 1; i<=R; ++i)
-        {
-            for(int j = 1;j<=C;++j)
-            {
-                if(A[i-1] == B[j-1])
-                {
-                    lcs[i][j] = lcs[i-1][j-1]+1;
-                }
-            }
-        }
-        return lcs[R][C];
-    }
+	int findLength(vector<int>& A, vector<int>& B)
+	{
+		int R = A.size();
+		int C = B.size();
+		vector<vector<int> > lcs(R + 1, vector<int>(C + 1, 0));
+		int maxlen = 0;
+		for (int i = 1; i <= R; ++i)
+		{
+			for (int j = 1; j <= C; ++j)
+			{
+				if (A[i - 1] == B[j - 1])
+				{
+					lcs[i][j] = lcs[i - 1][j - 1] + 1;
+					if (maxlen < lcs[i][j])
+					{
+						maxlen = lcs[i][j];
+					}
+				}
+			}
+		}
+
+		return maxlen;
+	}
 };
+
+int main()
+{
+    Solution sol;
+    vector<int> A{1,2,3,2,1};
+    vector<int> B{3,2,1,4,7};
+
+    cout<<sol.findLength(A,B)<<endl;
+
+    return 0;
+}
