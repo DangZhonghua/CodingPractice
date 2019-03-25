@@ -24,14 +24,37 @@ Note:
 
 */
 
+#include<unordered_map>
 #include<vector>
 #include<iostream>
 using namespace std;
 
-class Solution {
+class Solution 
+{
 public:
     int subarraysWithKDistinct(vector<int>& A, int K) 
     {
+        int countk = 0;
+        int N = A.size();
+        unordered_map<int, int> mapValue2Count;
+        int i = -1;
+        int j = 0;
         
+        for(int L = K; L<=N; ++L)
+        {
+            mapValue2Count.clear();
+            for(int i = 0; i<L;++i)
+            {
+                mapValue2Count[A[i]] += 1;
+            }
+            if(K == mapValue2Count.size())
+            {
+                ++countk;
+            }
+            for(int i = 1; i+L<=N; ++i)
+            {
+
+            }
+        }
     }
 };
