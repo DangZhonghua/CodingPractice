@@ -43,6 +43,11 @@
  * 假设k是合法的，即：k 始终小于输入的非空数组的元素个数.
  * 
  */
+
+#include<vector>
+#include<iostream>
+using namespace std;
+
 class Solution {
 public:
     vector<double> medianSlidingWindow(vector<int>& nums, int k) {
