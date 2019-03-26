@@ -24,37 +24,76 @@ Note:
 
 */
 
+/*
+Slide window[i,j]:
+
+There are K different in [i,j]: ++j;
+if more than K, then ++i util less than k.
+
+*/
+
+
 #include<unordered_map>
 #include<vector>
 #include<iostream>
 using namespace std;
 
-class Solution 
+class Solution
 {
 public:
-    int subarraysWithKDistinct(vector<int>& A, int K) 
-    {
-        int countk = 0;
-        int N = A.size();
-        unordered_map<int, int> mapValue2Count;
-        int i = -1;
-        int j = 0;
-        
-        for(int L = K; L<=N; ++L)
-        {
-            mapValue2Count.clear();
-            for(int i = 0; i<L;++i)
-            {
-                mapValue2Count[A[i]] += 1;
-            }
-            if(K == mapValue2Count.size())
-            {
-                ++countk;
-            }
-            for(int i = 1; i+L<=N; ++i)
-            {
+	int subarraysWithKDistinct(vector<int>& A, int K)
+	{
+		int countk = 0;
+		int N = A.size();
+		unordered_map<int, int> mapValue2Count;
 
-            }
-        }
-    }
+		int i = 0;
+		int j = 0;
+
+		while (j < N)
+		{
+			if (mapValue2Count.size() == K)
+			{
+				++countk; // count the latest
+				if (mapValue2Count.find(A[j]) == mapValue2Count.end())
+				{
+					mapValue2Count[A[i]] -= 1;
+					if (mapValue2Count[A[i]] == 0)
+					{
+						mapValue2Count.erase(A[i]);
+					}
+					while (mapValue2Count.size() == K)
+					{
+						++countk;
+						++i;
+						mapValue2Count[A[i]] -= 1;
+						if (mapValue2Count[A[i]] == 0)
+						{
+							mapValue2Count.erase(A[i]);
+						}
+					}
+				}
+				mapValue2Count[A[j]] += 1; //including A[j]       
+			}
+			else
+			{
+				mapValue2Count[A[j]] += 1;
+			}
+			++j;
+		}
+
+		return countk;
+	}
 };
+
+int main()
+{
+	vector<int> a{ 1, 2, 1, 2, 3 };
+	int K = 2;
+	Solution sol;
+
+	sol.subarraysWithKDistinct(a, K);
+
+
+	return 0;
+}
