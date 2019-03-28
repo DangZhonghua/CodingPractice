@@ -25,10 +25,8 @@ Note:
 */
 
 /*
-Slide window[i,j]:
 
-There are K different in [i,j]: ++j;
-if more than K, then ++i util less than k.
+Slide window[s,j]: the minmum window end at j with k different number.
 
 */
 
@@ -43,41 +41,47 @@ class Solution
 public:
 	int subarraysWithKDistinct(vector<int>& A, int K)
 	{
-		int countk = 0;
+		int WK 		= 0;
+		int countk 	= 0;
 		int N = A.size();
-		unordered_map<int, int> mapValue2Count;
-
 		int i = 0;
 		int j = 0;
+		int ws = 0;
+
+		vector<int> dict(N+1,0); // record the largest index for specific value
 
 		while (j < N)
 		{
-			if (mapValue2Count.size() == K)
+			if( dict[ A[j] ]  ) // value of A[j] has been counted
 			{
-				++countk; // count the latest
-				if (mapValue2Count.find(A[j]) == mapValue2Count.end())
+				dict[A[j]] = (j+1); // +1 for 1-based index. this is also used for  boolean
+				while(A[ws] == A[j])
 				{
-					mapValue2Count[A[i]] -= 1;
-					if (mapValue2Count[A[i]] == 0)
-					{
-						mapValue2Count.erase(A[i]);
-					}
-					while (mapValue2Count.size() == K)
-					{
-						++countk;
-						++i;
-						mapValue2Count[A[i]] -= 1;
-						if (mapValue2Count[A[i]] == 0)
-						{
-							mapValue2Count.erase(A[i]);
-						}
-					}
+				  ++ws;
 				}
-				mapValue2Count[A[j]] += 1; //including A[j]       
+				if(WK == K)
+				{
+					countk += (ws-i);
+				}	
 			}
 			else
 			{
-				mapValue2Count[A[j]] += 1;
+				// in the else clause, the count of unqiue number will be increase
+				if(WK == K) // narrow the window in this case.
+				{
+					while((i+1) != dict[A[i]])
+					{
+						++i;
+					}
+					dict[A[i]] = 0;
+					ws = i+1;
+				}
+				dict[ A[j] ] = (j+1);
+				++WK;
+				if(K == WK)
+				{
+					++countk;
+				}
 			}
 			++j;
 		}
