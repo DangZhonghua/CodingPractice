@@ -58,11 +58,53 @@ use in-order traverse to do this.
 
 */
 
-class Solution {
+#include<iostream>
+using namespace std;
+
+// struct TreeNode 
+// {
+//     int val;
+//     TreeNode *left;
+//     TreeNode *right;
+//     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+// };
+
+class Solution 
+{
 public:
     int kthSmallest(TreeNode* root, int k) 
     {
-            
+        int v = 0;
+        InOrderTraverse( root,k, 0, v);
+        
+        return v;
+    }
+
+private:
+    // return the node number rooted at "root" node
+    int InOrderTraverse(TreeNode* root, int k, int nLess, int& v)
+    {
+        if(nullptr == root)
+        {
+            return 0;
+        }
+        int nleft = InOrderTraverse(root->left, k, nLess,v);
+        if(nleft<0)
+        {
+            return -1;
+        }
+
+        if(nleft + nLess + 1 == k)
+        {
+            v = root->val;
+            return -1;
+        }
+        int nright = InOrderTraverse(root->right,k, nleft + nLess + 1,v);
+        if(nright<0)
+        {
+            return -1;
+        }
+        return (nleft+nright+1);
     }
 };
 

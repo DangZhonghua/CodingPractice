@@ -56,10 +56,51 @@ public:
     }
 };
 */
-class Solution {
+
+class Node {
 public:
-    Node* copyRandomList(Node* head) {
+    int val;
+    Node* next;
+    Node* random;
+
+    Node() {}
+
+    Node(int _val, Node* _next, Node* _random) {
+        val = _val;
+        next = _next;
+        random = _random;
+    }
+};
+
+class Solution 
+{
+public:
+    Node* copyRandomList(Node* head) 
+    {
+        Node* nhead = nullptr;
+        Node* ntail = nullptr;
+        Node* p = head;
         
+        while(nullptr != p)
+        {
+            Node* t     = new Node();
+            t->next     = nullptr;
+            t->random   = nullptr;
+            t->val      = p->val;
+            Node* pre = p;
+            p = p->next;
+
+            pre->next = t;
+
+        }
+
+        p = head;
+        while(nullptr != p)
+        {
+            Node* nc = p->random;
+
+        }
+
     }
 };
 
