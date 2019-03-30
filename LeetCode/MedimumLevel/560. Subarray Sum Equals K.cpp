@@ -10,9 +10,14 @@ Note:
 The length of the array is in range [1, 20,000].
 The range of numbers in the array is [-1000, 1000] and the range of the integer k is [-1e7, 1e7].
 
-
+https://www.geeksforgeeks.org/find-subarray-with-given-sum/
 */
 
+/*
+
+use hash map to store every subarray sum.
+
+*/
 
 #include<vector>
 #include<unordered_map>
@@ -27,25 +32,21 @@ public:
     int subarraySum(vector<int>& nums, int k) 
     {
         int count = 0;
-        unordered_map<int,int> map_reminder_count;
-        int N = nums.size();
+        unordered_map<int,int> map_sum_count;
+        int N   = nums.size();
         int sum = 0;
         for(int i = 0; i<N;++i)
         {
             sum += nums[i];
-            int r =( (k == 0)?sum:sum%k);
-            if(map_reminder_count[r])
+            int d = sum-k;
+            
+            if(map_sum_count[d])
             {
-                count += map_reminder_count[r];
-                map_reminder_count[r] += 1;
-                
+                count += map_sum_count[d];
             }
-            else
-            {
-                map_reminder_count[r] = 1;
-            } 
+            map_sum_count[sum] += 1;
         }
-        return count + map_reminder_count[0];
+        return count+map_sum_count[k];
     }
 };
 
