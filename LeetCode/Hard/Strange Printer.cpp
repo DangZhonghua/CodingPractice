@@ -25,7 +25,8 @@ Hint: Length of the given string will not exceed 100.
 
 class Solution {
 public:
-    int strangePrinter(string s) {
+    int strangePrinter(string s) 
+    {
         
     }
 };

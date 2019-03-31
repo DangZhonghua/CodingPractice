@@ -1,5 +1,6 @@
 /*
 https://leetcode-cn.com/problems/minimum-swaps-to-make-sequences-increasing/description/
+http://www.cnblogs.com/grandyang/p/9311385.html
 801. Minimum Swaps To Make Sequences Increasing
 
 We have two integer sequences A and B of the same non-zero length.
@@ -23,3 +24,10 @@ A, B are arrays with the same length, and that length will be in the range [1, 1
 A[i], B[i] are integer values in the range [0, 2000].
 
 */
+
+class Solution {
+public:
+    int minSwap(vector<int>& A, vector<int>& B) {
+        
+    }
+};
