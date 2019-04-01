@@ -29,19 +29,55 @@ Note: The number of boxes n would not exceed 100.
 
 */
 
-#include<iostream>
-#include<vector>
 
+#include<vector>
+#include<algorithm>
+#include<iostream>
 using namespace std;
 
-class Solution {
+
+class Solution 
+{
 public:
     int removeBoxes(vector<int>& boxes) 
     {
+        int N = boxes.size();
+        vector< vector< vector<int> > > dp(N,vector< vector<int> >(N, vector<int>(N,0)));
         
+        for(int i = 0; i<N; ++i )
+        {
+            for(int k = 0; k<=i; ++k)
+            {
+                dp[i][i][k] = (k+1)*(k+1);
+            }
+        }
+        //range[i,j]
+        for(int L = 2; L<=N; ++L)
+        {
+            for(int i = 0; i+L<=N; ++i )
+            {
+                int j = i+L-1;
+                //Now we have range[i,j] with length = L
+                //Find the suitable k, since we DO NOT know which one, we try every possible
+                for(int k = 0; k<=i; ++k)
+                {
+                    int maxp = (k+1)*(k+1)+ dp[i+1][j][0];
+                    
+                    for(int m = i+1; m<=j; ++m)
+                    {
+                        if(boxes[m] == boxes[i])
+                        {
+                            maxp = max(maxp, dp[i+1][m-1][0] + dp[m][j][k+1]);
+                        }               
+                    }
+                    dp[i][j][k] = maxp;
+                }
+            }
+        }
+    return dp[0][N-1][0];
+
     }
 };
-
 // public int removeBoxes(int[] boxes) {
 //     int n = boxes.length;
 //     int[][][] dp = new int[n][n][n];

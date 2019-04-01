@@ -22,7 +22,7 @@ Explanation: Print "aaa" first and then print "b" from the second place of the s
 Hint: Length of the given string will not exceed 100.
 
 */
-
+//"ababc"  4
 class Solution {
 public:
     int strangePrinter(string s) 
