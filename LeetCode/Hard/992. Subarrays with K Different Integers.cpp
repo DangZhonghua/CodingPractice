@@ -36,84 +36,147 @@ Slide window[s,j]: the minmum window end at j with k different number.
 #include<iostream>
 using namespace std;
 
+// class Solution
+// {
+// public:
+// 	int subarraysWithKDistinct(vector<int>& a, int K)
+// 	{
+// 		int WK = 0;
+// 		int countk = 0;
+// 		int N = a.size();
+// 		int i = 0;
+// 		int j = 0;
+// 		int ws = 0;
+
+// 		vector<int> dict(N + 1, 0); // record the largest index for specific value
+
+// 		while (j < N)
+// 		{
+// 			if (WK == K)
+// 			{
+// 				if (dict[a[j]]) // the value instance of A[j] has been checked
+// 				{
+// 					dict[a[j]] = j + 1; // we only update now, but when we count the subarray.
+// 					++countk; // for new-created because of a[j]
+// 					while (ws != dict[a[ws]] - 1)
+// 					{
+// 						++ws;
+// 					}
+// 					countk += (ws - i);
+// 				}
+// 				else
+// 				{
+// 					//we need decrease the count of unique number
+
+// 					dict[a[j]] = j + 1; // we only update now, but when we count the subarray.
+// 					++countk;
+// 					bool bextended = false;
+// 					while (ws != dict[a[ws]] - 1)
+// 					{
+// 						bextended = true;
+// 						++ws;
+// 					}
+// 					if (bextended)
+// 					{
+// 						countk += (ws - i);
+// 					}
+
+// 					dict[a[ws]] = 0;
+// 					++ws;
+// 					i = ws;
+// 				}
+// 			}
+// 			else
+// 			{
+
+// 				if (dict[a[j]]) // the value instance of A[j] has been checked
+// 				{
+// 					dict[a[j]] = j + 1;
+// 				}
+// 				else
+// 				{
+// 					dict[a[j]] = j + 1;
+// 					++WK;
+// 					if (WK == K) // count if the a[j] incur WK == K 
+// 					{
+// 						++countk;
+// 						while (ws != dict[a[ws]] - 1)
+// 						{
+// 							++ws;
+// 						}
+// 						countk += (ws - i);
+// 					}
+// 				}
+// 			}
+// 			++j;
+// 		}
+
+// 		return countk;
+// 	}
+// };
+
+
+class KWindow
+{
+private:
+	unordered_map<int,int> m_mapNumber2Count;
+public:
+	void push(int x)
+	{
+		m_mapNumber2Count[x] += 1;
+	}
+	void pop(int x)
+	{
+		if(m_mapNumber2Count.count(x))
+		{
+			m_mapNumber2Count[x] -= 1;
+			if(0 == m_mapNumber2Count[x])
+			{
+				m_mapNumber2Count.erase(x);
+			}
+		}
+	}
+	int size()
+	{
+		return m_mapNumber2Count.size();
+	}
+};
+
+
 class Solution
 {
 public:
 	int subarraysWithKDistinct(vector<int>& a, int K)
 	{
-		int WK = 0;
-		int countk = 0;
 		int N = a.size();
-		int i = 0;
-		int j = 0;
-		int ws = 0;
+		int maxLeftEdge = 0; 
+		int minLeftEdge = 0;
+		int count  = 0;
+		KWindow   frontWindow;
+		KWindow   tailWindow;
 
-		vector<int> dict(N + 1, 0); // record the largest index for specific value
-
-		while (j < N)
+		for(int i = 0; i<N; ++i)
 		{
-			if (WK == K)
+			frontWindow.push(a[i]);
+			tailWindow.push(a[i]);
+			
+			while(tailWindow.size()>K)
 			{
-				if (dict[a[j]]) // the value instance of A[j] has been checked
-				{
-					dict[a[j]] = j + 1; // we only update now, but when we count the subarray.
-					++countk; // for new-created because of a[j]
-					while (ws != dict[a[ws]] - 1)
-					{
-						++ws;
-					}
-					countk += (ws - i);
-				}
-				else
-				{
-					//we need decrease the count of unique number
-
-					dict[a[j]] = j + 1; // we only update now, but when we count the subarray.
-					++countk;
-					bool bextended = false;
-					while (ws != dict[a[ws]] - 1)
-					{
-						bextended = true;
-						++ws;
-					}
-					if (bextended)
-					{
-						countk += (ws - i);
-					}
-
-					dict[a[ws]] = 0;
-					++ws;
-					i = ws;
-				}
+				tailWindow.pop(a[minLeftEdge++]);
 			}
-			else
+			while(frontWindow.size()>=K)
 			{
-
-				if (dict[a[j]]) // the value instance of A[j] has been checked
-				{
-					dict[a[j]] = j + 1;
-				}
-				else
-				{
-					dict[a[j]] = j + 1;
-					++WK;
-					if (WK == K) // count if the a[j] incur WK == K 
-					{
-						++countk;
-						while (ws != dict[a[ws]] - 1)
-						{
-							++ws;
-						}
-						countk += (ws - i);
-					}
-				}
+				frontWindow.pop(a[maxLeftEdge++]);
 			}
-			++j;
+			count += (maxLeftEdge-minLeftEdge);
 		}
-
-		return countk;
+		return count;
 	}
+private:
+
 };
+
+
 
 // int main()
 // {

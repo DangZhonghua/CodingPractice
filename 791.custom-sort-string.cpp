@@ -37,10 +37,31 @@
  * 
  * 
  */
-class Solution {
+
+
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<iostream>
+using namespace std;
+
+
+class Solution 
+{
 public:
-    string customSortString(string S, string T) {
-        
+    string customSortString(string S, string T) 
+    {
+        vector<int> vDict(26, 26);
+        for(int i = 0; i<S.length(); ++i )
+        {
+            vDict[S[i]-'a'] = i;
+        }
+        auto fc = [&](char t1, char t2)-> bool
+        {
+            return vDict[t1-'a']<vDict[t2-'a'];
+        };
+        std::sort(T.begin(),T.end(),fc);
+        return T;
     }
 };
 
