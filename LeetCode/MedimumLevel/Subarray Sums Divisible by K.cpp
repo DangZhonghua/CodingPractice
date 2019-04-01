@@ -22,7 +22,6 @@ Note:
 #include<vector>
 #include<unordered_map>
 using namespace std;
-
 class Solution
 {
 public:
@@ -37,46 +36,68 @@ public:
 		{
 			sum += A[i];
 			int r = sum % K;
-			if (mapSum2Count[r])
+			//cout << sum << " : " << r << " " << endl;
+			if (0 == r)
+			{
+				++count;
+			}
+
+			if (mapSum2Count.count(r))
 			{
 				count += mapSum2Count[r];
-
-				if (mapSum2Count[-r])
+				
+				if (r>0 && mapSum2Count.count(r - K) )  // example: r =2, check if there are -5  if K= 7
 				{
-					count += mapSum2Count[-r];
+					count += mapSum2Count[r - K];
+				}
+				if (r < 0 && mapSum2Count.count(K + r)) // example: r = -5, check if there are 2 if k = 7
+				{
+					count += mapSum2Count[K + r];
 				}
 				mapSum2Count[r] += 1; // forget this at first time. 
 
 			}
 			else
 			{
-				if (mapSum2Count[-r])
+				if (r > 0 && mapSum2Count.count(r - K))
 				{
-					count += mapSum2Count[-r];
+					count += mapSum2Count[r - K];
 				}
+				if (r < 0 && mapSum2Count.count(K + r))
+				{
+					count += mapSum2Count[K + r];
+				}
+	
 				mapSum2Count[r] += 1;
 			}
 		}
-		return count + mapSum2Count[0];
+		//cout << endl;
+		return count;
 	}
 };
+
 
 int main()
 {
 	Solution sol;
-	vector<int> A1{ 4,5,0,-2,-3,1 };
+	vector<int> A1{ 4, 5, 0, -2, -3, 1 };
 	int K = 5;
 
 	//cout << sol.subarraysDivByK(A1, K) << endl;
 
-	vector<int> A2{ -1,2,9 };
+	vector<int> A2{ -1, 2, 9 };
 	K = 2;
 	//cout << sol.subarraysDivByK(A2, K) << endl;
 
 	vector<int> A3{ 2, -2, 2, -4 };
 	K = 6;
 
-	cout << sol.subarraysDivByK(A3, K) << endl;
+	//cout << sol.subarraysDivByK(A3, K) << endl;
+
+	vector<int> A4{ 7, -5, 5, -8, -6, 6, -4, 7, -8, -7 };
+	K = 7;
+
+	cout << sol.subarraysDivByK(A4, K) << endl;
 
 	return 0;
 }

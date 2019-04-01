@@ -15,6 +15,7 @@ If you have figured out the O(n) solution, try coding another solution of which 
 
 #include<iostream>
 #include<vector>
+#include <algorithm>
 using namespace std;
 
 class Solution
@@ -27,70 +28,83 @@ public:
 			return 0;
 		}
 
+		int N = nums.size();
 		int sum = nums[0];
-		int i = 0;
-		int j = 1;
-		int len = 0;
-		while (i <j && j <= nums.size())
+		int i	= 0;
+		int j	= 1;
+		int len = N+1;
+		while (i < j && j < N)
 		{
-			if (sum == s )
+			if (s > sum)
 			{
-				if ( 0== len || len > (j - i))
-				{
-					len = (j - i);
-				}
-				sum -= nums[i];
 				sum += nums[j];
 				++j;
-				++i;
-			}
-			else if (sum < s)
-			{
-				if (j < nums.size())
-				{
-					sum += nums[j];
-					++j;
-				}
-				else
-				{
-					sum -= nums[i];
-					++i;
-				}
-
 			}
 			else
 			{
-				sum -= nums[i];
-				++i;
-				if (sum == s && (0== len ||len > (j - i)))
+				if (len > (j - i))
 				{
 					len = (j - i);
 				}
-				if (sum < s|| i == j)
-				{
-					if (j < nums.size())
-					{
-						sum += nums[j];
-						++j;
-					}
-				}
-
+				sum -= nums[i];
+				++i;
+				//++j; keep j unchanged.
 			}
 		}
-		return len;
+
+		while (sum >= s)
+		{
+			if (len > (j - i))
+			{
+				len = (j - i);
+			}
+			sum -= nums[i++];
+		}
+
+
+		return len=( (len==(N+1))?0:len);
 	}
 };
+
+// O(n)
+//class Solution {
+//public:
+//	int minSubArrayLen(int s, vector<int>& nums) 
+//	{
+//		if (nums.empty()) return 0;
+//		int left = 0, right = 0, sum = 0, len = nums.size(), res = len + 1;
+//		while (right < len) {
+//			while (sum < s && right < len) 
+//			{
+//				sum += nums[right++];
+//			}
+//			while (sum >= s) 
+//			{
+//				res = min(res, right - left);
+//				sum -= nums[left++];
+//			}
+//		}
+//		return res == len + 1 ? 0 : res;
+//	}
+//};
 
 int main()
 {
 	Solution sol;
-	vector<int> nums{ 2,3,1,2,4,3 };
+	vector<int> nums{ 2, 3, 1, 2, 4, 3 };
 	int s = 7;
 
-	vector<int> num1{ 5,1,3,5,10,7,4,9,2,8 };
+	//cout << sol.minSubArrayLen(s, nums) << endl;
+
+	vector<int> num1{ 5, 1, 3, 5, 10, 7, 4, 9, 2, 8 };
 	s = 15;
 
-	cout << sol.minSubArrayLen(s, num1) << endl;
+	//cout << sol.minSubArrayLen(s, num1) << endl;
+
+	s = 11;
+	vector<int> num2{ 1, 2, 3, 4, 5 };
+	
+	cout << sol.minSubArrayLen(s, num2) << endl;
 
 	return 0;
 }
