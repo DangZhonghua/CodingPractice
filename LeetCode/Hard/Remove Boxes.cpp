@@ -42,13 +42,18 @@ public:
     int removeBoxes(vector<int>& boxes) 
     {
         int N = boxes.size();
+        if(0 == N)
+        {
+            return 0;
+        }
+
         vector< vector< vector<int> > > dp(N,vector< vector<int> >(N, vector<int>(N,0)));
         
         for(int i = 0; i<N; ++i )
         {
             for(int k = 0; k<=i; ++k)
             {
-                dp[i][i][k] = (k+1)*(k+1);
+                dp[i][i][k] = (k+1)*(k+1); //for the window length = 1 case
             }
         }
         //range[i,j]

@@ -2,6 +2,8 @@
 
 //https://www.geeksforgeeks.org/trapping-rain-water/
 
+//https://leetcode.com/articles/trapping-rain-water/#
+
 #include<iostream>
 #include <climits>
 using namespace std;

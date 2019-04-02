@@ -1,1857 +1,743 @@
-int CDataCloudRestore::ReadData2(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded)
+#include "GDDOSILog.h"
+#include "AwsS3Store.h"
+
+extern CGDDOSILog g_GDDOSILog;
+
+
+
+
+AwsS3BackupQueue::AwsS3BackupQueue()
 {
 
-	m_TimerReadData2.StartTimer();
-	++m_ullReadDataFileTimes;
-
-	int lRet = OK;
-	unsigned __int64 ullTotalDataToRead = 0;
-	unsigned __int64 ullTotalDataRead = 0;
-	DWORD dwDataBlockInfoCount = 0;
-	DWORD dwRead = 0;
-	DWORD i = 0;
-
-	//********************************************************************
-	//Check buffer space
-	ullTotalDataToRead = *(unsigned __int64 *)pData;
-	if (dwBufSize < ullTotalDataToRead)
-	{
-		*pdwBufSizeNeeded = (DWORD)ullTotalDataToRead;
-		m_TimerReadData2.EndTimer();
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	//********************************************************************
-	//Cache data block info
-	dwDataBlockInfoCount = (*plSize - 8);
-	dwDataBlockInfoCount /= sizeof(DATABLOCKINFOPKT);
-	if (!m_pDataBlockInfo || m_dwDataBlockInfoLen < dwDataBlockInfoCount)
-	{
-		if (m_pDataBlockInfo)
-		{
-			delete[] m_pDataBlockInfo;
-			m_pDataBlockInfo = NULL;
-			m_dwDataBlockInfoLen = 0;
-		}
-		m_pDataBlockInfo = new DATABLOCKINFOPKT[dwDataBlockInfoCount];
-		if (!m_pDataBlockInfo)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-			m_TimerReadData2.EndTimer();
-			return NOT_ENOUGH_MEMORY;
-		}
-		m_dwDataBlockInfoLen = dwDataBlockInfoCount;
-	}
-	memcpy(m_pDataBlockInfo, pData + 8, (*plSize - 8));
-
-	m_ullReadDataFileBlocks += dwDataBlockInfoCount;
-
-	READ_LIST BlockInfoList;
-
-	ullTotalDataRead = 0;
-
-	DATABLOCKOPTI Block;
-
-	for (i = 0; i<dwDataBlockInfoCount; i++)
-	{
-		UINT64 Ind = 0, temp;
-		temp = m_pDataBlockInfo[i].ulFileNo;
-		Ind |= temp << 48;
-
-		temp = m_pDataBlockInfo[i].uiSliceID;
-		Ind |= temp << 32;
-
-		temp = m_pDataBlockInfo[i].uiSliceOffset;
-		Ind |= temp;
-
-		if (BlockInfoList.find(Ind) != BlockInfoList.end())
-		{
-			Ind += i % 1024;
-		}
-
-		Block.pDataBlockInfo = &m_pDataBlockInfo[i];
-
-		Block.pBuffer = pData + ullTotalDataRead;
-
-		ullTotalDataRead += m_pDataBlockInfo[i].lDataLen;
-
-		BlockInfoList[Ind] = Block;
-	}
-
-	if (!m_pReadBuffer)
-	{
-		m_pReadBuffer = new (std::nothrow) char[2 * 1024 * 1024];
-		if (m_pReadBuffer == NULL)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-			m_TimerReadData2.EndTimer();
-			return NOT_ENOUGH_MEMORY;
-		}
-
-		m_nReadBufferSize = 2 * 1024 * 1024;
-	}
-
-	//WriteLogID(1, L"%s:: begin,dwDataBlockInfoCount[%d],size[%d],ThreadId[%d]",__FUNCTIONW__,dwDataBlockInfoCount,BlockInfoList.size(),GetCurrentThreadId()); 
-
-	if (dwDataBlockInfoCount == BlockInfoList.size())
-	{
-		ullTotalDataRead = 0;
-
-		READ_LIST_PTR FirstPtr, Ptr;
-
-		FirstPtr = BlockInfoList.begin();
-		Ptr = BlockInfoList.begin();
-
-		while (FirstPtr != BlockInfoList.end())
-		{
-			ULONG DataLen = FirstPtr->second.pDataBlockInfo->lDataLen;
-			ULONG FileNo = FirstPtr->second.pDataBlockInfo->ulFileNo;
-			ULONG SliceID = FirstPtr->second.pDataBlockInfo->uiSliceID;
-			ULONG SliceOffset = FirstPtr->second.pDataBlockInfo->uiSliceOffset;
-
-
-			Ptr++;
-
-			while (Ptr != BlockInfoList.end())
-			{
-				ULONG DataLen2 = Ptr->second.pDataBlockInfo->lDataLen;
-				ULONG FileNo2 = Ptr->second.pDataBlockInfo->ulFileNo;
-				ULONG SliceID2 = Ptr->second.pDataBlockInfo->uiSliceID;
-				ULONG SliceOffset2 = Ptr->second.pDataBlockInfo->uiSliceOffset;
-
-				if (FileNo == FileNo2 && SliceID == SliceID2 && SliceOffset + DataLen == SliceOffset2)
-				{
-					DataLen += DataLen2;
-					Ptr++;
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			if ((dwBufSize - ullTotalDataRead) < DataLen)
-			{
-				WriteLogID(1, L"%s:: Wrong data block info. toRead=%d, Read=%d", __FUNCTIONW__, ullTotalDataToRead, ullTotalDataRead);
-				m_TimerReadData2.EndTimer();
-				return READ_DATA_FAILED;
-			}
-
-			if (m_nReadBufferSize < DataLen)
-			{
-				if (m_pReadBuffer)
-				{
-					delete[] m_pReadBuffer;
-					m_pReadBuffer = NULL;
-					m_nReadBufferSize = 0;
-				}
-
-				m_pReadBuffer = new (std::nothrow) char[DataLen * 2];
-				if (m_pReadBuffer == NULL)
-				{
-					CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-					WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-					m_TimerReadData2.EndTimer();
-					return NOT_ENOUGH_MEMORY;
-				}
-
-				m_nReadBufferSize = DataLen * 2;
-			}
-
-			//********************************************************************
-			dwRead = 0;
-			m_TimerReadData.StartTimer();
-
-			lRet = m_DataFile.ReadData(
-				FileNo,
-				SliceID,
-				SliceOffset,
-				DataLen,
-				m_pReadBuffer,
-				m_nReadBufferSize,
-				&dwRead);
-
-			m_TimerReadData.EndTimer();
-
-			ULONG Copied = 0;
-
-			while (FirstPtr != Ptr && FirstPtr != BlockInfoList.end())
-			{
-				memcpy(FirstPtr->second.pBuffer, m_pReadBuffer + Copied, FirstPtr->second.pDataBlockInfo->lDataLen);
-				Copied += FirstPtr->second.pDataBlockInfo->lDataLen;
-
-				FirstPtr++;
-			}
-
-
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: m_DataFile.ReadData() ret[%d]. "
-					L"fileNumber=%d, "
-					L"SliceId=%d, "
-					L"SliceOffset=%d, "
-					L"dataToRead=%d "
-					L"dataRead=%d",
-					__FUNCTIONW__,
-					lRet,
-					FileNo,
-					SliceID,
-					SliceOffset,
-					DataLen,
-					dwRead);
-
-				break;
-			}
-
-			ullTotalDataRead += dwRead;
-
-		}
-	}
-	else
-	{
-		//********************************************************************
-
-		ullTotalDataRead = 0;
-		for (i = 0; i<dwDataBlockInfoCount; i++)
-		{
-			if ((dwBufSize - ullTotalDataRead) < m_pDataBlockInfo[i].lDataLen)
-			{
-				WriteLogID(1, L"%s:: Wrong data block info!"
-					L" dwBufSize = %d,  Read=%d, toRead=%d, difference=%d",
-					__FUNCTIONW__, dwBufSize, ullTotalDataRead, ullTotalDataToRead,
-					m_pDataBlockInfo[i].lDataLen - (dwBufSize - ullTotalDataRead));
-				m_TimerReadData2.EndTimer();
-				return NOT_ENOUGH_MEMORY;
-			}
-
-			//********************************************************************
-			dwRead = 0;
-			m_TimerReadData.StartTimer();
-			lRet = m_DataFile.ReadData(m_pDataBlockInfo[i].ulFileNo,
-				m_pDataBlockInfo[i].uiSliceID,
-				m_pDataBlockInfo[i].uiSliceOffset,
-				m_pDataBlockInfo[i].lDataLen,
-				pData + ullTotalDataRead,
-				dwBufSize - ullTotalDataRead,
-				&dwRead);
-			m_TimerReadData.EndTimer();
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: m_DataFile.ReadData() return %d. "
-					L"fileNumber=%d, "
-					L"SliceId=%d, "
-					L"SliceOffset=%d, "
-					L"dataToRead=%d "
-					L"dataRead=%d",
-					__FUNCTIONW__,
-					lRet,
-					m_pDataBlockInfo[i].ulFileNo,
-					//m_pDataBlockInfo[i].llOffset,
-					m_pDataBlockInfo[i].uiSliceID,
-					m_pDataBlockInfo[i].uiSliceOffset,
-					m_pDataBlockInfo[i].lDataLen,
-					dwRead);
-
-				break;
-			}
-
-			ullTotalDataRead += dwRead;
-
-		}//for
-	}
-
-	BlockInfoList.clear();
-	m_TimerReadData2.EndTimer();
-	//********************************************************************
-	if (ullTotalDataRead != ullTotalDataToRead && lRet != READ_DATA_REACH_EOF)
-	{
-		WriteLogID(1, L"%s:: data to read mismatch with data read. toRead=%d, Read=%d",
-			__FUNCTIONW__, ullTotalDataToRead, ullTotalDataRead);
-		return READ_DATA_FAILED;
-	}
-
-	//********************************************************************
-	*plSize = (int)ullTotalDataRead;
-	return OK;
 }
 
-int CDataCloudRestore::ReadData2WithMultiThread(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded, INT32 nThreadCount)
-{
-	int lRet = OK;
-	lRet = InitDataRoleMultiThreadReader(nThreadCount);
 
-	if (OK != lRet)
-	{
-		return lRet;
-	}
-
-	m_TimerReadData2.StartTimer();
-	++m_ullReadDataFileTimes;
-
-	unsigned __int64 ullTotalDataToRead = 0;
-	unsigned __int64 ullTotalDataRead = 0;
-	DWORD dwDataBlockInfoCount = 0;
-	DWORD dwRead = 0;
-	DWORD i = 0;
-
-	//********************************************************************
-	//Check buffer space
-	ullTotalDataToRead = *(unsigned __int64 *)pData;
-	if (dwBufSize < ullTotalDataToRead)
-	{
-		*pdwBufSizeNeeded = (DWORD)ullTotalDataToRead;
-		m_TimerReadData2.EndTimer();
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	//********************************************************************
-	//Cache data block info
-	dwDataBlockInfoCount = (*plSize - 8);
-	dwDataBlockInfoCount /= sizeof(DATABLOCKINFOPKT);
-	if (!m_pDataBlockInfo || m_dwDataBlockInfoLen < dwDataBlockInfoCount)
-	{
-		if (m_pDataBlockInfo)
-		{
-			delete[] m_pDataBlockInfo;
-			m_pDataBlockInfo = NULL;
-			m_dwDataBlockInfoLen = 0;
-		}
-		m_pDataBlockInfo = new DATABLOCKINFOPKT[dwDataBlockInfoCount];
-		if (!m_pDataBlockInfo)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-			m_TimerReadData2.EndTimer();
-			return NOT_ENOUGH_MEMORY;
-		}
-		m_dwDataBlockInfoLen = dwDataBlockInfoCount;
-	}
-	memcpy(m_pDataBlockInfo, pData + 8, (*plSize - 8));
-
-	m_ullReadDataFileBlocks += dwDataBlockInfoCount;
-
-	READ_LIST BlockInfoList;
-
-	ullTotalDataRead = 0;
-
-	DATABLOCKOPTI Block;
-
-	for (i = 0; i<dwDataBlockInfoCount; i++)
-	{
-		UINT64 Ind = 0, temp;
-		temp = m_pDataBlockInfo[i].ulFileNo;
-		Ind |= temp << 48;
-
-		temp = m_pDataBlockInfo[i].uiSliceID;
-		Ind |= temp << 32;
-
-		temp = m_pDataBlockInfo[i].uiSliceOffset;
-		Ind |= temp;
-
-		if (BlockInfoList.find(Ind) != BlockInfoList.end())
-		{
-			Ind += i % 1024;
-		}
-
-		Block.pDataBlockInfo = &m_pDataBlockInfo[i];
-
-		Block.pBuffer = pData + ullTotalDataRead;
-
-		ullTotalDataRead += m_pDataBlockInfo[i].lDataLen;
-
-		BlockInfoList[Ind] = Block;
-	}
-
-	if (dwBufSize < ullTotalDataRead)
-	{
-		*pdwBufSizeNeeded = (DWORD)ullTotalDataRead;
-		m_TimerReadData2.EndTimer();
-		return NOT_ENOUGH_MEMORY;
-	}
-
-
-	if (m_nReadBufferSize < ullTotalDataRead)
-	{
-		if (NULL != m_pReadBuffer)
-		{
-			delete[] m_pReadBuffer;
-			m_pReadBuffer = NULL;
-		}
-
-		m_pReadBuffer = new (std::nothrow) char[ullTotalDataRead];
-		if (m_pReadBuffer == NULL)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-			m_TimerReadData2.EndTimer();
-			return NOT_ENOUGH_MEMORY;
-		}
-
-		m_nReadBufferSize = ullTotalDataRead;
-	}
-
-	//WriteLogID(1, L"%s:: begin,dwDataBlockInfoCount[%d],size[%d],ThreadId[%d]",__FUNCTIONW__,dwDataBlockInfoCount,BlockInfoList.size(),GetCurrentThreadId()); 
-
-	if (m_pMultiThreadDataReader->ReInit(BlockInfoList.size()) != OK)
-	{
-		WriteLogID(1, L"%s:%d, ERROR, ReInit multi thread reader fail, use original reading method.", __FUNCTIONW__, __LINE__);
-		return ReadData2(pData, plSize, dwBufSize, pdwBufSizeNeeded);
-	}
-
-	if (m_pMultiThreadDataReader->GetThreadsState() == AllDead)
-	{
-		WriteLogID(1, L"%s:%d, ERROR, no worker thread running, use original reading method.", __FUNCTIONW__, __LINE__);
-		return ReadData2(pData, plSize, dwBufSize, pdwBufSizeNeeded);
-	}
-
-	if (dwDataBlockInfoCount == BlockInfoList.size())
-	{
-		ullTotalDataRead = 0;
-
-		READ_LIST_PTR FirstPtr;
-
-		FirstPtr = BlockInfoList.begin();
-
-		m_TimerReadData.StartTimer();
-
-		while (FirstPtr != BlockInfoList.end())
-		{
-			ULONG DataLen = FirstPtr->second.pDataBlockInfo->lDataLen;
-			ULONG FileNo = FirstPtr->second.pDataBlockInfo->ulFileNo;
-			ULONG SliceID = FirstPtr->second.pDataBlockInfo->uiSliceID;
-			ULONG SliceOffset = FirstPtr->second.pDataBlockInfo->uiSliceOffset;
-
-
-			FirstPtr++;
-
-			while (FirstPtr != BlockInfoList.end())
-			{
-				ULONG DataLen2 = FirstPtr->second.pDataBlockInfo->lDataLen;
-				ULONG FileNo2 = FirstPtr->second.pDataBlockInfo->ulFileNo;
-				ULONG SliceID2 = FirstPtr->second.pDataBlockInfo->uiSliceID;
-				ULONG SliceOffset2 = FirstPtr->second.pDataBlockInfo->uiSliceOffset;
-
-				if (FileNo == FileNo2 && SliceID == SliceID2 && SliceOffset + DataLen == SliceOffset2)
-				{
-					DataLen += DataLen2;
-					FirstPtr++;
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			//********************************************************************
-			dwRead = 0;
-			//Read the continuous ref entries
-			{
-				ReadDataIOInfo *pRequestInfo = m_pMultiThreadDataReader->GetReadDataIOInfo();
-				pRequestInfo->request.DataRequest.ulFileNo = FileNo;
-				pRequestInfo->request.DataRequest.ulSliceID = SliceID;
-				pRequestInfo->request.DataRequest.ulSliceOffset = SliceOffset;
-				pRequestInfo->request.DataRequest.ulDataToRead = DataLen;
-				pRequestInfo->request.DataRequest.pDataBuf = m_pReadBuffer + ullTotalDataRead;
-				pRequestInfo->request.DataRequest.ulDataRead = dwRead;
-
-				LARGE_INTEGER llSliceNumber;
-				llSliceNumber.HighPart = FileNo;
-				llSliceNumber.LowPart = 0;
-
-				m_pMultiThreadDataReader->AddRequest(pRequestInfo, llSliceNumber.QuadPart);
-
-			}
-
-			ullTotalDataRead += DataLen;
-
-		}
-		m_pMultiThreadDataReader->SetFinishedPuttingRequest();
-		m_pMultiThreadDataReader->WaitForRequestFinished();
-
-		m_TimerReadData.EndTimer();
-
-		if (m_pMultiThreadDataReader->HasError())
-		{
-			DWORD dwErr = READ_DATA_FAILED;
-			WriteLogID(1, L"%s:%d, ERROR, read data failed, EC=[%d].", __FUNCTIONW__, __LINE__, dwErr);
-			return READ_DATA_FAILED;
-		}
-
-		ULONG Copied = 0;
-		FirstPtr = BlockInfoList.begin();
-		while (FirstPtr != BlockInfoList.end())
-		{
-			memcpy(FirstPtr->second.pBuffer, m_pReadBuffer + Copied, FirstPtr->second.pDataBlockInfo->lDataLen);
-			Copied += FirstPtr->second.pDataBlockInfo->lDataLen;
-
-			FirstPtr++;
-		}
-
-	}
-	else
-	{
-		//********************************************************************
-
-		ullTotalDataRead = 0;
-		for (i = 0; i<dwDataBlockInfoCount; i++)
-		{
-			if ((dwBufSize - ullTotalDataRead) < m_pDataBlockInfo[i].lDataLen)
-			{
-				WriteLogID(1, L"%s:: Wrong data block info!"
-					L" dwBufSize = %d,  Read=%d, toRead=%d, difference=%d",
-					__FUNCTIONW__, dwBufSize, ullTotalDataRead, ullTotalDataToRead,
-					m_pDataBlockInfo[i].lDataLen - (dwBufSize - ullTotalDataRead));
-				m_TimerReadData2.EndTimer();
-				return NOT_ENOUGH_MEMORY;
-			}
-
-			//********************************************************************
-			dwRead = 0;
-			m_TimerReadData.StartTimer();
-			lRet = m_DataFile.ReadData(m_pDataBlockInfo[i].ulFileNo,
-				m_pDataBlockInfo[i].uiSliceID,
-				m_pDataBlockInfo[i].uiSliceOffset,
-				m_pDataBlockInfo[i].lDataLen,
-				pData + ullTotalDataRead,
-				dwBufSize - ullTotalDataRead,
-				&dwRead);
-			m_TimerReadData.EndTimer();
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: m_DataFile.ReadData() return %d. "
-					L"fileNumber=%d, "
-					L"SliceId=%d, "
-					L"SliceOffset=%d, "
-					L"dataToRead=%d "
-					L"dataRead=%d",
-					__FUNCTIONW__,
-					lRet,
-					m_pDataBlockInfo[i].ulFileNo,
-					//m_pDataBlockInfo[i].llOffset,
-					m_pDataBlockInfo[i].uiSliceID,
-					m_pDataBlockInfo[i].uiSliceOffset,
-					m_pDataBlockInfo[i].lDataLen,
-					dwRead);
-
-				break;
-			}
-
-			ullTotalDataRead += dwRead;
-
-		}//for
-	}
-
-	BlockInfoList.clear();
-	m_TimerReadData2.EndTimer();
-	//********************************************************************
-	if (ullTotalDataRead != ullTotalDataToRead && lRet != READ_DATA_REACH_EOF)
-	{
-		WriteLogID(1, L"%s:: data to read mismatch with data read. toRead=%d, Read=%d",
-			__FUNCTIONW__, ullTotalDataToRead, ullTotalDataRead);
-		return READ_DATA_FAILED;
-	}
-
-	//********************************************************************
-	*plSize = (int)ullTotalDataRead;
-	return OK;
-}
-#if GDD_ANSYNC_READ
-//********************************************************************
-int CDataCloudRestore::ReadData2WithSeqNo(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded)
-{
-	int lRet = OK;
-	DWORD dwBlockCount = 0;
-	unsigned __int64 ullTotalDataToRead = 0, ullTotalDataRead = 0;
-	DWORD dwToRead = 0, dwRead = 0;
-	DWORD i = 0;
-
-	//********************************************************************
-	//Check buffer space
-	ullTotalDataToRead = *(unsigned __int64 *)pData;
-	if (dwBufSize < ullTotalDataToRead)
-	{
-		*pdwBufSizeNeeded = (DWORD)ullTotalDataToRead;
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	m_TimerReadData2.StartTimer();
-
-	lRet = InitReadBuffer(ullTotalDataToRead);
-
-	if (OK != lRet)
-	{
-		m_TimerReadData2.EndTimer();
-		return lRet;
-	}
-
-	lRet = InitBlockInfo3List(pData, plSize, dwBlockCount);
-	if (OK != lRet)
-	{
-		m_TimerReadData2.EndTimer();
-		return lRet;
-	}
-
-	m_ullReadDataFileTotalBlocks += dwBlockCount;
-	//********************************************************************
-	//Sort by data block info
-	BLOCKINFO4_UINT32VECTOR_MAP sortMap;
-	GDDBLOCKINFO_4 blockInfo;
-	for (i = 0; i<dwBlockCount; i++)
-	{
-		blockInfo.ui32DataFileNumber = m_pBlockInfo3List[i].ui32DataFileNumber;
-		blockInfo.ui32DataSliceID = m_pBlockInfo3List[i].ui32DataSliceID;
-		blockInfo.ui32DataSliceOffset = m_pBlockInfo3List[i].ui32DataSliceOffset;
-		blockInfo.ui32DataLen = GET_DATA_LEN(m_pBlockInfo3List[i]);
-		sortMap[blockInfo].push_back(m_pBlockInfo3List[i].ui32BlockOffsetInBuffer);
-	}
-
-	//********************************************************************
-	//Read data
-	static int requestCount = 0;
-	requestCount++;
-
-	BLOCKINFO4_UINT32VECTOR_MAP_ITER mIterStart, mIterEnd, mIter;
-	DWORD dwIters = 0;
-	char * pBufPtr = NULL;
-	ullTotalDataRead = 0;
-	for (mIter = sortMap.begin(); mIter != sortMap.end(); mIter++)
-	{
-		//********************************************************************
-		//Find out the continous data blocks
-		if (mIter == sortMap.begin())
-		{
-			mIterStart = mIter; mIterEnd = mIter; dwIters = 1;
-			dwToRead = mIter->first.ui32DataLen;
-			continue;
-		}
-		if (mIterEnd->first.ui32DataFileNumber == mIter->first.ui32DataFileNumber &&
-			mIterEnd->first.ui32DataSliceID == mIter->first.ui32DataSliceID &&
-			(mIterEnd->first.ui32DataSliceOffset + mIterEnd->first.ui32DataLen) == mIter->first.ui32DataSliceOffset)
-		{
-			mIterEnd = mIter; dwIters++;
-			dwToRead += mIter->first.ui32DataLen;
-			continue;
-		}
-
-		//********************************************************************
-		//Read the continous data blocks
-		dwRead = 0;
-		m_TimerReadData.StartTimer();
-		lRet = m_DataFile.ReadData(mIterStart->first.ui32DataFileNumber,
-			mIterStart->first.ui32DataSliceID,
-			mIterStart->first.ui32DataSliceOffset,
-			dwToRead, m_pReadBuffer, m_nReadBufferSize, &dwRead);
-		m_TimerReadData.EndTimer();
-		if (lRet != OK || dwRead != dwToRead)
-		{
-			WriteLogID(1, L"%s::1 m_DataFile.ReadData() return %d. "
-				L"FileNumber=%d, "
-				L"SliceId=%d, "
-				L"SliceOffset=%d, "
-				L"dataToRead=%d "
-				L"dataRead=%d",
-				__FUNCTIONW__, lRet,
-				mIterStart->first.ui32DataFileNumber,
-				mIterStart->first.ui32DataSliceID,
-				mIterStart->first.ui32DataSliceOffset,
-				dwToRead, dwRead);
-			if (lRet == OK) lRet = READ_DATA_FAILED;
-			m_TimerReadData2.EndTimer();
-			return lRet;
-		}
-		m_ullReadDataFileTimes++; m_ullReadDataFileBlocks += dwIters;
-
-		//********************************************************************
-		//Copy the continous data blocks to Buffer
-		mIter = mIterStart; pBufPtr = m_pReadBuffer;
-		for (i = 0; i<dwIters; i++, mIter++)
-		{
-			for (UINT32_VECTOR_ITER vIter = mIter->second.begin(); vIter != mIter->second.end(); vIter++)
-			{
-				memcpy_s(pData + (*vIter), dwBufSize - (*vIter), pBufPtr, mIter->first.ui32DataLen);
-				ullTotalDataRead += mIter->first.ui32DataLen;
-			}
-			pBufPtr += mIter->first.ui32DataLen;
-		}
-
-		//********************************************************************
-		mIterStart = mIter; mIterEnd = mIter; dwIters = 1;
-		dwToRead = mIter->first.ui32DataLen;
-	}//for
-
-	//********************************************************************
-	//Read the last continous data blocks
-	dwRead = 0;
-	m_TimerReadData.StartTimer();
-	lRet = m_DataFile.ReadData(mIterStart->first.ui32DataFileNumber,
-		mIterStart->first.ui32DataSliceID,
-		mIterStart->first.ui32DataSliceOffset,
-		dwToRead, m_pReadBuffer, m_nReadBufferSize, &dwRead);
-	m_TimerReadData.EndTimer();
-	if (lRet != OK || dwRead != dwToRead)
-	{
-		WriteLogID(1, L"%s::2 m_DataFile.ReadData() return %d. "
-			L"FileNumber=%d, "
-			L"SliceId=%d, "
-			L"SliceOffset=%d, "
-			L"dataToRead=%d "
-			L"dataRead=%d",
-			__FUNCTIONW__, lRet,
-			mIterStart->first.ui32DataFileNumber,
-			mIterStart->first.ui32DataSliceID,
-			mIterStart->first.ui32DataSliceOffset,
-			dwToRead, dwRead);
-		if (lRet == OK) lRet = READ_DATA_FAILED;
-		m_TimerReadData2.EndTimer();
-		return lRet;
-	}
-	m_ullReadDataFileTimes++; m_ullReadDataFileBlocks += dwIters;
-
-	//********************************************************************
-	//Copy the last continous data blocks to Buffer
-	mIter = mIterStart; pBufPtr = m_pReadBuffer;
-	for (i = 0; i<dwIters; i++, mIter++)
-	{
-		for (UINT32_VECTOR_ITER vIter = mIter->second.begin(); vIter != mIter->second.end(); vIter++)
-		{
-			memcpy_s(pData + (*vIter), dwBufSize - (*vIter), pBufPtr, mIter->first.ui32DataLen);
-			ullTotalDataRead += mIter->first.ui32DataLen;
-		}
-		pBufPtr += mIter->first.ui32DataLen;
-	}
-
-	m_ullReadDataFileSize += ullTotalDataRead;
-
-	//********************************************************************
-	//Double-check the data length
-	if (ullTotalDataRead != ullTotalDataToRead)
-	{
-		WriteLogID(1, L"%s:: data to read mismatch with data read. toRead=%d, Read=%d",
-			__FUNCTIONW__, ullTotalDataToRead, ullTotalDataRead);
-		return READ_DATA_FAILED;
-	}
-
-	//********************************************************************
-	*plSize = (int)ullTotalDataRead;
-	m_TimerReadData2.EndTimer();
-	return OK;
-}
-
-int CDataCloudRestore::ReadData2WithSeqNoMultiThread(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded, INT32 nThreadCount)
+AwsS3BackupQueue::~AwsS3BackupQueue()
 {
 
-	int lRet = OK;
-
-	if (!pData || !plSize || !pdwBufSizeNeeded)
+	if (nullptr != m_pQuePush)
 	{
-		WriteLogID(1, L"%s:%d, ERROR, Invalid parameters.", __FUNCTIONW__, __LINE__);
-		return INVALID_PARAMETER;
+		delete m_pQuePush;
+		m_pQuePush = nullptr;
 	}
-
-	m_TimerReadData2.StartTimer();
-	lRet = InitDataRoleMultiThreadReader(nThreadCount);
-
-	if (OK != lRet)
+	if (nullptr != m_pQuePop)
 	{
-		WriteLogID(1, L"%s:%d, ERROR, Creating MultiThreadDataReader failed EC=[%d].", __FUNCTIONW__, __LINE__, lRet);
-		m_TimerReadData2.EndTimer();
-		return ReadData2WithSeqNo(pData, plSize, dwBufSize, pdwBufSizeNeeded);
+		delete m_pQuePop;
+		m_pQuePop = nullptr;
 	}
-
-	DWORD dwBlockCount = 0;
-	unsigned __int64 ullTotalDataToRead = 0, ullTotalDataRead = 0;
-
-	//********************************************************************
-	//Check buffer space
-	ullTotalDataToRead = *(unsigned __int64 *)pData;
-	if (dwBufSize < ullTotalDataToRead)
-	{
-		*pdwBufSizeNeeded = (DWORD)ullTotalDataToRead;
-		m_TimerReadData2.EndTimer();
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	lRet = InitReadBuffer(ullTotalDataToRead);
-	if (OK != lRet)
-	{
-		m_TimerReadData2.EndTimer();
-		return lRet;
-	}
-
-	lRet = InitBlockInfo3List(pData, plSize, dwBlockCount);
-	if (OK != lRet)
-	{
-		m_TimerReadData2.EndTimer();
-		return lRet;
-	}
-
-	m_ullReadDataFileTotalBlocks += dwBlockCount;
-
-	//********************************************************************
-	//Sort by data block info
-	BLOCKINFO4_UINT32VECTOR_MAP sortMap;
-	GDDBLOCKINFO_4 blockInfo;
-	DWORD i = 0;
-	for (i = 0; i<dwBlockCount; i++)
-	{
-		blockInfo.ui32DataFileNumber = m_pBlockInfo3List[i].ui32DataFileNumber;
-		blockInfo.ui32DataSliceID = m_pBlockInfo3List[i].ui32DataSliceID;
-		blockInfo.ui32DataSliceOffset = m_pBlockInfo3List[i].ui32DataSliceOffset;
-		blockInfo.ui32DataLen = GET_DATA_LEN(m_pBlockInfo3List[i]);
-		sortMap[blockInfo].push_back(m_pBlockInfo3List[i].ui32BlockOffsetInBuffer);
-	}
-
-	if (m_pMultiThreadDataReader->ReInit(dwBlockCount) != OK)
-	{
-		WriteLogID(1, L"%s:%d, ERROR, ReInit multi thread reader fail, use original reading method.", __FUNCTIONW__, __LINE__);
-		return ReadData2WithSeqNo(pData, plSize, dwBufSize, pdwBufSizeNeeded);
-	}
-
-	if (m_pMultiThreadDataReader->GetThreadsState() == AllDead)
-	{
-		WriteLogID(1, L"%s:%d, ERROR, no worker thread running, use original reading method.", __FUNCTIONW__, __LINE__);
-		return ReadData2WithSeqNo(pData, plSize, dwBufSize, pdwBufSizeNeeded);
-	}
-
-	//********************************************************************
-	//Read data
-	static int requestCount = 0;
-	requestCount++;
-
-	BLOCKINFO4_UINT32VECTOR_MAP_ITER mIterStart, mIterEnd, mIter;
-	DWORD dwIters = 0;
-	char * pBufPtr = NULL;
-	DWORD dwToRead = 0, dwRead = 0;
-	unsigned __int64 ullDataOffsetInResponseBuffer = 0;
-	m_TimerReadData.StartTimer();
-
-	for (mIter = sortMap.begin(); mIter != sortMap.end(); mIter++)
-	{
-		//********************************************************************
-		//Find out the continous data blocks
-		if (mIter == sortMap.begin())
-		{
-			mIterStart = mIter; mIterEnd = mIter; dwIters = 1;
-			dwToRead = mIter->first.ui32DataLen;
-			continue;
-		}
-		if (mIterEnd->first.ui32DataFileNumber == mIter->first.ui32DataFileNumber &&
-			mIterEnd->first.ui32DataSliceID == mIter->first.ui32DataSliceID &&
-			(mIterEnd->first.ui32DataSliceOffset + mIterEnd->first.ui32DataLen) == mIter->first.ui32DataSliceOffset)
-		{
-			mIterEnd = mIter; dwIters++;
-			dwToRead += mIter->first.ui32DataLen;
-			continue;
-		}
-
-		{
-			ReadDataIOInfo *pRequestInfo = m_pMultiThreadDataReader->GetReadDataIOInfo();
-			pRequestInfo->request.DataRequest.ulFileNo = mIterStart->first.ui32DataFileNumber;
-			pRequestInfo->request.DataRequest.ulSliceID = mIterStart->first.ui32DataSliceID;
-			pRequestInfo->request.DataRequest.ulSliceOffset = mIterStart->first.ui32DataSliceOffset;
-			pRequestInfo->request.DataRequest.ulDataToRead = dwToRead;
-			pRequestInfo->request.DataRequest.pDataBuf = m_pReadBuffer + ullDataOffsetInResponseBuffer;
-			pRequestInfo->request.DataRequest.ulDataRead = dwRead;
-
-			LARGE_INTEGER llSliceNumber;
-			llSliceNumber.HighPart = mIterStart->first.ui32DataFileNumber;
-			llSliceNumber.LowPart = mIterStart->first.ui32DataSliceID;
-
-			m_pMultiThreadDataReader->AddRequest(pRequestInfo, llSliceNumber.QuadPart);
-
-			//WriteLogID(1, L"jerry, ===, multi sync data, %d, %d, %d, %d, %d.", requestCount, mIterStart->first.ui32DataFileNumber,
-			//	mIterStart->first.ui32DataSliceID, mIterStart->first.ui32DataSliceOffset, dwToRead);
-			m_ullReadDataFileTimes++;
-			m_ullReadDataFileBlocks += dwIters;
-		}
-
-		ullDataOffsetInResponseBuffer += dwToRead;
-
-		mIterStart = mIter; mIterEnd = mIter; dwIters = 1;
-		dwToRead = mIter->first.ui32DataLen;
-	}
-
-	{
-		ReadDataIOInfo *pRequestInfo = m_pMultiThreadDataReader->GetReadDataIOInfo();
-		pRequestInfo->request.DataRequest.ulFileNo = mIterStart->first.ui32DataFileNumber;
-		pRequestInfo->request.DataRequest.ulSliceID = mIterStart->first.ui32DataSliceID;
-		pRequestInfo->request.DataRequest.ulSliceOffset = mIterStart->first.ui32DataSliceOffset;
-		pRequestInfo->request.DataRequest.ulDataToRead = dwToRead;
-		pRequestInfo->request.DataRequest.pDataBuf = m_pReadBuffer + ullDataOffsetInResponseBuffer;
-		pRequestInfo->request.DataRequest.ulDataRead = dwRead;
-
-		LARGE_INTEGER llSliceNumber;
-		llSliceNumber.HighPart = mIterStart->first.ui32DataFileNumber;
-		llSliceNumber.LowPart = mIterStart->first.ui32DataSliceID;
-
-		m_pMultiThreadDataReader->AddRequest(pRequestInfo, llSliceNumber.QuadPart);
-
-		//WriteLogID(1, L"jerry, ===, multi sync data, %d, %d, %d, %d, %d.", requestCount, mIterStart->first.ui32DataFileNumber,
-		//	mIterStart->first.ui32DataSliceID, mIterStart->first.ui32DataSliceOffset, dwToRead);
-
-		ullDataOffsetInResponseBuffer += dwToRead;
-	}
-	m_ullReadDataFileTimes++;
-	m_ullReadDataFileBlocks += dwIters;
-
-	m_pMultiThreadDataReader->SetFinishedPuttingRequest();
-	m_pMultiThreadDataReader->WaitForRequestFinished();
-
-	m_TimerReadData.EndTimer();
-
-	if (m_pMultiThreadDataReader->HasError())
-	{
-		DWORD dwErr = READ_DATA_FAILED;
-		WriteLogID(1, L"%s:%d, ERROR, read data failed, EC=[%d].", __FUNCTIONW__, __LINE__, dwErr);
-		m_TimerReadData2.EndTimer();
-		return READ_DATA_FAILED;
-	}
-
-	//********************************************************************
-	//Copy the last continous data blocks to Buffer
-	mIter = mIterStart; pBufPtr = m_pReadBuffer;
-	ullDataOffsetInResponseBuffer = 0;
-	ullTotalDataRead = 0;
-	for (mIter = sortMap.begin(); mIter != sortMap.end(); mIter++)
-	{
-		for (UINT32_VECTOR_ITER vIter = mIter->second.begin(); vIter != mIter->second.end(); vIter++)
-		{
-			memcpy_s(pData + (*vIter), dwBufSize - (*vIter), pBufPtr, mIter->first.ui32DataLen);
-			ullTotalDataRead += mIter->first.ui32DataLen;
-		}
-		pBufPtr += mIter->first.ui32DataLen;
-	}
-
-
-	m_ullReadDataFileSize += ullTotalDataRead;
-
-	//********************************************************************
-	//Double-check the data length
-	if (ullTotalDataRead != ullTotalDataToRead)
-	{
-		WriteLogID(1, L"%s:: data to read mismatch with data read. toRead=%d, Read=%d",
-			__FUNCTIONW__, ullTotalDataToRead, ullTotalDataRead);
-		return READ_DATA_FAILED;
-	}
-
-	//********************************************************************
-	*plSize = (int)ullTotalDataRead;
-	m_TimerReadData2.EndTimer();
-	return OK;
 }
 
-#endif //GDD_ANSYNC_READ
-
-#ifdef GDD_REPLICATION_OPTIMIZATION
-//********************************************************************
-//Handler of the command STORAGE_USE_ASYNCREAD
-int CDataCloudRestore::UseAsyncRead(DWORD dwBlockSize)
+int AwsS3BackupQueue::InitBackupQue(int nQueCapacity)
 {
 	int ret = 0;
 
-	m_dwBlockSizeForDataSvr = dwBlockSize;
-
-	if (!m_ReadRequestPool.Init(READ_DATA_QUEUE_SIZE - 1, sizeof(READ_REQUEST_ITEM)))
+	do
 	{
-		WriteLogID(1, L"%s:: m_ReadRequestPool.Init failed.", __FUNCTIONW__);
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	m_ReadRequestQueue.Init(READ_DATA_QUEUE_SIZE - 1);
-
-	if (!m_ReadDataPool.Init(READ_DATA_QUEUE_SIZE + 1, sizeof(READ_DATA_ITEM)))
-	{
-		WriteLogID(1, L"%s:: m_ReadDataPool.Init failed.", __FUNCTIONW__);
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	m_hAsyncReadEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	if (m_hAsyncReadEvent == NULL)
-	{
-		WriteLogID(1, L"%s:: Failed to create asyncread event. EC=%d",
-			__FUNCTIONW__, GetLastError());
-		return -1;
-	}
-
-	//********************************************************************
-	DWORD dwThreadId = 0;
-	m_hAsyncReadThread = CreateThread(0, 0, AsyncReadThreadFunc, this, 0, &dwThreadId);
-	if (m_hAsyncReadThread == NULL)
-	{
-		WriteLogID(1, L"%s:: Create asyncread thread failed. EC=%d",
-			__FUNCTIONW__, GetLastError());
-		return -1;
-	}
-	WriteLogID(1, L"[RESTORE]:%s restore worker threadID:[%d].", __FUNCTIONW__, dwThreadId);
-
-	return OK;
-}
-
-//********************************************************************
-int CDataCloudRestore::AsyncReadData(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded)
-{
-	int lRet = OK;
-	DWORD dwResponseBufSz = sizeof(DataReadResponseBuf);
-	DWORD dwBlockInfoSz = sizeof(DATABLOCKINFOPKT);
-	IOControlInfo *pControlInfo = (IOControlInfo *)pData;
-	DWORD dwControlInfoSz = sizeof(IOControlInfo);
-	P_READ_REQUEST_ITEM pRequest = NULL;
-
-	//********************************************************************
-	//Check buffer space
-	if (dwBufSize < dwResponseBufSz)
-	{
-		*pdwBufSizeNeeded = dwResponseBufSz;
-		return NOT_ENOUGH_MEMORY;
-	}
-
-	//********************************************************************
-	//Get read result before pushing read request into request queue
-	DataReadResponseBuf ResponseBuf;
-	memset(&ResponseBuf, 0, dwResponseBufSz);
-	ResponseBuf.lRequestId = pControlInfo->RepInfo.lRequestId;
-	lRet = GetReadResult(ResponseBuf.rdResult);
-	if (lRet != OK)
-	{
-		ResponseBuf.dwResult = lRet;
-		return lRet;
-	}
-
-	//********************************************************************
-	pRequest = (P_READ_REQUEST_ITEM)m_ReadRequestPool.Allocate();
-	pRequest->dwType = READQUEUE_TYPE_READDATA;
-	pRequest->lRequestId = pControlInfo->RepInfo.lRequestId;
-	pRequest->lDataLen = pControlInfo->RepInfo.ulTotalDataLen;
-	memcpy_s((void *)(pRequest->arrBlockInfo), dwBlockInfoSz*MAX_ENTRIES,
-		(void *)(pData + dwControlInfoSz), (*plSize - dwControlInfoSz));
-	pRequest->lBlockCount = ((*plSize - dwControlInfoSz) / dwBlockInfoSz);
-	m_ReadRequestQueue << pRequest;
-
-	//********************************************************************
-	*plSize = 12 + ResponseBuf.rdResult.dwCount * sizeof(SingleDataResult);
-	memcpy_s(pData, *plSize, &ResponseBuf, *plSize);
-	return OK;
-}
-
-//********************************************************************
-int CDataCloudRestore::GetReadResult(ReadDataResult &Result)
-{
-	int ret = OK;
-
-	//********************************************************************
-	//Clear read data queue2
-	int n = m_ReadDataQueue2.size();
-	for (int i = 0; i<n; i++)
-	{
-		P_READ_DATA_ITEM pReadDataItem = m_ReadDataQueue2.front();
-		m_ReadDataQueue2.pop();
-		m_ReadDataPool.Free(pReadDataItem);
-	}
-
-	//********************************************************************
-	//Handle read result
-	readresult_lock();
-	DWORD dwCount = m_readResult.dwCount;
-	for (DWORD i = 0; i<dwCount; i++)
-	{
-		if (m_readResult.arResult[i].dwResult != OK)
+		m_pQuePush = new Aws::Utils::Threading::Semaphore(nQueCapacity, nQueCapacity);
+		
+		if (nullptr == m_pQuePush)
 		{
-			ret = m_readResult.arResult[i].dwResult;
+			ret = -1;
 			break;
 		}
-	}
-	memcpy(&Result, &m_readResult, sizeof(ReadDataResult));
-	memset(&m_readResult, 0, sizeof(ReadDataResult));
-	//Handle read data
-	n = m_ReadDataQueue1.size();
-	for (int i = 0; i<n; i++)
-	{
-		P_READ_DATA_ITEM pReadDataItem = m_ReadDataQueue1.front();
-		m_ReadDataQueue1.pop();
-		m_ReadDataQueue2.push(pReadDataItem);
-	}
-	readresult_unlock();
+
+		m_pQuePop = new Aws::Utils::Threading::Semaphore(0, nQueCapacity);
+		if (nullptr == m_pQuePop)
+		{
+			ret = -1;
+			break;
+		}
+
+		m_nQueCapacity = nQueCapacity;
+
+	} while (false);
 
 	return ret;
 }
 
-//********************************************************************
-//Don't need lock to protect read data queue2 because only one thread will access it.
-int CDataCloudRestore::AsyncReadResult(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded)
+void AwsS3BackupQueue::pushTask(BackupQueueItem& item)
 {
-	int lRet = OK;
-	int lRequestId = 0;
-
-	memcpy(&lRequestId, pData, sizeof(int));
-
-	//********************************************************************
-	//Check buf space
-	if (dwBufSize < QBUF_DATA_LEN)
+	m_pQuePush->WaitOne();
+	
 	{
-		*pdwBufSizeNeeded = QBUF_DATA_LEN;
-		return NOT_ENOUGH_MEMORY;
+		std::lock_guard<std::mutex> locker(m_queueLock);
+		m_taskQ.push(item);
 	}
 
-	//********************************************************************
-	//Check read data queue2
-	if (m_ReadDataQueue2.size() == 0)
-	{
-		WriteLogID(1, L"%s:: Read data queue2 is empty. RequestId=%d",
-			__FUNCTIONW__, lRequestId);
-		return OPERATION_NOT_ALLOWED;
-	}
-
-	//********************************************************************
-	//Check requestid
-	P_READ_DATA_ITEM pReadDataItem = m_ReadDataQueue2.front();
-	m_ReadDataQueue2.pop();
-	if (pReadDataItem->lRequestId != lRequestId)
-	{
-		WriteLogID(1, L"%s:: Mismatched requestid[%d:%d]",
-			__FUNCTIONW__, lRequestId, pReadDataItem->lRequestId);
-		m_ReadDataPool.Free(pReadDataItem);
-		return OPERATION_NOT_ALLOWED;
-	}
-
-	//********************************************************************
-	*plSize = pReadDataItem->lBlockCount*m_dwBlockSizeForDataSvr;
-	memcpy_s(pData, dwBufSize, pReadDataItem->DataBuf, *plSize);
-	m_ReadDataPool.Free(pReadDataItem);
-	return OK;
+	m_pQuePop->Release();
 }
 
-//********************************************************************
-int CDataCloudRestore::AsyncReadFlush(char* pData, int * plSize, DWORD dwBufSize, DWORD *pdwBufSizeNeeded)
+
+
+BackupQueueItem AwsS3BackupQueue::popTask()
 {
-	int lRet = OK;
-	DWORD dwResponseBufSz = sizeof(DataReadResponseBuf);
-
-	//********************************************************************
-	//Check buffer space
-	if (dwBufSize < dwResponseBufSz)
+	BackupQueueItem t;
+	m_pQuePop->WaitOne();
 	{
-		*pdwBufSizeNeeded = dwResponseBufSz;
-		return NOT_ENOUGH_MEMORY;
+		std::lock_guard<std::mutex> locker(m_queueLock);
+		t = m_taskQ.front();
+		m_taskQ.pop();
 	}
+	m_pQuePush->Release();
 
-	//********************************************************************
-	//Notify read thread to read data
-	P_READ_REQUEST_ITEM pRequest = (P_READ_REQUEST_ITEM)m_ReadRequestPool.Allocate();
-	pRequest->dwType = READQUEUE_TYPE_FLUSH;
-	m_ReadRequestQueue << pRequest;
-
-	//********************************************************************
-	//Wait read thread to read data
-	DWORD dwWaitResult = WaitForSingleObject(m_hAsyncReadEvent, INFINITE);
-	if (dwWaitResult != WAIT_OBJECT_0)
-	{
-		WriteLogID(1, L"%s:: WaitForSingleObject failed [%d]. EC=%d",
-			__FUNCTIONW__, dwWaitResult, GetLastError());
-		return SYS_INVOKE_ERROR;
-	}
-
-	//********************************************************************
-	//Get read result
-	DataReadResponseBuf ResponseBuf;
-	memset(&ResponseBuf, 0, dwResponseBufSz);
-	lRet = GetReadResult(ResponseBuf.rdResult);
-	if (lRet != OK)
-	{
-		ResponseBuf.dwResult = lRet;
-		return lRet;
-	}
-
-	//********************************************************************
-	*plSize = 12 + ResponseBuf.rdResult.dwCount * sizeof(SingleDataResult);
-	memcpy_s(pData, *plSize, &ResponseBuf, *plSize);
-	return OK;
+	return t;
 }
 
-//********************************************************************
-DWORD CDataCloudRestore::AsyncReadThreadImpl(void)
+///////////////////////////////////////////////////////////////////////////////////
+
+AwsS3BackupExecutor::AwsS3BackupExecutor()
 {
-	int lRet = OK;
 
-	BOOL bMultiThread = FALSE;
-	if (g_serverConfigInfo.m_dwThreadNumberForDataRequest > 1)
+}
+
+AwsS3BackupExecutor::~AwsS3BackupExecutor()
+{
+	g_GDDOSILog.WriteLogA(1, "Destruct the Backup Executor!");
+	for (int i = 0; i < m_vTaskThreads.size(); ++i)
 	{
-		lRet = InitDataRoleMultiThreadReader(g_serverConfigInfo.m_dwThreadNumberForDataRequest);
-		if (OK != lRet)
-		{
-			WriteLogID(1, L"%s:%d, ERROR, Creating MultiThreadDataReader failed EC=[%d].", __FUNCTIONW__, __LINE__, lRet);
-		}
-		else
-		{
-			bMultiThread = TRUE;
-		}
+		BackupQueueItem item;
+		item.m_nCmd = BACKUP_EXIT;
+		item.m_pTask = NULL;
+		m_BackupTaskQueue.pushTask(item);
 	}
-
-	while (true)
+	for (int i = 0; i < m_vTaskThreads.size(); ++i)
 	{
-		//********************************************************************
-		void* p = NULL;
-		m_ReadRequestQueue >> p;
-		P_READ_REQUEST_ITEM pRequest = (P_READ_REQUEST_ITEM)p;
+		m_vTaskThreads[i]->join();
+	}
+}
 
-		//********************************************************************
-		if (pRequest->dwType == READQUEUE_TYPE_READDATA)
+int AwsS3BackupExecutor::InitBackupExecutor(int nQueSize)
+{
+	int ret = 0;
+
+	do 
+	{
+		ret = m_BackupTaskQueue.InitBackupQue(nQueSize);
+		if (0 != ret)
 		{
-			P_READ_DATA_ITEM pData = (P_READ_DATA_ITEM)m_ReadDataPool.Allocate();
-
-			bool bAcquiredLock = false;
-
-			if (AcquireDiskLock())
-			{
-				bAcquiredLock = true;
-			}
-			if (FALSE == bMultiThread)
-			{
-				lRet = _ReadData(pRequest, pData);
-			}
-			else
-			{
-				lRet = _ReadDataWithMultiThread(pRequest, pData);
-			}
-			//lRet = _ReadData(pRequest, pData);
-			if (bAcquiredLock)
-			{
-				ReleaseDiskLock();
-			}
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: _ReadData() failed. RequestId=%d, EC=%d",
-					__FUNCTIONW__, pRequest->lRequestId, lRet);
-			}
-
-			AddOneReadResult(pRequest, lRet, pData);
-			m_ReadRequestPool.Free(pRequest);
-		}
-
-		//********************************************************************
-		else if (pRequest->dwType == READQUEUE_TYPE_FLUSH)
-		{
-			m_ReadRequestPool.Free(pRequest);
-			SetEvent(m_hAsyncReadEvent);
-		}
-
-		//********************************************************************
-		else if (pRequest->dwType == READQUEUE_TYPE_QUIT)
-		{
-			m_ReadRequestPool.Free(pRequest);
 			break;
 		}
-
-	} //while
-	return lRet;
+		for (int i = 0; i < nQueSize; ++i)
+		{
+			std::thread* pT = new std::thread(std::bind(&AwsS3BackupExecutor::TaskExecutorFuncImpl, this));
+			m_vTaskThreads.push_back(pT);
+		}
+	} while (false);
+	
+	return ret;
 }
 
-//********************************************************************
-int CDataCloudRestore::_ReadData(P_READ_REQUEST_ITEM pRequest, P_READ_DATA_ITEM pData)
+bool AwsS3BackupExecutor::SubmitToThread(std::function<void()>&& fn)
 {
-	int lRet = OK;
-	PDATABLOCKINFOPKT pBlockInfo = NULL;
-	int lBlockCount = 0;
-	int lDataLenToRead = 0;
-	int lDataLenRead = 0;
-	char *pDataBuf = NULL;
-	DWORD dwRead = 0;
-	int i = 0;
+	std::function<void()>* pfTask = new std::function<void()>();
+	*pfTask = fn;
+	
+	BackupQueueItem item;
+	item.m_nCmd		= BACKUP_DO_TASK;
+	item.m_pTask	= pfTask;
+	m_BackupTaskQueue.pushTask(item);
 
-	//********************************************************************
-	//Check parameters
-	if (!pRequest || !pData)
-	{
-		WriteLogID(1, L"%s:: Invalid parameters.", __FUNCTIONW__);
-		return INVALID_PARAMETER;
-	}
-
-	//********************************************************************
-	lDataLenToRead = pRequest->lDataLen;
-	lBlockCount = pRequest->lBlockCount;
-	pBlockInfo = pRequest->arrBlockInfo;
-	pDataBuf = pData->DataBuf;
-	if (lDataLenToRead == 0) //no data to read
-	{
-		return OK;
-	}
-	if (lBlockCount > QBUF_DATA_LEN / m_dwBlockSizeForDataSvr)
-	{
-		WriteLogID(1, L"%s:: Data buf is not big enough. lBlockCount[%d], BufSize[%d], BlockSize[%d]",
-			__FUNCTIONW__, lBlockCount, QBUF_DATA_LEN, m_dwBlockSizeForDataSvr);
-		return INVALID_PARAMETER;
-	}
-
-	//********************************************************************
-	if (m_nReadBufferSize < QBUF_DATA_LEN)
-	{
-		if (m_pReadBuffer)
-		{
-			delete[] m_pReadBuffer;
-			m_pReadBuffer = NULL;
-			m_nReadBufferSize = 0;
-		}
-		m_pReadBuffer = new char[QBUF_DATA_LEN];
-		if (m_pReadBuffer == NULL)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-			return NOT_ENOUGH_MEMORY;
-		}
-		m_nReadBufferSize = QBUF_DATA_LEN;
-	}
-
-	//********************************************************************
-	READ_LIST BlockInfoList;
-	DATABLOCKOPTI Block;
-	lDataLenRead = 0;
-	for (i = 0; i<lBlockCount; i++)
-	{
-		UINT64 Ind = 0, temp;
-		temp = pBlockInfo[i].ulFileNo;
-		Ind |= temp << 48;
-		temp = pBlockInfo[i].uiSliceID;
-		Ind |= temp << 32;
-		temp = pBlockInfo[i].uiSliceOffset;
-		Ind |= temp;
-		if (BlockInfoList.find(Ind) != BlockInfoList.end())
-		{
-			Ind += i % 1024;
-		}
-		Block.pDataBlockInfo = pBlockInfo + i;
-		Block.pBuffer = pDataBuf + lDataLenRead;
-		//lDataLenRead += pBlockInfo[i].lDataLen;
-		lDataLenRead += m_dwBlockSizeForDataSvr;
-		BlockInfoList[Ind] = Block;
-	}
-
-	//********************************************************************
-	++m_ullReadDataFileTimes;
-	if (lBlockCount == BlockInfoList.size())
-	{
-		lDataLenRead = 0;
-		pDataBuf = pData->DataBuf;
-		READ_LIST_PTR FirstPtr, Ptr;
-		FirstPtr = BlockInfoList.begin();
-		Ptr = BlockInfoList.begin();
-
-		while (FirstPtr != BlockInfoList.end())
-		{
-			ULONG DataLen = FirstPtr->second.pDataBlockInfo->lDataLen;
-			ULONG FileNo = FirstPtr->second.pDataBlockInfo->ulFileNo;
-			ULONG SliceID = FirstPtr->second.pDataBlockInfo->uiSliceID;
-			ULONG SliceOffset = FirstPtr->second.pDataBlockInfo->uiSliceOffset;
-
-			Ptr++;
-			while (Ptr != BlockInfoList.end())
-			{
-				ULONG DataLen2 = Ptr->second.pDataBlockInfo->lDataLen;
-				ULONG FileNo2 = Ptr->second.pDataBlockInfo->ulFileNo;
-				ULONG SliceID2 = Ptr->second.pDataBlockInfo->uiSliceID;
-				ULONG SliceOffset2 = Ptr->second.pDataBlockInfo->uiSliceOffset;
-
-				if (FileNo == FileNo2 && SliceID == SliceID2 && SliceOffset + DataLen == SliceOffset2)
-				{
-					DataLen += DataLen2;
-					Ptr++;
-				}
-				else break;
-			}
-
-			//********************************************************************
-			dwRead = 0;
-			m_TimerReadData.StartTimer();
-			lRet = m_DataFile.ReadData(
-				FileNo,
-				SliceID,
-				SliceOffset,
-				DataLen,
-				m_pReadBuffer,
-				m_nReadBufferSize,
-				&dwRead);
-			m_TimerReadData.EndTimer();
-
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: m_DataFile.ReadData() ret[%d]. "
-					L"fileNumber=%d, "
-					L"SliceId=%d, "
-					L"SliceOffset=%d, "
-					L"dataToRead=%d "
-					L"dataRead=%d",
-					__FUNCTIONW__, lRet, FileNo, SliceID,
-					SliceOffset, DataLen, dwRead);
-				break;
-			}
-
-			//********************************************************************
-			ULONG Copied = 0;
-			while (FirstPtr != Ptr && FirstPtr != BlockInfoList.end())
-			{
-				memcpy(FirstPtr->second.pBuffer, m_pReadBuffer + Copied, FirstPtr->second.pDataBlockInfo->lDataLen);
-				Copied += FirstPtr->second.pDataBlockInfo->lDataLen;
-				FirstPtr++;
-			}
-			lDataLenRead += dwRead;
-		}//while
-	}
-	else
-	{
-		//********************************************************************
-		lDataLenRead = 0;
-		pDataBuf = pData->DataBuf;
-		for (i = 0; i<lBlockCount; i++)
-		{
-			//********************************************************************
-			dwRead = 0;
-			m_TimerReadData.StartTimer();
-			lRet = m_DataFile.ReadData(pBlockInfo[i].ulFileNo,
-				pBlockInfo[i].uiSliceID,
-				pBlockInfo[i].uiSliceOffset,
-				pBlockInfo[i].lDataLen,
-				pDataBuf + i*m_dwBlockSizeForDataSvr,
-				QBUF_DATA_LEN - i*m_dwBlockSizeForDataSvr,
-				&dwRead);
-			m_TimerReadData.EndTimer();
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: m_DataFile.ReadData() return %d. "
-					L"fileNumber=%d, "
-					L"SliceId=%d, "
-					L"SliceOffset=%d, "
-					L"dataToRead=%d "
-					L"dataRead=%d",
-					__FUNCTIONW__, lRet,
-					pBlockInfo[i].ulFileNo,
-					pBlockInfo[i].uiSliceID,
-					pBlockInfo[i].uiSliceOffset,
-					pBlockInfo[i].lDataLen,
-					dwRead);
-				break;
-			}
-			lDataLenRead += dwRead;
-		}//for
-	}
-	BlockInfoList.clear();
-
-	//********************************************************************
-	if (lDataLenRead != lDataLenToRead && lRet != READ_DATA_REACH_EOF)
-	{
-		WriteLogID(1, L"%s:: data to read mismatch with data read. toRead=%d, Read=%d",
-			__FUNCTIONW__, lDataLenToRead, lDataLenRead);
-		return READ_DATA_FAILED;
-	}
-	pData->lRequestId = pRequest->lRequestId;
-	pData->lDataLen = lDataLenRead;
-	pData->lBlockCount = lBlockCount;
-	return OK;
+	return true;
 }
 
-int CDataCloudRestore::_ReadDataWithMultiThread(P_READ_REQUEST_ITEM pRequest, P_READ_DATA_ITEM pData)
+
+void AwsS3BackupExecutor::TaskExecutorFuncImpl()
 {
-	int lRet = OK;
-	PDATABLOCKINFOPKT pBlockInfo = NULL;
-	int lBlockCount = 0;
-	int lDataLenToRead = 0;
-	int lDataLenRead = 0;
-	char *pDataBuf = NULL;
-	DWORD dwRead = 0;
-	int i = 0;
-
-	//********************************************************************
-	//Check parameters
-	if (!pRequest || !pData)
+	g_GDDOSILog.WriteLogA(1, "Upload thread:[%d] is started.", GetCurrentThreadId());
+	while (1)
 	{
-		WriteLogID(1, L"%s:: Invalid parameters.", __FUNCTIONW__);
-		return INVALID_PARAMETER;
-	}
-
-	//********************************************************************
-	lDataLenToRead = pRequest->lDataLen;
-	lBlockCount = pRequest->lBlockCount;
-	pBlockInfo = pRequest->arrBlockInfo;
-	pDataBuf = pData->DataBuf;
-	if (lDataLenToRead == 0) //no data to read
-	{
-		return OK;
-	}
-	if (lBlockCount > QBUF_DATA_LEN / m_dwBlockSizeForDataSvr)
-	{
-		WriteLogID(1, L"%s:: Data buf is not big enough. lBlockCount[%d], BufSize[%d], BlockSize[%d]",
-			__FUNCTIONW__, lBlockCount, QBUF_DATA_LEN, m_dwBlockSizeForDataSvr);
-		return INVALID_PARAMETER;
-	}
-
-	//********************************************************************
-	if (m_nReadBufferSize < QBUF_DATA_LEN)
-	{
-		if (m_pReadBuffer)
+		BackupQueueItem item = m_BackupTaskQueue.popTask();
+		if (BACKUP_DO_TASK == item.m_nCmd)
 		{
-			delete[] m_pReadBuffer;
-			m_pReadBuffer = NULL;
-			m_nReadBufferSize = 0;
-		}
-		m_pReadBuffer = new char[QBUF_DATA_LEN];
-		if (m_pReadBuffer == NULL)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail.", __FUNCTIONW__);
-			return NOT_ENOUGH_MEMORY;
-		}
-		m_nReadBufferSize = QBUF_DATA_LEN;
-	}
-
-	//********************************************************************
-	READ_LIST BlockInfoList;
-	DATABLOCKOPTI Block;
-	lDataLenRead = 0;
-	for (i = 0; i<lBlockCount; i++)
-	{
-		UINT64 Ind = 0, temp;
-		temp = pBlockInfo[i].ulFileNo;
-		Ind |= temp << 48;
-		temp = pBlockInfo[i].uiSliceID;
-		Ind |= temp << 32;
-		temp = pBlockInfo[i].uiSliceOffset;
-		Ind |= temp;
-		if (BlockInfoList.find(Ind) != BlockInfoList.end())
-		{
-			Ind += i % 1024;
-		}
-		Block.pDataBlockInfo = pBlockInfo + i;
-		Block.pBuffer = pDataBuf + lDataLenRead;
-		//lDataLenRead += pBlockInfo[i].lDataLen;
-		lDataLenRead += m_dwBlockSizeForDataSvr;
-		BlockInfoList[Ind] = Block;
-	}
-
-	if (m_pMultiThreadDataReader->ReInit(lBlockCount) != OK)
-	{
-		WriteLogID(1, L"%s:%d, ERROR, ReInit multi thread reader fail, use original reading method.", __FUNCTIONW__, __LINE__);
-		return _ReadData(pRequest, pData);
-	}
-	if (m_pMultiThreadDataReader->GetThreadsState() == AllDead)
-	{
-		WriteLogID(1, L"%s:%d, ERROR, no worker thread running, use original reading method.", __FUNCTIONW__, __LINE__);
-		return _ReadData(pRequest, pData);
-	}
-
-	//********************************************************************
-	++m_ullReadDataFileTimes;
-	unsigned __int64 ullDataOffsetInResponseBuffer = 0;
-	if (lBlockCount == BlockInfoList.size())
-	{
-		lDataLenRead = 0;
-		pDataBuf = pData->DataBuf;
-		READ_LIST_PTR FirstPtr, Ptr;
-		FirstPtr = BlockInfoList.begin();
-		//Ptr = BlockInfoList.begin();
-
-		m_TimerReadData.StartTimer();
-		while (FirstPtr != BlockInfoList.end())
-		{
-			ULONG DataLen = FirstPtr->second.pDataBlockInfo->lDataLen;
-			ULONG FileNo = FirstPtr->second.pDataBlockInfo->ulFileNo;
-			ULONG SliceID = FirstPtr->second.pDataBlockInfo->uiSliceID;
-			ULONG SliceOffset = FirstPtr->second.pDataBlockInfo->uiSliceOffset;
-
-			FirstPtr++;
-			while (FirstPtr != BlockInfoList.end())
-			{
-				ULONG DataLen2 = FirstPtr->second.pDataBlockInfo->lDataLen;
-				ULONG FileNo2 = FirstPtr->second.pDataBlockInfo->ulFileNo;
-				ULONG SliceID2 = FirstPtr->second.pDataBlockInfo->uiSliceID;
-				ULONG SliceOffset2 = FirstPtr->second.pDataBlockInfo->uiSliceOffset;
-
-				if (FileNo == FileNo2 && SliceID == SliceID2 && SliceOffset + DataLen == SliceOffset2)
-				{
-					DataLen += DataLen2;
-					FirstPtr++;
-				}
-				else break;
-			}
-
-			//********************************************************************
-			dwRead = 0;
-			{
-				ReadDataIOInfo *pRequestInfo = m_pMultiThreadDataReader->GetReadDataIOInfo();
-				pRequestInfo->request.DataRequest.ulFileNo = FileNo;
-				pRequestInfo->request.DataRequest.ulSliceID = SliceID;
-				pRequestInfo->request.DataRequest.ulSliceOffset = SliceOffset;
-				pRequestInfo->request.DataRequest.ulDataToRead = DataLen;
-				pRequestInfo->request.DataRequest.pDataBuf = m_pReadBuffer + ullDataOffsetInResponseBuffer;
-				pRequestInfo->request.DataRequest.ulDataRead = DataLen;
-
-				LARGE_INTEGER llSliceNumber;
-				llSliceNumber.HighPart = FileNo;
-				llSliceNumber.LowPart = SliceID;
-
-				m_pMultiThreadDataReader->AddRequest(pRequestInfo, llSliceNumber.QuadPart);
-				ullDataOffsetInResponseBuffer += DataLen;
-
-				//WriteLogID(1, L"jerry, ===, multi sync data, %d, %d, %d, %d, %d.", requestCount, mIterStart->first.ui32DataFileNumber,
-				//	mIterStart->first.ui32DataSliceID, mIterStart->first.ui32DataSliceOffset, dwToRead);
-			}
-
-		}//while
-
-		m_pMultiThreadDataReader->SetFinishedPuttingRequest();
-		m_pMultiThreadDataReader->WaitForRequestFinished();
-		m_TimerReadData.EndTimer();
-		if (m_pMultiThreadDataReader->HasError())
-		{
-			DWORD dwErr = READ_DATA_FAILED;
-			WriteLogID(1, L"%s:%d, ERROR, read data failed, EC=[%d].", __FUNCTIONW__, __LINE__, dwErr);
-			return READ_DATA_FAILED;
-		}
-
-		//********************************************************************
-		FirstPtr = BlockInfoList.begin();
-		ULONG Copied = 0;
-
-		while (FirstPtr != BlockInfoList.end())
-		{
-			memcpy(FirstPtr->second.pBuffer, m_pReadBuffer + Copied, FirstPtr->second.pDataBlockInfo->lDataLen);
-			Copied += FirstPtr->second.pDataBlockInfo->lDataLen;
-			FirstPtr++;
-		}
-		lDataLenRead = Copied;
-	}
-	else
-	{
-		//********************************************************************
-		lDataLenRead = 0;
-		pDataBuf = pData->DataBuf;
-		for (i = 0; i<lBlockCount; i++)
-		{
-			//********************************************************************
-			dwRead = 0;
-			m_TimerReadData.StartTimer();
-			lRet = m_DataFile.ReadData(pBlockInfo[i].ulFileNo,
-				pBlockInfo[i].uiSliceID,
-				pBlockInfo[i].uiSliceOffset,
-				pBlockInfo[i].lDataLen,
-				pDataBuf + i*m_dwBlockSizeForDataSvr,
-				QBUF_DATA_LEN - i*m_dwBlockSizeForDataSvr,
-				&dwRead);
-			m_TimerReadData.EndTimer();
-			if (lRet != OK)
-			{
-				WriteLogID(1, L"%s:: m_DataFile.ReadData() return %d. "
-					L"fileNumber=%d, "
-					L"SliceId=%d, "
-					L"SliceOffset=%d, "
-					L"dataToRead=%d "
-					L"dataRead=%d",
-					__FUNCTIONW__, lRet,
-					pBlockInfo[i].ulFileNo,
-					pBlockInfo[i].uiSliceID,
-					pBlockInfo[i].uiSliceOffset,
-					pBlockInfo[i].lDataLen,
-					dwRead);
-				break;
-			}
-			lDataLenRead += dwRead;
-		}//for
-	}
-	BlockInfoList.clear();
-
-	//********************************************************************
-	if (lDataLenRead != lDataLenToRead && lRet != READ_DATA_REACH_EOF)
-	{
-		WriteLogID(1, L"%s:: data to read mismatch with data read. toRead=%d, Read=%d",
-			__FUNCTIONW__, lDataLenToRead, lDataLenRead);
-		return READ_DATA_FAILED;
-	}
-	pData->lRequestId = pRequest->lRequestId;
-	pData->lDataLen = lDataLenRead;
-	pData->lBlockCount = lBlockCount;
-	return OK;
-}
-
-//********************************************************************
-int CDataCloudRestore::AddOneReadResult(P_READ_REQUEST_ITEM pRequest, int lResult, P_READ_DATA_ITEM pData)
-{
-	int ret = OK;
-
-	//********************************************************************
-	readresult_lock();
-	DWORD dwCount = m_readResult.dwCount;
-	m_readResult.arResult[dwCount].lRequestId = pRequest->lRequestId;
-	m_readResult.arResult[dwCount].dwResult = lResult;
-	m_readResult.dwCount++;
-	if (lResult == OK && pRequest->lDataLen)
-	{
-		m_ReadDataQueue1.push(pData);
-	}
-	readresult_unlock();
-
-	//********************************************************************
-	if (lResult != OK || pRequest->lDataLen == 0)
-	{
-		m_ReadDataPool.Free(pData);
-	}
-	return OK;
-}
-
-int CDataCloudRestore::InitDataRoleMultiThreadReader(INT32 nThreadCount)
-{
-	int iRet = OK;
-	if (m_pMultiThreadDataReader == NULL)
-	{
-		m_pMultiThreadDataReader = new MultiThreadFileReader<CDataFile>();
-		if (!m_pMultiThreadDataReader)
-		{
-			DWORD dwErr = GetLastError();
-			WriteLogID(1, L"%s:%d, ERROR, Creating multi thread reader fail. EC=[%d]", __FUNCTIONW__, __LINE__, dwErr);
-			iRet = dwErr;
+			(*item.m_pTask)();
+			delete (item.m_pTask);
 		}
 		else
 		{
-
-			m_pMultiThreadDataReader->SetRealReader(&m_DataFile);
-			m_pMultiThreadDataReader->SetWorkerThreadCount(nThreadCount);
-			iRet = m_pMultiThreadDataReader->Init(READ_DATA_MAX_ENTRIES);
-			if (OK != iRet)
-			{
-				WriteLogID(1, L"%s:%d, ERROR, Init multi thread reader fail. EC=[%d]", __FUNCTIONW__, __LINE__, iRet);
-			}
+			break;
 		}
 	}
+	g_GDDOSILog.WriteLogA(1, "Upload thread:[%d] is existed.", GetCurrentThreadId());
 
-	return iRet;
 }
 
-int CDataCloudRestore::InitIndexRoleMultiThreadReader(INT32 nThreadCountForIndex, INT32 nThreadCountForRef)
+
+///////////////////////////////////////////////////////////////////////////////////
+
+Aws::SDKOptions AwsS3Store::m_Options;
+
+static Aws::String FormatRangeSpecifier(std::size_t rangeStart, std::size_t rangeEnd)
 {
-	int iRet = OK;
-	do
-	{
-		if (NULL == m_pIndexFileEx)
-		{
-			m_pIndexFileEx = new CIndexFileEx();
-			if (!m_pIndexFileEx)
-			{
-				DWORD dwErr = GetLastError();
-				WriteLogID(1, L"%s:%d, ERROR, Create CIndexFileEx failed for path %s, EC=[%d].", __FUNCTIONW__, __LINE__, m_szIndexPath, dwErr);
-				iRet = dwErr;
-				break;
-			}
-			m_pIndexFileEx->SetPath(m_szIndexPath);
-		}
-
-		if (NULL == m_pMultiThreadIndexReader)
-		{
-			m_pMultiThreadIndexReader = new MultiThreadFileReader<CIndexFileEx>();
-			if (!m_pMultiThreadIndexReader)
-			{
-				DWORD dwErr = GetLastError();
-				WriteLogID(1, L"%s:%d, ERROR, Creating multi thread index reader fail. EC=[%d].", __FUNCTIONW__, __LINE__, dwErr);
-				iRet = dwErr;
-				break;
-			}
-			else
-			{
-				m_pMultiThreadIndexReader->SetRealReader(m_pIndexFileEx);
-				m_pMultiThreadIndexReader->SetWorkerThreadCount(nThreadCountForIndex);
-				iRet = m_pMultiThreadIndexReader->Init(READ_DATA_MAX_ENTRIES);
-				if (0 != iRet)
-				{
-					WriteLogID(1, L"%s:%d, ERROR, Init multi thread index reader fail. EC=[%d]", __FUNCTIONW__, __LINE__, iRet);
-					break;
-				}
-				else
-				{
-					WriteLogID(1, L"%s:%d, INFO, Init multi thread index reader succeed.", __FUNCTIONW__, __LINE__);
-				}
-			}
-		}
-
-		if (NULL == m_pMultiThreadRefReader)
-		{
-			m_pMultiThreadRefReader = new MultiThreadFileReader<CRefFile>();
-			if (!m_pMultiThreadRefReader)
-			{
-				DWORD dwErr = GetLastError();
-				WriteLogID(1, L"%s:%d, ERROR, Creating multi thread ref reader fail. EC=[%d]", __FUNCTIONW__, __LINE__, dwErr);
-				iRet = dwErr;
-				break;
-			}
-			else
-			{
-				m_pMultiThreadRefReader->SetRealReader(&m_RefFile);
-				m_pMultiThreadRefReader->SetWorkerThreadCount(nThreadCountForRef);
-				iRet = m_pMultiThreadRefReader->Init(READ_DATA_MAX_ENTRIES);
-				if (0 != iRet)
-				{
-					WriteLogID(1, L"%s:%d, ERROR, Init multi thread ref reader fail. EC=[%d]", __FUNCTIONW__, __LINE__, iRet);
-					break;
-				}
-				else
-				{
-					WriteLogID(1, L"%s:%d, INFO, Init multi thread ref reader succeed.", __FUNCTIONW__, __LINE__);
-				}
-			}
-		}
-	} while (FALSE);
-
-	return iRet;
+	Aws::StringStream rangeStream;
+	rangeStream << "bytes=" << rangeStart << "-" << rangeEnd;
+	return rangeStream.str();
 }
 
-int CDataCloudRestore::InitReadBuffer(UINT64 ullTotalDataToRead)
+AwsS3Store::AwsS3Store()
 {
-	int iRet = OK;
-	//********************************************************************
-	//Check m_pReadBuffer
-	if (m_nReadBufferSize < ullTotalDataToRead)
-	{
-		if (m_pReadBuffer)
-		{
-			delete[] m_pReadBuffer; m_pReadBuffer = NULL;
-		}
-		m_nReadBufferSize = 0;
-		m_pReadBuffer = new char[ullTotalDataToRead];
-		if (m_pReadBuffer == NULL)
-		{
-			CServerStatus::GetInst().SetError(ERR_NO_MEMORY);
-			WriteLogID(1, L"%s alloc memory fail. Len[%d]. EC[%d]",
-				__FUNCTIONW__, ullTotalDataToRead, GetLastError());
-			return NOT_ENOUGH_MEMORY;
-		}
-		m_nReadBufferSize = ullTotalDataToRead;
-	}
-
-	return iRet;
+	m_s3Client = NULL;
 }
 
-int CDataCloudRestore::InitBlockInfo3List(char* pData, int * plSize, DWORD &dwBlockCount)
+AwsS3Store::~AwsS3Store()
 {
-	int iRet = OK;
-	if (!pData || !plSize)
+	if (m_s3Client)
 	{
-		WriteLogID(1, L"%s:%d, ERROR, Invalid parameters.", __FUNCTIONW__, __LINE__);
-		return INVALID_PARAMETER;
+		delete m_s3Client;
 	}
-
-	//********************************************************************
-	//Cache blockinfo3 list
-	dwBlockCount = (*plSize - 8);
-	dwBlockCount /= sizeof(GDDBLOCKINFO_3);
-	if (!m_pBlockInfo3List || m_dwBlockInfo3Len < dwBlockCount)
-	{
-		if (m_pBlockInfo3List) delete[] m_pBlockInfo3List;
-		m_pBlockInfo3List = new GDDBLOCKINFO_3[dwBlockCount];
-		if (!m_pBlockInfo3List)
-		{
-			WriteLogID(1, L"%s:%d, ERROR, Failed to allocate BlockInfo3 list. Len=%d, EC=[%d]",
-				__FUNCTIONW__, __LINE__, dwBlockCount, GetLastError());
-			return NOT_ENOUGH_MEMORY;
-		}
-		m_dwBlockInfo3Len = dwBlockCount;
-	}
-	memcpy(m_pBlockInfo3List, pData + 8, (*plSize - 8));
-	return iRet;
 }
 
-#endif //GDD_REPLICATION_OPTIMIZATION
+int AwsS3Store::InitCloudStoreContext()
+{
+	int ret = 0;
+	m_Options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
+	Aws::InitAPI(m_Options);
+	return ret;
+}
+
+int AwsS3Store::DeInitCloudStoreContext()
+{
+	int ret = 0;
+	Aws::ShutdownAPI(m_Options);
+	return ret;
+}
+
+
+int	  AwsS3Store::SetCloudInfo(CloudStoreConfigInfo& cloudAccessInfo)
+{
+	int ret = 0;
+	if (nullptr != cloudAccessInfo.m_szRegion)
+	{
+		m_strRegion = cloudAccessInfo.m_szRegion;
+	}
+	if (nullptr != cloudAccessInfo.m_szBucket)
+	{
+		m_strBucket = cloudAccessInfo.m_szBucket;
+	}
+	if (nullptr != cloudAccessInfo.m_szAccessKey)
+	{
+		m_strAccessKey = cloudAccessInfo.m_szAccessKey;
+	}
+	if (nullptr != cloudAccessInfo.m_szAccessID)
+	{
+		m_strAccessID = cloudAccessInfo.m_szAccessID;
+	}
+	m_nMaxReadBytesPerRead = cloudAccessInfo.m_maxBytesPerRead;
+
+	m_UniqueDataBuf.reset(new Aws::Utils::Array<unsigned char>(m_nMaxReadBytesPerRead));
+
+	m_cloudStoreInfo = cloudAccessInfo;
+	ret = CreateCloudClient();
+
+	return ret;
+}
+
+string AwsS3Store::GetRegion()
+{
+	return m_strRegion;
+}
+
+string AwsS3Store::GetBucket()
+{
+	return m_strBucket;
+}
+
+string AwsS3Store::GetAccessId()
+{
+	return m_strAccessID;
+}
+
+string AwsS3Store::GetAccessKey()
+{
+	return m_strAccessKey;
+}
+
+int AwsS3Store::CreateCloudClient()
+{
+	int ret = 0;
+
+	Aws::Client::ClientConfiguration clientconfig;
+	Aws::Auth::AWSCredentials clientcredential;
+	clientcredential.SetAWSSecretKey(m_strAccessKey);
+	clientcredential.SetAWSAccessKeyId(m_strAccessID);
+	clientconfig.region = m_strRegion;
+	clientconfig.connectTimeoutMs = 180000;
+	clientconfig.requestTimeoutMs = 300000;
+	if (m_cloudStoreInfo.m_nUploadThreadCount)
+	{
+		shared_ptr<AwsS3BackupExecutor> p = std::make_shared<AwsS3BackupExecutor>();
+		p->InitBackupExecutor(m_cloudStoreInfo.m_nUploadThreadCount);
+		clientconfig.executor = p;
+	}
+	m_s3Client = new Aws::S3::S3Client(clientcredential, clientconfig);
+
+	return ret;
+}
+
+int AwsS3Store::WriteObject(CloudStoreWriteObjectContext& cloudWriteObjContext)
+{
+	int ret = 0;
+
+	Aws::Client::ClientConfiguration clientconfig;
+	Aws::Auth::AWSCredentials clientcredential;
+
+
+	Aws::S3::Model::PutObjectRequest putObjectReq;
+	putObjectReq.WithBucket(cloudWriteObjContext.m_szBucket).WithKey(cloudWriteObjContext.m_OID);
+	Aws::Utils::Array<unsigned char> databuf((unsigned char*)cloudWriteObjContext.m_pBuf, cloudWriteObjContext.m_nWriteBytes);
+	Aws::Utils::Stream::PreallocatedStreamBuf streamData(&databuf, databuf.GetLength());
+	auto preallocatedStreamReader = Aws::MakeShared<Aws::IOStream>("preallocatedStreamReader", &streamData);
+	putObjectReq.SetBody(preallocatedStreamReader);
+
+	Aws::S3::Model::PutObjectOutcome putObjectOutcome = m_s3Client->PutObject(putObjectReq);
+	if (!putObjectOutcome.IsSuccess())
+	{
+		ret = (int)putObjectOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "region:[%s], bucket:[%s] put object:[%s] failed.", m_strRegion.c_str(), m_strBucket.c_str(), cloudWriteObjContext.m_OID);
+		g_GDDOSILog.WriteLogA(1, "[%s],EC:[%d].", putObjectOutcome.GetError().GetMessage().c_str(), ret);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::ReadObject(CloudStoreReadObjectContext& cloudReadObjContext)
+{
+	int ret = 0;
+	long long nSize = 0;
+
+	GetObjectRequest   getObjectReq;
+	getObjectReq.WithBucket(cloudReadObjContext.m_szBucket).WithKey(cloudReadObjContext.m_OID).
+		WithRange(FormatRangeSpecifier(cloudReadObjContext.m_nStart, cloudReadObjContext.m_nEnd));
+
+	//Aws::Utils::Array<unsigned char> databuf(cloudReadObjContext.readLen);
+	CreateDownloadStreamCallback responseStreamFunction = [&]()
+	{
+		auto bufferStream = Aws::New<Aws::Utils::Stream::DefaultUnderlyingStream>("",
+			Aws::MakeUnique<Aws::Utils::Stream::PreallocatedStreamBuf>("", this->m_UniqueDataBuf.get(), cloudReadObjContext.readLen));
+		return bufferStream;
+	};
+	getObjectReq.SetResponseStreamFactory(responseStreamFunction);
+
+	GetObjectOutcome getObjectOutcome = m_s3Client->GetObject(getObjectReq);
+
+	if (getObjectOutcome.IsSuccess())
+	{
+		nSize = getObjectOutcome.GetResult().GetBody().rdbuf()->in_avail();
+		cloudReadObjContext.readedLen = nSize;
+		getObjectOutcome.GetResult().GetBody().rdbuf()->sgetn(cloudReadObjContext.m_pBuf, nSize);
+	}
+	else
+	{
+		ret = (int)getObjectOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "region:[%s], bucket:[%s] read object:[%s] failed.", m_strRegion.c_str(), m_strBucket.c_str(), cloudReadObjContext.m_OID);
+		g_GDDOSILog.WriteLogA(1, "[%s:%s],EC:[%d].", getObjectOutcome.GetError().GetMessage().c_str(),getObjectOutcome.GetError().GetExceptionName().c_str(), ret);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::CopyObject(CloudStoreCopyObjectContext& cloudCopyObjContext)
+{
+	int ret = 0;
+	string sourceObj = cloudCopyObjContext.m_szSrcBucket;
+	sourceObj += "/";
+	sourceObj += cloudCopyObjContext.m_srcOID;
+
+	CopyObjectRequest copyObjectReq;
+
+	copyObjectReq.WithBucket(cloudCopyObjContext.m_szDestBucket).WithKey(cloudCopyObjContext.m_destOID).WithCopySource(sourceObj);
+
+	auto copyObjectOutcome = m_s3Client->CopyObject(copyObjectReq);
+	if (copyObjectOutcome.IsSuccess())
+	{
+		g_GDDOSILog.WriteLogA(1, "Copy from [%s:%s:%s] to [%s:%s:%s] success.", m_strRegion.c_str(), cloudCopyObjContext.m_szSrcBucket,
+			cloudCopyObjContext.m_srcOID, cloudCopyObjContext.m_szDestBucket, cloudCopyObjContext.m_destOID);
+
+	}
+	else
+	{
+		ret = (int)copyObjectOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Copy from [%s:%s:%s] to [%s:%s:%s] failed.", m_strRegion.c_str(), cloudCopyObjContext.m_szSrcBucket,
+			cloudCopyObjContext.m_srcOID, cloudCopyObjContext.m_szDestBucket, cloudCopyObjContext.m_destOID);
+		g_GDDOSILog.WriteLogA(1, "[%s],EC:[%d]", copyObjectOutcome.GetError().GetMessage().c_str(), ret);
+
+
+	}
+
+	return ret;
+}
+
+int AwsS3Store::ListObjects(CloudStoreListObjectConext& cloudListObjsContext)
+{
+	int ret = 0;
+	ListObjectsV2Request listObjectRequest;
+
+	listObjectRequest.WithBucket(cloudListObjsContext.m_szBucket);
+
+	ListObjectsV2Outcome listObjectOutcome = m_s3Client->ListObjectsV2(listObjectRequest);
+
+	if (!listObjectOutcome.IsSuccess())
+	{
+		ret = (int)listObjectOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "list object in bucket:[%s] failed.", cloudListObjsContext.m_szBucket);
+		g_GDDOSILog.WriteLogA(1, "The list error message:[%s], EC:[%d]", listObjectOutcome.GetError().GetMessage().c_str(), ret);
+	}
+
+
+	return ret;
+}
+
+int AwsS3Store::DeleteObject(CloudStoreDeleteObjectContext& cloudDelObjContext)
+{
+	int ret = 0;
+
+	DeleteObjectRequest  deleteObjReq;
+	DeleteObjectOutcome	 deleteObjOutcome;
+	deleteObjReq.WithBucket(cloudDelObjContext.m_szBucket).WithKey(cloudDelObjContext.m_OID);
+	deleteObjOutcome = m_s3Client->DeleteObject(deleteObjReq);
+	if (!deleteObjOutcome.IsSuccess())
+	{
+		ret = -1;
+		ret = (int)deleteObjOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Delete object:[%s] in bucket:[%s] failed.", cloudDelObjContext.m_OID, cloudDelObjContext.m_szBucket);
+		g_GDDOSILog.WriteLogA(1, "The delete error message:[%s], EC:[%d]", deleteObjOutcome.GetError().GetMessage().c_str(), ret);
+	}
+	else
+	{
+		g_GDDOSILog.WriteLogA(1, "Delete object:[%s] in bucket:[%s] success.", cloudDelObjContext.m_OID, cloudDelObjContext.m_szBucket);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::CreateBucket(CloudStoreCreateBucketContext& cloudCreateBucketContext)
+{
+	int ret = 0;
+	if (nullptr == cloudCreateBucketContext.m_szBucketName)
+	{
+		return -1;
+	}
+
+	Aws::S3::Model::CreateBucketRequest createBucketReq;
+	createBucketReq.WithBucket(cloudCreateBucketContext.m_szBucketName);
+	
+	auto createBucketOutcome = m_s3Client->CreateBucket(createBucketReq);
+	
+	if (createBucketOutcome.IsSuccess())
+	{
+		g_GDDOSILog.WriteLogA(1, "Create bucket:[%s] successful!", cloudCreateBucketContext.m_szBucketName);
+	}
+	else
+	{
+		ret = (int)createBucketOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Create bucket:[%s] failed! [%s], EC:[%d]", cloudCreateBucketContext.m_szBucketName,
+								 createBucketOutcome.GetError().GetMessage().c_str(),ret);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::DeleteBucket(CloudStoreDeleteBucketContext& cloudDelBucketContext)
+{
+	int ret = 0;
+	
+	if (nullptr == cloudDelBucketContext.m_szBucketName)
+	{
+		return -1;
+	}
+
+	Aws::S3::Model::DeleteBucketRequest delBucketReq;
+	delBucketReq.WithBucket(cloudDelBucketContext.m_szBucketName);
+	
+	auto delBucketOutcome = m_s3Client->DeleteBucket(delBucketReq);
+	
+	if (delBucketOutcome.IsSuccess())
+	{
+		g_GDDOSILog.WriteLogA(1, "delete bucket:[%s] successful!", cloudDelBucketContext.m_szBucketName);
+	}
+	else
+	{
+		ret = (int)delBucketOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "delete bucket:[%s] failed.[%s]:[%d].", cloudDelBucketContext.m_szBucketName, delBucketOutcome.GetError().GetMessage().c_str(),ret);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::ListBucket(CloudStoreListBucketContext&     cloudListBucketContext)
+{
+	int ret = 0;
+	
+	auto listBucketOutcome = m_s3Client->ListBuckets();
+	
+	if (listBucketOutcome.IsSuccess())
+	{
+		Aws::Vector<Aws::S3::Model::Bucket> bucket_list = listBucketOutcome.GetResult().GetBuckets();
+
+		if (!bucket_list.empty())
+		{
+			int nBucketSize = 0;
+			for (auto const &bucket : bucket_list)
+			{
+				nBucketSize += bucket.GetName().length();
+				nBucketSize += 1;
+			}
+			nBucketSize += 1;
+			char* szBucketArray = new char[nBucketSize];
+			
+			for (auto const &bucket : bucket_list)
+			{
+				strcat_s(szBucketArray, nBucketSize, bucket.GetName().c_str());
+				szBucketArray += (bucket.GetName().length() + 1);
+			}
+			szBucketArray = '\0';
+			cloudListBucketContext.m_szBucketNameList = szBucketArray;
+		}
+	}
+	else
+	{
+		ret = (int)listBucketOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "list bucket failed:[%s]. EC:[%d].", listBucketOutcome.GetError().GetMessage().c_str(), ret);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::InitMultiPartUpload(CloudStoreInitMultiPartUploadContext* CloudInitUpload, CloudStoreInitMultiPartUploadOutcome* CloudInitUploadOutcome)
+{
+	int ret = 0;
+
+	Aws::S3::Model::CreateMultipartUploadRequest  InitMultiPartUploadReq;
+	InitMultiPartUploadReq.WithBucket(CloudInitUpload->m_szBucket).WithKey(CloudInitUpload->m_OID);
+
+	Aws::S3::Model::CreateMultipartUploadOutcome  InitMultiPartUploadOutcome = m_s3Client->CreateMultipartUpload(InitMultiPartUploadReq);
+	if (!InitMultiPartUploadOutcome.IsSuccess())
+	{
+		ret = (int)InitMultiPartUploadOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Init multi-part upload for:[%s:%s:%s] failed.EC:[%d].", m_strRegion.c_str(), CloudInitUpload->m_szBucket, CloudInitUpload->m_OID, ret);
+		g_GDDOSILog.WriteLogA(1, "Init Error Message:[%s].", InitMultiPartUploadOutcome.GetError().GetMessage().c_str());
+	}
+	else
+	{
+		CloudInitUploadOutcome->m_strUploadID = InitMultiPartUploadOutcome.GetResult().GetUploadId();
+		m_MapUploadPartId2Status[CloudInitUploadOutcome->m_strUploadID] = new UploadPartStatus();
+	}
+	return ret;
+}
+
+int AwsS3Store::DoMultiPartUpload(CloudStoreMultiPartUploadContext * CloudMultiPartUpload)
+{
+	int ret = 0;
+
+	Aws::S3::Model::UploadPartRequest uploadPartReq;
+	uploadPartReq.WithBucket(CloudMultiPartUpload->m_szBucket).WithKey(CloudMultiPartUpload->m_OID).WithUploadId(CloudMultiPartUpload->m_szUploadID).WithPartNumber(CloudMultiPartUpload->m_nPartID);
+
+	Aws::Utils::Array<unsigned char> databuf((unsigned char*)CloudMultiPartUpload->m_pBuf, CloudMultiPartUpload->m_nPartSize);
+	Aws::Utils::Stream::PreallocatedStreamBuf streamData(&databuf, databuf.GetLength());
+	auto preallocatedStreamReader = Aws::MakeShared<Aws::IOStream>("preallocatedStreamReader", &streamData);
+	uploadPartReq.SetBody(preallocatedStreamReader);
+
+	Aws::S3::Model::UploadPartOutcome UploadPartOutcome = m_s3Client->UploadPart(uploadPartReq);
+	if (!UploadPartOutcome.IsSuccess())
+	{
+		ret = (int)UploadPartOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Part Upload:[%s:%s:%s:%d:%d] failed.", m_strRegion.c_str(), CloudMultiPartUpload->m_szBucket, CloudMultiPartUpload->m_OID,
+			CloudMultiPartUpload->m_nPartID, CloudMultiPartUpload->m_nPartSize);
+		g_GDDOSILog.WriteLogA(1, "Part Upload:[%s].", UploadPartOutcome.GetError().GetMessage().c_str());
+	}
+	else
+	{
+		m_MapUploadPartId2Status[CloudMultiPartUpload->m_szUploadID]->m_mapPartID2ETag.insert(std::make_pair(CloudMultiPartUpload->m_nPartID, UploadPartOutcome.GetResult().GetETag()));
+	}
+
+	return ret;
+}
+
+void AwsS3Store::HandleAsyncUploadPartFunc(const Aws::S3::S3Client*, const Aws::S3::Model::UploadPartRequest& request,
+	const Aws::S3::Model::UploadPartOutcome& outcome, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context)
+{
+	//delete allocated buffer at this function
+	UploadPartStatus* pCurStatus = NULL;
+	{
+		std::lock_guard<std::mutex> lock(m_mapSync);
+		pCurStatus = (m_MapUploadPartId2Status.at(request.GetUploadId()));
+	}
+
+
+	std::unique_lock<std::mutex> lockstatus(pCurStatus->m_Sync);
+	if (outcome.IsSuccess())
+	{
+		pCurStatus->m_mapPartID2ETag[request.GetPartNumber()] = outcome.GetResult().GetETag();
+	}
+	else
+	{	
+		int ret = (int)outcome.GetError().GetErrorType();
+		pCurStatus->nError = ret;
+		g_GDDOSILog.WriteLogA(1, "Part Upload:[%s:%s:%s:%d] failed.", m_strRegion.c_str(), request.GetBucket(), request.GetKey(),
+			request.GetPartNumber());
+		g_GDDOSILog.WriteLogA(1, "Part Upload:[%s].", outcome.GetError().GetMessage().c_str());
+	}
+	++pCurStatus->nActualUploadPart;
+	if (pCurStatus->m_bAllPart && pCurStatus->nActualUploadPart == pCurStatus->nTotalUploadPart)
+	{
+		pCurStatus->m_cv.notify_one();
+	}
+	lockstatus.unlock();
+
+}
+
+
+int AwsS3Store::DoMultiPartUploadAsync(CloudStoreMultiPartUploadContext * CloudMultiPartUpload)
+{
+	int ret = 0;
+
+	Aws::S3::Model::UploadPartRequest uploadPartReq;
+	uploadPartReq.WithBucket(CloudMultiPartUpload->m_szBucket).WithKey(CloudMultiPartUpload->m_OID).WithUploadId(CloudMultiPartUpload->m_szUploadID).WithPartNumber(CloudMultiPartUpload->m_nPartID);
+
+	UploadPartStatus* pCurStatus = NULL;
+	{
+		std::lock_guard<std::mutex> lock(m_mapSync);
+		pCurStatus = (m_MapUploadPartId2Status.at(CloudMultiPartUpload->m_szUploadID));
+		pCurStatus->nTotalUploadPart += 1;
+		if (CloudMultiPartUpload->m_bLastPart)
+		{
+			pCurStatus->m_bAllPart = true;
+		}
+	}
+
+	Aws::Utils::Array<unsigned char>* databuf = new Aws::Utils::Array<unsigned char>((unsigned char*)CloudMultiPartUpload->m_pBuf, CloudMultiPartUpload->m_nPartSize);
+	Aws::Utils::Stream::PreallocatedStreamBuf *streamData = new Aws::Utils::Stream::PreallocatedStreamBuf(databuf, databuf->GetLength());
+	pCurStatus->m_mapPartID2DataBuf[CloudMultiPartUpload->m_nPartID]	= databuf;
+	pCurStatus->m_mapPartID2DataStream[CloudMultiPartUpload->m_nPartID] = streamData;
+
+	auto preallocatedStreamReader = Aws::MakeShared<Aws::IOStream>("preallocatedStreamReader", streamData);
+	uploadPartReq.SetBody(preallocatedStreamReader);
+
+	auto uploadPartCallback = [this](const Aws::S3::S3Client* client, const Aws::S3::Model::UploadPartRequest& request,
+		const Aws::S3::Model::UploadPartOutcome& outcome, const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context)
+	{
+		this->HandleAsyncUploadPartFunc(client, request, outcome, context);
+	};
+
+	m_s3Client->UploadPartAsync(uploadPartReq, uploadPartCallback);
+
+	return ret;
+}
+
+int AwsS3Store::CompleteMultiPartUpload(CloudStoreFinishMultiPartUploadContext* CloudCompleteMultiPartUpload)
+{
+	int ret = 0;
+
+	Aws::S3::Model::CompleteMultipartUploadRequest compMultiPartUploadReq;
+	Aws::S3::Model::CompletedMultipartUpload compMultipartUpload;
+	Aws::Vector<Aws::S3::Model::CompletedPart>  vcparts(CloudCompleteMultiPartUpload->m_nPartNum, Aws::S3::Model::CompletedPart());
+
+	UploadPartStatus* status = m_MapUploadPartId2Status[CloudCompleteMultiPartUpload->m_szUploadID];
+
+	for (int i = 1; i <= CloudCompleteMultiPartUpload->m_nPartNum; ++i)
+	{
+		vcparts[i - 1].SetETag(status->m_mapPartID2ETag[i]);
+		vcparts[i - 1].SetPartNumber(i);
+	}
+	compMultipartUpload.SetParts(vcparts);
+	compMultiPartUploadReq.WithBucket(CloudCompleteMultiPartUpload->m_szBucket).WithKey(CloudCompleteMultiPartUpload->m_OID).WithUploadId(CloudCompleteMultiPartUpload->m_szUploadID).WithMultipartUpload(compMultipartUpload);
+	Aws::S3::Model::CompleteMultipartUploadOutcome compMultiPartUploadOutcome = m_s3Client->CompleteMultipartUpload(compMultiPartUploadReq);
+
+	if (!compMultiPartUploadOutcome.IsSuccess())
+	{
+		ret = (int)compMultiPartUploadOutcome.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Complete Multi-Part [%s:%s:%s:%s:%d] failed.", m_strRegion, CloudCompleteMultiPartUpload->m_szBucket,
+			CloudCompleteMultiPartUpload->m_OID, CloudCompleteMultiPartUpload->m_szUploadID, CloudCompleteMultiPartUpload->m_nPartNum);
+		g_GDDOSILog.WriteLogA(1, "Reason:[%s],EC:[%d].", compMultiPartUploadOutcome.GetError().GetMessage().c_str(), ret);
+	}
+
+	delete status;
+	m_MapUploadPartId2Status.erase(CloudCompleteMultiPartUpload->m_szUploadID);
+	return ret;
+}
+
+int AwsS3Store::CompleteMultiPartUploadAsync(CloudStoreFinishMultiPartUploadContext* CloudCompleteMultiPartUpload)
+{
+	int ret = 0;
+
+	UploadPartStatus* pCurStatus = NULL;
+	{
+		std::lock_guard<std::mutex> lock(m_mapSync);
+		pCurStatus = (m_MapUploadPartId2Status.at(CloudCompleteMultiPartUpload->m_szUploadID));
+	}
+
+	std::unique_lock<std::mutex> lockstatus(pCurStatus->m_Sync);
+	pCurStatus->m_cv.wait(lockstatus);
+	lockstatus.unlock();
+
+	for (auto it : pCurStatus->m_mapPartID2DataStream)
+	{
+		Aws::Utils::Array<unsigned char>* p = (Aws::Utils::Array<unsigned char>*) it.second;
+		it.second = nullptr;
+		delete p;
+	}
+	for (auto it:pCurStatus->m_mapPartID2DataBuf)
+	{
+		Aws::Utils::Stream::PreallocatedStreamBuf* p = (Aws::Utils::Stream::PreallocatedStreamBuf*)it.second;
+		it.second = nullptr;
+		delete p;
+	}
+
+	if (0 == pCurStatus->nError)
+	{
+		Aws::S3::Model::CompleteMultipartUploadRequest	compMultiPartUploadReq;
+		Aws::S3::Model::CompletedMultipartUpload		compMultipartUpload;
+		Aws::Vector<Aws::S3::Model::CompletedPart>		vcparts(CloudCompleteMultiPartUpload->m_nPartNum, Aws::S3::Model::CompletedPart());
+
+
+		for (int i = 1; i <= CloudCompleteMultiPartUpload->m_nPartNum; ++i)
+		{
+			vcparts[i - 1].SetETag(pCurStatus->m_mapPartID2ETag[i]);
+			vcparts[i - 1].SetPartNumber(i);
+		}
+		compMultipartUpload.SetParts(vcparts);
+		compMultiPartUploadReq.WithBucket(CloudCompleteMultiPartUpload->m_szBucket).WithKey(CloudCompleteMultiPartUpload->m_OID).WithUploadId(CloudCompleteMultiPartUpload->m_szUploadID).WithMultipartUpload(compMultipartUpload);
+		Aws::S3::Model::CompleteMultipartUploadOutcome compMultiPartUploadOutcome = m_s3Client->CompleteMultipartUpload(compMultiPartUploadReq);
+
+		if (!compMultiPartUploadOutcome.IsSuccess())
+		{
+			ret = (int)compMultiPartUploadOutcome.GetError().GetErrorType();
+			g_GDDOSILog.WriteLogA(1, "Complete Multi-Part [%s:%s:%s:%s:%d] failed.", m_strRegion, CloudCompleteMultiPartUpload->m_szBucket,
+				CloudCompleteMultiPartUpload->m_OID, CloudCompleteMultiPartUpload->m_szUploadID, CloudCompleteMultiPartUpload->m_nPartNum);
+			g_GDDOSILog.WriteLogA(1, "Reason:[%s],EC:[%d].", compMultiPartUploadOutcome.GetError().GetMessage().c_str(), ret);
+		}
+	}
+	else
+	{
+		ret = pCurStatus->nError;
+	}
+
+	{
+		std::lock_guard<std::mutex> lock(m_mapSync);
+		
+		pCurStatus = (m_MapUploadPartId2Status.at(CloudCompleteMultiPartUpload->m_szUploadID));
+		delete pCurStatus;
+		m_MapUploadPartId2Status.erase(CloudCompleteMultiPartUpload->m_szUploadID);
+	}
+
+	return ret;
+}
+
+int AwsS3Store::AbortMultiPartUpload(CloudStoreAbortMultiPartUploadContext* abortMultiPart)
+{
+	int ret = 0;
+
+	Aws::S3::Model::AbortMultipartUploadRequest abortMultiPartUploadReq;
+
+	abortMultiPartUploadReq.WithBucket(abortMultiPart->m_szBucket).WithKey(abortMultiPart->m_OID).WithUploadId(abortMultiPart->m_szUploadID);
+
+	Aws::S3::Model::AbortMultipartUploadOutcome   abortMultiPartUploadOut = m_s3Client->AbortMultipartUpload(abortMultiPartUploadReq);
+
+	if (!abortMultiPartUploadOut.IsSuccess())
+	{
+		ret = (int)abortMultiPartUploadOut.GetError().GetErrorType();
+		g_GDDOSILog.WriteLogA(1, "Abort Multi-Upload:[%s:%s:%s:%s] failed.", m_strRegion.c_str(), abortMultiPart->m_szBucket, abortMultiPart->m_OID,abortMultiPart->m_szUploadID);
+		g_GDDOSILog.WriteLogA(1, "Abort message:[%s],", abortMultiPartUploadOut.GetError().GetMessage());
+	}
+
+	return ret;
+}
