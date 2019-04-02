@@ -28,6 +28,12 @@ Output: false
 using namespace std;
 
 
+/*
+
+DP[i] = DP[k] + DP[k+1,j]
+DP[m,n] whether the s[m,n] in the dictinoary
+
+*/
 
 
 
