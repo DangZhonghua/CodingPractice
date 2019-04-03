@@ -20,3 +20,11 @@ All the input string will only include lower case letters.
 The returned elements order does not matter. 
 
 */
+
+class Solution {
+public:
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) 
+    {
+        
+    }
+};
