@@ -205,10 +205,52 @@ public:
     vector<string> wordBreak(string s, vector<string>& wordDict) 
     {
         int N = s.length();
-        vector< vector<bool> >  dp(N+1, vector<bool>(N+1,false));
-        
+        vector< vector<int> >  dp(N+1, vector<int>(N+1,0));
+        vector< int > vcount(N+1, 0);
+        char* szText = new char[N+2];
+        strcpy(szText+1,s.c_str());
+        vector<string>   vs;
+        string   strSent;
+
+        vcount[0] = 1;
+        dp[0][0]  = 0;
+
+        BuildDictinoary(wordDict);
+
+        for(int i = 1; i<=N; ++i)
+        {
+          for( int j = 0; j< i; ++j)
+          {
+            if( vcount[j] )
+            {
+                char c = szText[i+1];
+                szText[i+1] = '\0';
+                if(SearchWord(szText+j+1, i-j))
+                {
+                    dp[i][ vcount[i] ] = j;
+                    vcount[i] += 1;
+                }
+                 szText[i+1] = c;
+            }
+          }
+        }
+
+        if(vcount[N])
+        {
+          
+        }
     }
 
+private:
+
+    void BuildSentence(vector< vector<int> >& dp,  vector< int >& vcount, char* szText, int s,int N )
+    {
+        for( int i = 0; i<vcount[s]; ++i)
+        {
+          int start = dp[s][i];
+        }
+
+    }
 
 private:
     void BuildDictinoary(vector<string>& wordDict)
