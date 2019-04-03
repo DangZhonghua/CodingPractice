@@ -39,6 +39,7 @@ Output:
 #include<iostream>
 #include<string>
 #include<vector>
+#include<stack>
 using namespace std;
 
 
@@ -201,6 +202,11 @@ private:
 
 class Solution 
 {
+    struct range
+    {
+        int rs;
+        int re;
+    };
 public:
     vector<string> wordBreak(string s, vector<string>& wordDict) 
     {
@@ -237,19 +243,47 @@ public:
 
         if(vcount[N])
         {
-          
+            vector<range> stackr;
+          BuildSentence(dp,vcount,vs,stackr,szText,N);
         }
+        return vs;
     }
 
 private:
 
-    void BuildSentence(vector< vector<int> >& dp,  vector< int >& vcount, char* szText, int s,int N )
+    void BuildSentence(vector< vector<int> >& dp,  vector< int >& vcount, 
+                      vector<string>& vs,vector<range>& stackr ,char* szText, int s)
     {
+        if(0 == s)
+        {
+            CreateSentence(vs,stackr,szText);
+            return;
+        }
         for( int i = 0; i<vcount[s]; ++i)
         {
-          int start = dp[s][i];
+          range seg;
+          seg.rs = dp[s][i]+1;
+          seg.re = s;
+          stackr.push_back(seg);
+          BuildSentence(dp,vcount,vs,stackr,szText,dp[s][i]);
+          stackr.pop_back();
         }
-
+    }
+    void CreateSentence(vector<string>& vs,vector<range>& stackr,char* szText)
+    {
+        string strSentence;
+        for(int i = stackr.size()-1; i>=0; --i)
+        {
+            char c = szText[stackr[i].re+1];
+            szText[stackr[i].re+1] = '\0';
+            strSentence += (szText+stackr[i].rs);
+            if(i > 0)
+            {
+                strSentence += " ";
+            }
+            szText[stackr[i].re+1] = c;
+        }
+        vs.push_back(strSentence);
     }
 
 private:
@@ -273,5 +307,4 @@ private:
 
 private:
     Trie* m_pDict{nullptr};
-
 };
