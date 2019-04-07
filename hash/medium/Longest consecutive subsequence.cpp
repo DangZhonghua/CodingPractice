@@ -1,7 +1,8 @@
 /*
 https://practice.geeksforgeeks.org/problems/longest-consecutive-subsequence/0/?ref=self
 Longest consecutive subsequence 
-Given an array of integers, find the length of the longest sub-sequence such that elements in the subsequence are consecutive integers, the consecutive numbers can be in any order.
+Given an array of integers, find the length of the longest sub-sequence such that 
+elements in the subsequence are consecutive integers, the consecutive numbers can be in any order.
 
 Input:
 
