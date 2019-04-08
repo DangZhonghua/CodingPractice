@@ -26,7 +26,8 @@ Note:
 
 class Solution {
 public:
-    int shortestSubarray(vector<int>& A, int K) {
+    int shortestSubarray(vector<int>& A, int K) 
+    {
         
     }
 };
