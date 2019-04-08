@@ -32,14 +32,47 @@ You may assume k is always valid, ie: k is always smaller than input array's siz
 
 */
 
+/*
+
+
+
+
+*/
+
+
 #include<vector>
 #include<iostream>
+#include<map>
+#include<set>
 using namespace std;
 
-class Solution {
+class Solution 
+{
 public:
     vector<double> medianSlidingWindow(vector<int>& nums, int k) 
     {
-        
+        multiset<double>  wsort(nums.begin(), nums.begin()+k);
+        vector<double>    vm;
+        multiset<double>::iterator mid = std::next(wsort.begin(), k/2);
+        bool bOdd = k&1;
+        for(int i = k; i<= nums.size(); ++i)
+        {
+            int m = *mid;
+            if(!bOdd )
+            {
+                m += *(std::prev(mid,1));
+                m /=2;
+            }
+            vm.push_back(m);
+            if( i == nums.size())
+            {
+                break;
+            }
+            wsort.insert(nums[i]);
+            if(nums[i]<*mid) --mid;
+            if(nums[i-k]<=*mid) ++mid;
+            wsort.erase(nums[i-k]);
+        }
+        return vm;
     }
 };

@@ -19,6 +19,11 @@ Note:
 You may assume that all inputs are consist of lowercase letters a-z.
 */
 
+#include<vector>
+#include<string>
+#include<iostream>
+using namespace std;
+
 class Solution {
 public:
     vector<string> findWords(vector<vector<char>>& board, vector<string>& words) 
