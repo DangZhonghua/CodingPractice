@@ -1,158 +1,53 @@
-#include<vector>
-#include<string>
-#include<queue>
-using namespace std;
-
-class Trie 
-{
-    struct  Node
-    {
-        char  szLetter[26];
-        Node* szNext[26];
-        bool  szEnd[26];
-
-        Node()
-        {
-            for(int i = 0; i<26; ++i)
-            {
-                szLetter[i] = 0;
-                szNext[i]   = nullptr;
-                szEnd[i]    = false;
-            }
+class Solution {
+public:
+    struct TrieNode {
+        TrieNode *child[26];
+        string str;
+        TrieNode() : str("") {
+            for (auto &a : child) a = NULL;
         }
     };
-
-public:
-    /** Initialize your data structure here. */
-    Trie() 
-    {
-        m_root = new Node();
-    }
-    
-    /** Inserts a word into the trie. */
-    void insert(const string& word) 
-    {
-        int   N = word.length();
-        int   i = 0;
-        Node* p = m_root;
-
-        while(i< N)
-        {
-            int index = word[i]-'a';
-            p->szLetter[index] = 1;
-            if(i+1 == N)
-            {
-                p->szEnd[index] = true;
-                break;
+    struct Trie {
+        TrieNode *root;
+        Trie() : root(new TrieNode()) {}
+        void insert(string s) {
+            TrieNode *p = root;
+            for (auto &a : s) {
+                int i = a - 'a';
+                if (!p->child[i]) p->child[i] = new TrieNode();
+                p = p->child[i];
             }
-            if(nullptr == p->szNext[index])
-            {
-                p->szNext[index] = new Node();       
-            }
-            p = p->szNext[index];
-            ++i;       
+            p->str = s;
         }
-    }
-    
-    /** Returns if the word is in the trie. */
-    bool search(const string& word) 
-    {
-        int N = word.length();
-        int i = 0;
-        bool bExist = true;
-        Node* p = m_root;
-
-        while(i<N)
-        {
-            int index = word[i]-'a';
-            if( 0 == p->szLetter[index])
-            {
-                bExist = false;
-                break;
-            }
-            if( i+1 == N)
-            {
-                if(!p->szEnd[index])
-                {
-                    bExist = false;
+    };
+    vector<string> findWords(vector<vector<char> >& board, vector<string>& words) {
+        vector<string> res;
+        if (words.empty() || board.empty() || board[0].empty()) return res;
+        vector<vector<bool> > visit(board.size(), vector<bool>(board[0].size(), false));
+        Trie T;
+        for (auto &a : words) T.insert(a);
+        for (int i = 0; i < board.size(); ++i) {
+            for (int j = 0; j < board[i].size(); ++j) {
+                if (T.root->child[board[i][j] - 'a']) {
+                    search(board, T.root->child[board[i][j] - 'a'], i, j, visit, res);
                 }
-                break;
             }
-            p = p->szNext[index];
-            if(nullptr == p)
-            {
-                bExist = false;
-                break;
-            }
-            ++i;
         }
-        return bExist;    
+        return res;
     }
-
-    bool search(const char* word, int N) 
-    {
-        int i = 0;
-        bool bExist = true;
-        Node* p = m_root;
-
-        while(i<N)
-        {
-            int index = word[i]-'a';
-            if( 0 == p->szLetter[index])
-            {
-                bExist = false;
-                break;
-            }
-            if( i+1 == N)
-            {
-                if(!p->szEnd[index])
-                {
-                    bExist = false;
-                }
-                break;
-            }
-            p = p->szNext[index];
-            if(nullptr == p)
-            {
-                bExist = false;
-                break;
-            }
-            ++i;
+    void search(vector<vector<char> > &board, TrieNode *p, int i, int j, vector<vector<bool> > &visit, vector<string> &res) { 
+        if (!p->str.empty()) {
+            res.push_back(p->str);
+            p->str.clear();
         }
-        return bExist;    
-    }
-    
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    bool startsWith(const string& prefix) 
-    {
-        int N = prefix.length();
-        int i = 0;
-        bool bExist = true;
-        Node* p = m_root;
-
-        while(i<N)
-        {
-            int index = prefix[i]-'a';
-            if( 0 == p->szLetter[index])
-            {
-                bExist = false;
-                break;
+        int d[][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        visit[i][j] = true;
+        for (auto &a : d) {
+            int nx = a[0] + i, ny = a[1] + j;
+            if (nx >= 0 && nx < board.size() && ny >= 0 && ny < board[0].size() && !visit[nx][ny] && p->child[board[nx][ny] - 'a']) {
+                search(board, p->child[board[nx][ny] - 'a'], nx, ny, visit, res);
             }
-            if( i+1 == N)
-            {
-                break;
-            }
-            p = p->szNext[index];
-            if(nullptr == p)
-            {
-                bExist = false;
-                break;
-            }
-            ++i;
         }
-        return bExist;   
+        visit[i][j] = false;
     }
-
-private:
-   Node* m_root{nullptr};
 };
