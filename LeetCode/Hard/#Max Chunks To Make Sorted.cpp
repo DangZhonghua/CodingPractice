@@ -24,11 +24,36 @@ arr[i] will be a permutation of [0, 1, ..., arr.length - 1]
 
 */
 
+/*
+
+Geedy algorithm: find range:[s,e], all elements in [s,e] will less than or equal to e.
+so this mean: find the maximum range 
+
+*/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
 class Solution 
 {
 public:
     int maxChunksToSorted(vector<int>& arr) 
     {
-        
+        int count = 0;
+        int maxe = arr[0];
+        for(int i = 0; i<arr.size(); ++i)
+        {
+            if(maxe<arr[i])
+            {
+                maxe = arr[i];
+            }
+
+            if(maxe==i)
+            {
+                ++count;
+            }
+        }
+        return count;
     }
 };
