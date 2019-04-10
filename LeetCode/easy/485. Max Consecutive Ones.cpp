@@ -14,25 +14,53 @@ The length of input array is a positive integer and will not exceed 10,000
 
 */
 
-#include<vector>
+#include <vector>
 using namespace std;
 
-class Solution 
+class Solution
 {
-public:
-    int findMaxConsecutiveOnes(vector<int>& nums) 
+  public:
+    int findMaxConsecutiveOnes(vector<int> &nums)
     {
         int i = 0;
         int N = nums.size();
         int s = -1;
         int e = 0;
-        
-        while(i<N)
+        int maxlen = 0;
+
+        while (i < N)
         {
-            
+            if (1 == nums[i])
+            {
+                if (-1 == s)
+                {
+                    s = i;
+                    e = i;
+                }
+                else
+                {
+                    e = i;
+                }
+            }
+            else
+            {
+                if (-1 != s)
+                {
+                    if (maxlen < (e - s + 1))
+                    {
+                        maxlen = (e - s + 1);
+                    }
+                    s = -1;
+                }
+            }
+            ++i;
         }
 
+        if (-1 != s && maxlen < (e - s + 1))
+        {
+            maxlen = (e - s + 1);
+        }
 
+        return maxlen;
     }
 };
-
