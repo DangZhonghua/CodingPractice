@@ -1,5 +1,7 @@
 /*
+
 https://leetcode-cn.com/problems/find-peak-element/
+
 Find Peak Element
 A peak element is an element that is greater than its neighbors.
 Given an input array nums, where nums[i] ≠ nums[i+1], find a peak element and return its index.
@@ -36,6 +38,19 @@ ss
 
 */
 
+/*
+
+可以用二分查找，得到O(logN)的算法。
+题目中num[i] ≠ num[i+1] 很关键，保证了中间取的值num[mid]与 num[mid + 1]不同，
+从而相比于num[mid + 1]，num[mid]一定位于上坡或下坡。这样不满足峰值条件时，
+处于上坡就把 l 收缩到mid处，处于下坡就把 r 收缩到 mid 处， 不断收缩，使得最终l与r之间只有一个峰值。
+
+提示了用log的时间复杂度，所以考虑用二分法Binary Search。
+规律一：如果nums[i] > nums[i+1]，则在i之前一定存在峰值元素
+规律二：如果nums[i] < nums[i+1]，则在i+1之后一定存在峰值元素
+
+*/
+
 #include<vector>
 #include<iostream>
 using namespace std;
@@ -49,7 +64,15 @@ public:
         while(i<j)
         {
             int m = (i+j)/2;
+            if(nums[m]<nums[m+1])
+            {
+                i = m+1;
+            }
+            else
+            {
+                j = m;
+            }  
         }
+        return j;
     }
-private:
 };
