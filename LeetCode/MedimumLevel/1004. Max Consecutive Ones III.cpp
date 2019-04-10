@@ -25,6 +25,8 @@ A[i] is 0 or 1
 
 */
 
+//test
+
 #include<vector>
 #include<iostream>
 using namespace std;
