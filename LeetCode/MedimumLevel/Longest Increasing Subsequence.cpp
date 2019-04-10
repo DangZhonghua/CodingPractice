@@ -13,6 +13,13 @@ Follow up: Could you improve it to O(n log n) time complexity?
 
 */
 
+/*
+ for some certain length, use the smallest elements
+ 
+ for arrLen[], the index is the length, its elements are increasing order
+
+*/
+
 #include<vector>
 #include<iostream>
 using namespace std;
@@ -36,7 +43,7 @@ public:
             int index = findLargestWhichLessthanX(lenSmallest,nums[i],maxlen,bFind);
             if(!bFind)
             {
-                lenSmallest[index] = nums[i];
+                lenSmallest[index] = nums[i]; // use the smaller update the same length 
                 if(index>maxlen)
                 {
                     maxlen = index;

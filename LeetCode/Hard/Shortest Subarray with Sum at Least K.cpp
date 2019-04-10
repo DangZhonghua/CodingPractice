@@ -24,7 +24,11 @@ Note:
 
 */
 
-class Solution {
+#include<vector>
+using namespace std;
+
+class Solution 
+{
 public:
     int shortestSubarray(vector<int>& A, int K) 
     {
