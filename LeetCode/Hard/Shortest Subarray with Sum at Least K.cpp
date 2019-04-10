@@ -25,6 +25,7 @@ Note:
 */
 
 #include<vector>
+#include<map>
 using namespace std;
 
 class Solution 
@@ -32,6 +33,7 @@ class Solution
 public:
     int shortestSubarray(vector<int>& A, int K) 
     {
-        
+        map<int, int> map1;
+        map1.lower_bound
     }
 };
