@@ -1,3 +1,30 @@
+
+/*
+https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
+Shortest Subarray with Sum at Least K
+
+
+Return the length of the shortest, non-empty, contiguous subarray of A with sum at least K.
+If there is no non-empty subarray with sum at least K, return -1.
+
+
+Example 1:
+Input: A = [1], K = 1
+Output: 1
+Example 2:
+Input: A = [1,2], K = 4
+Output: -1
+Example 3:
+Input: A = [2,-1,2], K = 3
+Output: 3
+
+Note:
+1 <= A.length <= 50000
+-10 ^ 5 <= A[i] <= 10 ^ 5
+1 <= K <= 10 ^ 9
+
+*/
+
 /*
 
 https://leetcode.com/articles/shortest-subarray-with-sum-atleast-k/#
@@ -6,13 +33,18 @@ Approach 1: Sliding Window
 
 Intuition
 
-We can rephrase this as a problem about the prefix sums of A. Let P[i] = A[0] + A[1] + ... + A[i-1]. We want the smallest y-x such that y > x and P[y] - P[x] >= K.
+We can rephrase this as a problem about the prefix sums of A. Let P[i] = A[0] + A[1] + ... + A[i-1]. 
+We want the smallest y-x such that y > x and P[y] - P[x] >= K.
 
 Motivated by that equation, let opt(y) be the largest x such that P[x] <= P[y] - K. We need two key observations:
 
-    If x1 < x2 and P[x2] <= P[x1], then opt(y) can never be x1, as if P[x1] <= P[y] - K, then P[x2] <= P[x1] <= P[y] - K but y - x2 is smaller. This implies that our candidates x for opt(y) will have increasing values of P[x].
+    If x1 < x2 and P[x2] <= P[x1], then opt(y) can never be x1, as if P[x1] <= P[y] - K, then P[x2] <= P[x1] <= P[y] - K but y - x2 is smaller. 
+    This implies that our candidates x for opt(y) will have increasing values of P[x].
+    
+    p[x] is increasing along with the x increasing.
 
-    If opt(y1) = x, then we do not need to consider this x again. For if we find some y2 > y1 with opt(y2) = x, then it represents an answer of y2 - x which is worse (larger) than y1 - x.
+    If opt(y1) = x, then we do not need to consider this x again. For if we find some y2 > y1 with opt(y2) = x, 
+    then it represents an answer of y2 - x which is worse (larger) than y1 - x.
 
 Algorithm
 
@@ -52,13 +84,35 @@ class Solution {
 */
 
 
+#include<vector>
+#include<deque>
+#include<map>
+#include<iostream>
+using namespace std;
+
 
 class Solution
 {
 public:
 	int shortestSubarray(vector<int>& A, int K)
 	{
-		map<int, int> mapSum2Index;
+        int ans = 0;
+        if(0)
+        {
+            ans = SearchShortestSubarray(A,K);
+        }
+        else
+        {
+            ans = LinearShortestSubarray(A,K);
+        }
+        
+        return ans;
+	}
+
+private:
+    int SearchShortestSubarray(vector<int>& A, int K)
+    {
+        map<int, int> mapSum2Index;
 		int sum = 0;
 		int minLen = A.size() + 1;
 		for (int i = 0; i < A.size(); ++i)
@@ -106,5 +160,29 @@ public:
 			mapSum2Index[sum] = i;
 		}
 		return minLen = (minLen ==(A.size() + 1)?-1:minLen );
-	}
+    }
+
+
+private:
+    int LinearShortestSubarray(vector<int>& A, int K)
+    {
+        int ans = 0;
+        int N = A.size();
+        vector<long long> presum(N+1, 0);
+
+        ans = N+1;
+        for(int i = 0; i<N; ++i)
+        {
+            presum[i+1] = presum[i] + A[i];
+        }
+        
+        deque<int> monoque; //queue is used to store the index but make the presum@index is increasing.
+        
+        for(int i = 0; i<=N; ++i)
+        {
+            while(!monoque.empty() && presum[i] < monoque.back())
+        }
+
+        
+    }
 };
