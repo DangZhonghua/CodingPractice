@@ -87,6 +87,7 @@ class Solution {
 #include<vector>
 #include<deque>
 #include<map>
+#include<algorithm>
 #include<iostream>
 using namespace std;
 
@@ -180,9 +181,18 @@ private:
         
         for(int i = 0; i<=N; ++i)
         {
-            while(!monoque.empty() && presum[i] < monoque.back())
+            while(!monoque.empty() && presum[i] <= presum[monoque.back()])
+            {
+                monoque.pop_back();
+            }
+            while(!monoque.empty() && presum[i]-presum[monoque.front()]>=K)
+            {
+                ans = min(ans,i-monoque.front());
+                monoque.pop_front();
+            }
+            monoque.push_back(i);
         }
 
-        
+        return ans=(ans==(N+1)?-1:ans);
     }
 };
