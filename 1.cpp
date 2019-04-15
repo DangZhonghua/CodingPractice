@@ -1,16 +1,4 @@
-class Solution 
-{
-public:
-    int peakIndexInMountainArray(vector<int>& A) 
-    {
-        int i = 0;
-        for(i = 1; i<A.size()-1; ++i)
-        {
-            if(A[i-1]<A[i] && A[i]>A[i+1])
-            {
-                break;
-            }
-        }
-        return i;
-    }
-};
+git add ARCserve/D2D/Native/DataStore/GlobalDedupe/GDDServerDLL/CloudFileStore.cpp
+git add ARCserve/D2D/Native/DataStore/GlobalDedupe/GDDServerDLL/DataFile.cpp
+git add ARCserve/D2D/Native/DataStore/GlobalDedupe/GDDServerDLL/ServerConfig.cpp
+git add ARCserve/D2D/Native/DataStore/GlobalDedupe/GDDServerDLL/ServerConfig.h
