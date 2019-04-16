@@ -24,10 +24,57 @@ Output: 2
 Explanation: You could form "10", but then you'd have nothing left. Better form "0" and "1".
 */
 
-class Solution {
+
+#include<vector>
+#include<iostream>
+using namespace std;
+
+class Solution 
+{
 public:
     int findMaxForm(vector<string>& strs, int m, int n) 
     {
+        vector<int> vones(strs.size(),0);
+        vector<int> vzeros(strs.size(),0);
+
+        vector< vector< vector<int> > > dp(strs.size()+1, vector< vector<int> >(m, vector<int>(n,-1)));
+        dp[0][0][0] = 0;
+
+        for(int i = 0; i< strs.size(); ++i)
+        {
+            for(int j = 0; j <strs[i].size(); ++j)
+            {
+                if('1' == strs[i][j])
+                {
+                    vones[i] +=1;
+                }
+                else if( '0' == strs[i][j])
+                {
+                    vzeros[i] += 1;
+                }
+            }
+        }
         
+        for(int i = 1; i<=strs.size(); ++i)
+        {
+            for(int zero = 1; zero<=m; ++zero)
+            {
+                for(int one = 1; one<=n; ++one)
+                {
+                    if(zero>=vzeros[i-1] && one>= vones[i-1])
+                    {
+                         dp[i][one][zero] = dp[i-1][one][zero];
+                         if(   -1 != dp[i-1][ zero-vzeros[i-1]][ one-vones[i-1]]    )
+                         {
+                             if(dp[i-1][ zero-vzeros[i-1]][ one-vones[i-1]] + 1 > dp[i-1][ zero][ one] )
+                             {
+                                 dp[i][zero][one] = dp[i-1][ zero-vzeros[i-1]][ one-vones[i-1]] + 1;
+                             }
+                         }
+                    }
+                }
+            }
+        }
+        return dp[strs.size()][m][n];
     }
 };
