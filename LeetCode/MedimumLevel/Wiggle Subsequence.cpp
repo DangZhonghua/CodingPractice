@@ -39,11 +39,59 @@ Can you do it in O(n) time?
 #include<iostream>
 #include<vector>
 using namespace std;
+
 class Solution 
 {
 public:
     int wiggleMaxLength(vector<int>& nums) 
     {
+        if(nums.empty()) return 0;
+        int N = nums.size();
+        vector<int> vsmall(N,0);
+        vector<int> vlarge(N,0);
+        int maxlen = 1;
+        vsmall[0] = 1;
+		vlarge[0] = 1;
         
+        for(int i = 1; i<N; ++i)
+        {
+            for(int j = 0; j<i; ++j)
+            {
+                if(nums[j]<nums[i] && vlarge[i]< vsmall[j]+1)
+                {
+                    vlarge[i] = vsmall[j]+1;
+                }
+                else if( nums[j]>nums[i] && vsmall[i]<vlarge[j]+1)
+                {
+                    vsmall[i] = vlarge[j] + 1;
+                }
+            }
+            if(vlarge[i]>maxlen)
+            {
+                maxlen = vlarge[i];
+            }
+            if(vsmall[i]>maxlen)
+            {
+                maxlen = vsmall[i];
+            }
+        }        
+        return maxlen;
+    }
+};
+
+
+//Greedy
+
+class Solution {
+public:
+    int wiggleMaxLength(vector<int>& nums) 
+    {
+        int p = 1, q = 1, n = nums.size();
+        for (int i = 1; i < n; ++i) 
+        {
+            if (nums[i] > nums[i - 1]) p = q + 1;
+            else if (nums[i] < nums[i - 1]) q = p + 1;
+        }
+        return min(n, max(p, q));
     }
 };

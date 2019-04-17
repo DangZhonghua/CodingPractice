@@ -23,3 +23,10 @@ At the stage of rotating the ring to spell the key character key[i]:
 
 
 */
+
+class Solution {
+public:
+    int findRotateSteps(string ring, string key) {
+        
+    }
+};

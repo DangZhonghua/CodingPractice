@@ -24,6 +24,11 @@ Output: 2
 Explanation: You could form "10", but then you'd have nothing left. Better form "0" and "1".
 */
 
+/*
+
+This is 2D knapsack problem.
+\
+*/
 
 
 #include<vector>
