@@ -1,5 +1,8 @@
 /*
 https://leetcode-cn.com/problems/find-the-closest-palindrome/
+https://www.cnblogs.com/grandyang/p/6915355.html
+https://leetcode.com/problems/find-the-closest-palindrome/discuss/102389/java-solution-with-detailed-proof
+https://leetcode.com/problems/find-the-closest-palindrome/discuss/102391/python-simple-with-explanation
 564. Find the Closest Palindrome
 
 Given an integer n, find the closest integer (not including itself), which is a palindrome. 
