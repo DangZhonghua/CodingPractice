@@ -17,7 +17,6 @@ If there is a tie, return the smaller one as answer.
 
 10-->9
 
-9
 
 */
 
