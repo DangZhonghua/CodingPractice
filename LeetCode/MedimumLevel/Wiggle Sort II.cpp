@@ -33,91 +33,6 @@ using namespace std;
 //[5,8,5,7,3,6,2,5,1]
 class Solution
 {
-public:
-	//void wiggleSort(vector<int>& nums)
-	//{
-	//	int N = nums.size();
-	//	int K = N / 2;
-	//	int s = 0;
-	//	int e = N - 1;
-	//	int p = 0;
-
-	//	while (K)
-	//	{
-	//		p = partitionArray(nums, s, e);
-	//		int C = p - s + 1;
-	//		if (C == K)
-	//		{
-	//			break;
-	//		}
-	//		else if (C > K) // continue to partition in the first half
-	//		{
-	//			e = p - 1;
-	//		}
-	//		else
-	//		{
-	//			s = p + 1;
-	//			K = K - C;
-	//		}
-	//	}
-
-	//	//Now i is the pivot position
-	//	int i = p + 1;
-	//	int j = N - 1;
-	//	while (i < j)
-	//	{
-	//		int t = nums[i];
-	//		nums[i] = nums[j];
-	//		nums[j] = t;
-	//		++i;
-	//		--j;
-	//	}
-
-	//	i = 0;
-	//	j = p;
-
-	//	while (i < j)
-	//	{
-	//		int t = nums[i];
-	//		nums[i] = nums[j];
-	//		nums[j] = t;
-	//		++i;
-	//		--j;
-	//	}
-
-	//	i = 1;
-	//	j = p + 1;
-	//	while (i != j)
-	//	{
-	//		int t = nums[i];
-	//		nums[i] = nums[j];
-	//		nums[j] = t;
-	//		i += 2;
-	//		j += 1;
-	//	}
-
-	//	//int i = 1;
-	//	//int j = N-1;
-	//	//while (i < j)
-	//	//{
-	//	//	int t = nums[i];
-	//	//	nums[i] = nums[j];
-	//	//	nums[j] = t;
-	//	//	i += 2;
-	//	//	j -= 1;
-	//	//}
-	//	//
-	//	//int t = nums[N - 1];
-	//	//nums[N - 1] = nums[N - 2];
-	//	//nums[N - 2] = t;
-
-
-	//	for (auto e : nums)
-	//	{
-	//		cout << e << " ";
-	//	}
-	//	cout << endl;
-	//}
 
 public:
 	void wiggleSort(vector<int>& nums)
@@ -153,14 +68,21 @@ private:
 			}
 		}
 
+
+		//for (auto e : nums)
+		//{
+		//	cout << e << " ";
+		//}
+		//cout << endl<<p<<endl;
+
 		//Now i is the pivot position
 		int i = p;
 		int j = N - 1;
 
 		vector<int> vws(N, 0);
 		int index = 0;
-		
-		while (i >= 0 && j >p )
+
+		while (i >= 0 && j > p)
 		{
 			vws[index++] = nums[i--];
 			vws[index++] = nums[j--];
@@ -173,6 +95,65 @@ private:
 		{
 			vws[index] = nums[j];
 		}
+
+		//adjust the last element.
+		if (N > 1 && vws[N - 1] == vws[N - 2])
+		{
+
+			int t = 1;
+			bool bFindLarge = true;
+			if (N & 1)
+			{
+				t = 0;
+				bFindLarge = false;
+			}
+
+			for (int i = t; i < N - 2; i += 2)
+			{
+				if (bFindLarge) //1,3
+				{
+					if (vws[N - 1] < vws[i])
+					{
+						if (vws[i - 1]< vws[N - 1] && vws[N - 1]>vws[i + 1])
+						{
+							int m = vws[N - 1];
+							vws[N - 1] = vws[i];
+							vws[i] = m;
+							break;
+						}
+					}
+				}
+				else
+				{
+					if (vws[N - 1] > vws[i]) //0 ,2
+					{
+						if (i >= 1)
+						{
+							if (vws[N - 1] < vws[i - 1] && vws[N - 1] < vws[i + 1])
+							{
+								int m = vws[N - 1];
+								vws[N - 1] = vws[i];
+								vws[i] = m;
+								break;
+							}
+						}
+						else
+						{
+							if (vws[N - 1] < vws[i + 1])
+							{
+								int m = vws[N - 1];
+								vws[N - 1] = vws[i];
+								vws[i] = m;
+								break;
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+
 		nums = vws;
 		for (auto e : nums)
 		{
@@ -209,7 +190,7 @@ private:
 int main()
 {
 	Solution sol;
-	//vector<int> nums1{ 1, 5, 1, 1, 6, 4 };
+	vector<int> nums1{ 1, 5, 1, 1, 6, 4 };
 	//sol.wiggleSort(nums1);
 
 	//vector<int> nums2{ 1, 3, 2, 2, 3, 1 };
@@ -222,7 +203,7 @@ int main()
 
 	//sol.wiggleSort(nums4);
 
-	vector<int> nums5{ 5, 3, 1, 2, 6, 7, 8, 5, 5 };
+	vector<int> nums5{ 5, 3, 1, 2, 6, 7, 8, 5, 5};
 
 	sol.wiggleSort(nums5);
 
