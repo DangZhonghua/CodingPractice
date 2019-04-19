@@ -148,7 +148,7 @@ int WordWrap(int*a, int N, int lineWide)
 	return 0;
 }
 
-
+  
 
 int main()
 {
