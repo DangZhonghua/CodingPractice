@@ -73,25 +73,24 @@ class Solution
 public:
 	vector<string> fullJustify(vector<string>& words, int maxWidth)
 	{
-		int N = words.size();
-		vector<int> vWordsLen(N + 1, 0);
-		vector<int> dp(N, INT_MAX);
-		vector<int> vline(N, -1);
-		vector<string> vset;
+		int N			= words.size();
+		vector<int>		vWordsLen(N + 1, 0);
+		vector<int>		dp(N + 1, INT_MAX);
+		vector<int>		vline(N, -1);
+		vector<string>	vset;
 
 		vWordsLen[1] = words[0].length();
-
-		for (int i = 2; i <= words.size(); ++i)
+		for (int i = 1; i < words.size(); ++i)
 		{
-			vWordsLen[i] = vWordsLen[i - 1] + words[i - 1].length();
+			vWordsLen[i+1] = vWordsLen[i] + words[i].length();
 		}
 
-		//dp[N - 1] = 0;
-		for (int i = N - 2; i >= 0; --i)
+		dp[N] = 0; 
+		for (int i = N - 1; i >= 0; --i)
 		{
-			for (int j = i + 1; j < N; ++j) // word[i,j-1] will be putted into the same line.
+			for (int j = i + 1; j <= N; ++j) // word[i,j-1] will be putted into the same line.
 			{
-				int cost = CalcCost(vWordsLen, i, j, maxWidth);
+				int cost = CalcCost(vWordsLen, i+1, j+1, N+1,maxWidth);
 				if (INT_MAX == cost) // this line has been fullfilled.
 				{
 					break;
@@ -101,65 +100,119 @@ public:
 					dp[i] = cost;
 					vline[i] = j;
 				}
-				else
-				{
-					if (dp[i] < dp[j] + cost)
-					{
-						dp[i] = dp[j] + cost;
-						vline[i] = j;
-					}
+				else if (dp[i] >= dp[j] + cost)
+				{			
+					dp[i] = dp[j] + cost;
+					vline[i] = j;	
 				}
-
 			}
 		}
 		//dp[0] is the minimum value
 		//Now, the next starting word has been in vline. Lets construct the lines.
 		int start = 0;
-		while (-1 != start)
+		while (N != start)
 		{
 			int end = vline[start];
-			if (-1 == vline[start])
-			{
-				end = N;
-			}
 			string strline;
-			int nSpace = (maxWidth - (vWordsLen[end] - vWordsLen[start]));
+			if (N == end || 1 == end - start) //the end
+			{
+				strline = words[start];
+				if (strline.length() < maxWidth)
+				strline += " ";
+				for (int i = start + 1; i < end; ++i)
+				{
+					strline += words[i];
+					if(strline.length() < maxWidth)
+					strline += " ";
+				}
+				strline.append(maxWidth - strline.length(), ' ');
+				vset.push_back(strline);
+			}
+			else
+			{
+				int nSpace = (maxWidth - (vWordsLen[end] - vWordsLen[start]));
+				int nSpaceCount		= (end - start - 1);
+				int nSpaceLen		= nSpace / nSpaceCount;
+				int nSpaceLeft		= nSpace % nSpaceCount;
 
-
+				strline += words[start];
+				strline.append(nSpaceLen, ' ');
+				if (nSpaceLeft)
+				{
+					strline.append(1, ' ');
+					--nSpaceLeft;
+				}
+				
+				for (int i = start + 1; i < end; ++i)
+				{
+					strline += words[i];
+					if (i + 2 < end)
+					{
+						strline.append(nSpaceCount, ' ');
+					}
+					else if( i+2 ==end)
+					{
+						strline.append(nLastSpaceCount, ' ');
+					}
+				}
+				vset.push_back(strline);
+			}
 			start = vline[start];
 		}
-
+		for (auto str : vset)
+		{
+			cout << str << endl;
+		}
 		return vset;
 	}
 
 private:
-	int CalcCost(vector<int> & vWordsLen, int s, int e, int maxWidth)
+	int CalcCost(vector<int> & vWordsLen, int s, int e, int maxCount, int maxWidth)
 	{
 		int cost = INT_MAX;
 		int nWordLen = 0;
-		nWordLen = (vWordsLen[e] - vWordsLen[s]);
-		nWordLen += (e - s);
+		nWordLen = (vWordsLen[e-1] - vWordsLen[s-1]);
+		nWordLen += (e - s-1);
 
 		if (nWordLen <= maxWidth)
 		{
 			cost = maxWidth - nWordLen;
-			cost *= cost;
-			cost *= cost;
+			cost = (cost *cost*cost);
+			if (e == maxCount)
+			{
+				cost = 0;
+			}
 		}
 
 		return cost;
 	}
 };
 
+//["Science  is  what we", 
+//"understand      well", 
+//"enough to explain to", 
+//"a  computer.  Art is", 
+//"everything  else  we", 
+//"do                  "]
 
 int main()
 {
-	int maxWidth = 16;
+	int maxWidth = 20;
 	Solution sol;
-	vector<string> words{ "This", "is", "an", "example", "of", "text", "justification." };
-	
+	vector<string> words{"Science", "is", "what", "we", "understand", "well", "enough", "to", "explain", "to", "a", "computer.", "Art", "is", "everything", "else", "we", "do"};
+
 	sol.fullJustify(words, maxWidth);
-	
+
+	vector<string> words1{ "This", "is", "an", "example", "of", "text", "justification." };
+	maxWidth = 16;
+
+	//sol.fullJustify(words1, maxWidth);
+
+
+	//["The", "important", "thing", "is", "not", "to", "stop", "questioning.", "Curiosity", "has", "its", "own", "reason", "for", "existing."]
+	//17
 
 	return 0;
 }
+
+
