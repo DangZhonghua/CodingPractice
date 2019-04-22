@@ -18,6 +18,11 @@ The median is (2 + 3)/2 = 2.5
 
 */
 
+#include<vector>
+#include<iostream>
+using namespace std;
+
+
 class Solution 
 {
 public:
