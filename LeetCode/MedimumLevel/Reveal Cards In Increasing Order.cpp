@@ -34,7 +34,8 @@ A[i] != A[j] for all i != j
 
 */
 
-
+#include<vector>
+using namespace std;
 
 class Solution 
 {
