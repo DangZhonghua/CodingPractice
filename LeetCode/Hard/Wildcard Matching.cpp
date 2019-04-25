@@ -41,9 +41,55 @@ Output: false
 
 */
 
-class Solution {
+
+#include<string>
+#include<vector>
+#include<iostream>
+using namespace std;
+
+
+/*
+
+prefix form subproblem. but what is the recursive formulation between them.
+
+
+            WM[i-1,j-1]  if p[i] == s[j]
+ WM[i,j] = 
+            false
+
+*/
+
+
+class Solution 
+{
 public:
-    bool isMatch(string s, string p) {
+    bool isMatch(string s, string p) 
+    {
+        bool bMatch = false;
+        int N = s.length();
+        int M = p.length();
+        vector< vector<bool> > wm(M+1, vector<bool>(N+1,false));
+        wm[0][0] = true;
         
+        for(int i = 1; i<=M; ++i)
+        {
+            for(int j = 1; j<=N; ++j)
+            {
+                if(p[i-1] == s[j-1])
+                {
+                    wm[i][j] = wm[i-1][j-1];
+                }
+                else
+                {
+                    //Now lets handle various cases.
+                    if('*' == p[i])
+                    {
+                        //check wether its prefix matched.
+                    }
+                }
+            }
+        }
+        
+        return bMatch;
     }
 };
