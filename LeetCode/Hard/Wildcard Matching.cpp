@@ -1,5 +1,7 @@
 /*
 https://leetcode-cn.com/problems/wildcard-matching/
+https://www.geeksforgeeks.org/wildcard-pattern-matching/
+
 Wildcard Matching
 
 Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*'.
@@ -69,27 +71,43 @@ public:
         int N = s.length();
         int M = p.length();
         vector< vector<bool> > wm(M+1, vector<bool>(N+1,false));
+        
+        //Initialize
         wm[0][0] = true;
+        
+        //only "****......" match the empty source string.
+        for(int i = 1; i<=M; ++i)
+        {
+            if('*' == p[i-1])
+            {
+                wm[i][0] = wm[i-1][0];
+            }
+        }
+        
         
         for(int i = 1; i<=M; ++i)
         {
             for(int j = 1; j<=N; ++j)
             {
-                if(p[i-1] == s[j-1])
+                if(p[i-1] == s[j-1] || '?' == p[i-1])
                 {
                     wm[i][j] = wm[i-1][j-1];
                 }
                 else
                 {
                     //Now lets handle various cases.
-                    if('*' == p[i])
+                    if('*' == p[i-1])
                     {
                         //check wether its prefix matched.
+                        wm[i][j] = wm[i-1][j]|wm[i][j-1];
+                        
+                        //wm[i-1][j] means: current '*' match empty string
+                        //wm[i][j-1] means: current '*' match any string start from j to the point which char in P matching in S.
                     }
                 }
             }
         }
         
-        return bMatch;
+        return wm[M][N];
     }
 };
