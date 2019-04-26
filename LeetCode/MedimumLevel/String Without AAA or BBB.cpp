@@ -21,3 +21,22 @@ Note:
 It is guaranteed such an S exists for the given A and B.
 
 */
+
+#include<string>
+using namespace std;
+
+class Solution 
+{
+public:
+    string strWithout3a3b(int A, int B) 
+    {
+        string s;
+        
+        while(A>B)
+        {
+            
+        }
+
+
+    }
+};

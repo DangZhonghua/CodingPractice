@@ -30,14 +30,30 @@
 
 #include<iostream>
 #include<vector>
+#include<unordered_map>
 using namespace std;
 
 class Solution {
 public:
     int majorityElement(vector<int>& nums) 
     {
-        int m = 1;
-        for( )
+        unordered_map<int,int> dict;
+        int N = nums.size();
+        for(int i = 0; i<N; ++i )
+        {
+          dict[nums[i]] += 1;
+        }
+        int v = 0;
+        for(auto it = dict.begin(); it != dict.end();++it)
+        {
+            if( it->second > (N/2))
+            {
+                v = it->first;
+                cout<<v<<endl;
+                break;
+            }
+        }
+        return v;
     }
 };
 
