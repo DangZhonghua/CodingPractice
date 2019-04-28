@@ -57,6 +57,16 @@ class Solution
 public:
     bool isMatch(string s, string p) 
     {
+        int M = p.size();
+        int N = s.size();
+        vector< vector<bool> > dp(M+1,vector<bool>(N+1,false));
+
+
+        dp[0][0] = true;
         
+
+
+
+
     }
 };

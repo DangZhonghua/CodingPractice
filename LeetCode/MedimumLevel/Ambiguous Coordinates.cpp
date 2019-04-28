@@ -31,7 +31,8 @@ S[0] = "(", S[S.length - 1] = ")", and the other elements in S are digits.
 
 class Solution {
 public:
-    vector<string> ambiguousCoordinates(string S) {
+    vector<string> ambiguousCoordinates(string S) 
+    {
         
     }
 };
