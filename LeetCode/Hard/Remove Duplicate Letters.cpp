@@ -12,9 +12,11 @@ Output: "acdb"
 
 */
 
-class Solution {
+class Solution 
+{
 public:
-    string removeDuplicateLetters(string s) {
+    string removeDuplicateLetters(string s) 
+    {
         
     }
 };
