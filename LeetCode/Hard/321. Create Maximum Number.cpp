@@ -31,6 +31,7 @@ nums2 = [8, 9]
 k = 3
 Output:
 [9, 8, 9]
+
 */
 
 
@@ -45,7 +46,46 @@ class Solution
 public:
     vector<int> maxNumber(vector<int>& nums1, vector<int>& nums2, int k) 
     {
-           
+        vector<int> vselect1;
+        vector<int> vselect2;
+        vector<int> vr;
+
+        int N1 = nums1.size();
+        int N2 = nums2.size();
+        
+
+        for(int s = 0; s<=N1;  ++s )
+        {
+
+        }
+
     }
+
+private:
+void SelectMaximumNumber(vector<int>& nums, vector<int>& vselect, int k)
+	{
+		int N = nums.size();
+		int nDrop = N - k;
+
+		for (int i = 0; i < N; ++i)
+		{
+			while (!vselect.empty() && nDrop > 0)
+			{
+				if (vselect.back() < nums[i])
+				{
+					vselect.pop_back();
+					--nDrop;
+				}
+				else
+				{
+					break;
+				}
+			}
+			vselect.push_back(nums[i]);
+		}
+
+		return;
+	}
 };
+
 
