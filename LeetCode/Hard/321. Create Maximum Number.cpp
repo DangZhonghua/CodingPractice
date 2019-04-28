@@ -54,15 +54,24 @@ public:
         int N2 = nums2.size();
         
 
-        for(int s = 0; s<=N1;  ++s )
+        for(int s = 0; s<=N1 && s<=k;  ++s )
         {
-
+            vselect1.clear();
+            vselect2.clear();
+            
+            if( (k-s) <= N2)
+            {
+                SelectMaximumNumber(nums1,vselect1,s);
+                SelectMaximumNumber(nums2,vselect2,k-s);
+                
+            }
         }
 
     }
 
 private:
-void SelectMaximumNumber(vector<int>& nums, vector<int>& vselect, int k)
+
+    void SelectMaximumNumber(vector<int>& nums, vector<int>& vselect, int k)
 	{
 		int N = nums.size();
 		int nDrop = N - k;
@@ -86,6 +95,16 @@ void SelectMaximumNumber(vector<int>& nums, vector<int>& vselect, int k)
 
 		return;
 	}
+
+    void CombineMaximumNumber(vector<int>& vselect1, vector<int>& vselect2, vector<int>& vc)
+    {
+        int i = 0;
+        int j = 0;
+        while( i<vselect1.size() && j<vselect2.size() )
+        {
+            if(vselect1)
+        }
+    }
 };
 
 
