@@ -44,10 +44,8 @@ Output: false
 #include<vector>
 using namespace std;
 
+
 /*
-
-
-
 
 */
 

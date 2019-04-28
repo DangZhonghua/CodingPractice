@@ -21,3 +21,72 @@ Note:
 It is guaranteed such an S exists for the given A and B.
 
 */
+
+#include<string>
+using namespace std;
+
+class Solution 
+{
+public:
+    string strWithout3a3b(int A, int B) 
+    {
+        string s;
+        char cl;
+        if(A>B)
+        {
+            cl = 'b';
+            while(A>B && A>0 && B>0)
+            {
+                s += "aab";
+                A -= 2;
+                B -= 1;
+            }
+        }
+        else if(A<B)
+        {
+            cl = 'a';
+            while(B>A && A>0 && B>0)
+            {
+                s += "bba";
+                B -= 2;
+                A -= 1;
+            }
+        }
+        else
+        {
+            while(A>0)
+            {
+                s += "ab";
+                --A;
+                --B;
+            }
+        }
+        
+        while(A == B && A>0)
+        {
+            if( 'b' == cl)
+            {
+                s += "ba";
+            }
+            else
+            {
+                s += "ab";
+            }
+            --A;
+            --B;
+            
+        }
+        while(A>0)
+        {
+            s.append(A,'a');
+            break;
+        }
+        while(B>0)
+        {
+            s.append(B,'b');
+            break;
+        }
+
+        return s;
+    }
+};
