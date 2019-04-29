@@ -25,9 +25,17 @@ Explanation: Remove all the digits from the number and it is left with nothing w
 
 */
 
-class Solution {
+//https://yq.aliyun.com/articles/618109
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Solution 
+{
 public:
-    string removeKdigits(string num, int k) {
+    string removeKdigits(string num, int k) 
+    {
         
     }
 };

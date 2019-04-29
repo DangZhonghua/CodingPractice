@@ -1,8 +1,44 @@
+/*
+
+https://leetcode-cn.com/problems/create-maximum-number/
+http://www.cnblogs.com/grandyang/p/5136749.html
+
+321. Create Maximum Number
+
+Given two arrays of length m and n with digits 0-9 representing two numbers.
+Create the maximum number of length k <= m + n from digits of the two.
+The relative order of the digits from the same array must be preserved.
+Return an array of the k digits.
+Note: You should try to optimize your time and space complexity.
+Example 1:
+Input:
+nums1 = [3, 4, 6, 5]
+nums2 = [9, 1, 2, 5, 8, 3]
+k = 5
+Output:
+[9, 8, 6, 5, 3]
+Example 2:
+Input:
+nums1 = [6, 7]
+nums2 = [6, 0, 4]
+k = 5
+Output:
+[6, 7, 6, 0, 4]
+Example 3:
+Input:
+nums1 = [3, 9]
+nums2 = [8, 9]
+k = 3
+Output:
+[9, 8, 9]
+
+*/
+
+
 #include<vector>
 #include<stack>
 #include<iostream>
 using namespace std;
-
 
 
 class Solution
@@ -70,7 +106,7 @@ private:
 			}
 			vselect.push_back(nums[i]);
 		}
-		
+
 		while (!vselect.empty() && nDrop > 0)
 		{
 			vselect.pop_back();
@@ -89,36 +125,23 @@ private:
 
 		while (i < vselect1.size() && j < vselect2.size())
 		{
-			if (vselect1[i] == vselect2[j])
+			if (LargerThan(vselect1, i, vselect2, j))
 			{
-				++i;
-				++j;
-			}
-			else if (vselect1[i] > vselect2[j])
-			{
-				for (; si <= i; ++si)
-				{
-					vc.push_back(vselect1[si]);
-				}
-				++i;
+				vc.push_back(vselect1[i++]);
 			}
 			else
 			{
-				for (; sj <= j; ++sj)
-				{
-					vc.push_back(vselect2[sj]);
-				}
-				++j;
+				vc.push_back(vselect2[j++]);
 			}
 		}
 
-		while (si < vselect1.size())
+		while (i < vselect1.size())
 		{
-			vc.push_back(vselect1[si++]);
+			vc.push_back(vselect1[i++]);
 		}
-		while (sj < vselect2.size())
+		while (j < vselect2.size())
 		{
-			vc.push_back(vselect2[sj++]);
+			vc.push_back(vselect2[j++]);
 		}
 	}
 
@@ -133,4 +156,53 @@ private:
 	{
 		return vc > vr;
 	}
+	bool LargerThan(vector<int>vs1, int s1, vector<int> vs2, int s2)
+	{
+		bool bLarge = false;
+		
+		while (s1 < vs1.size() && s2 < vs2.size())
+		{
+			if (vs1[s1] > vs2[s2])
+			{
+				bLarge = true;
+				break;
+			}
+			else if (vs1[s1] < vs2[s2])
+			{
+				break;
+			}
+			++s1;
+			++s2;
+		}
+		if (s1 < vs1.size() && s2 == vs2.size())
+		{
+			bLarge = true;
+		}
+		return bLarge;
+	}
 };
+
+
+int main()
+{
+	Solution sol;
+	vector<int> nums1{ 3, 4, 6, 5 };
+	vector<int> nums2{ 9, 1, 2, 5, 8, 3 };
+	int k = 5;
+
+	//sol.maxNumber(nums1, nums2, k);
+
+	vector<int> a1{ 3, 4, 8, 9, 3, 0 };
+	vector<int> b1{ 6, 1, 9, 1, 1, 2 };
+	k = 6;
+
+	//[9,9,3,1,2,0]
+
+	sol.maxNumber(a1, b1, k);
+	if (a1 > b1)
+	{
+		cout << "Wow!" << endl;
+	}
+
+	return 0;
+}
