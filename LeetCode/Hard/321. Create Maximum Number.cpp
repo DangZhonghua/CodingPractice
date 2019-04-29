@@ -4,6 +4,7 @@
 using namespace std;
 
 
+
 class Solution
 {
 public:
@@ -29,6 +30,11 @@ public:
 				vector<int> vc;
 				CombineMaximumNumber(vselect1, vselect2, vc);
 				AcquireMaxinumNumber(vc, vr);
+				for (auto e : vr)
+				{
+					cout << e << " ";
+				}
+				cout << endl;
 			}
 		}
 
@@ -118,24 +124,13 @@ private:
 
 	void AcquireMaxinumNumber(vector<int> & vc, vector<int> & vr)
 	{
-		if (vr.empty())
+		if (LargerThan(vc, vr))
 		{
 			vr = vc;
 		}
-		//like string compare
-		int i = 0;
-
-		for (int i = 0; i < vc.size(); ++i)
-		{
-			if (vc[i] > vr[i])
-			{
-				vr = vc;
-				break;
-			}
-			else if (vc[i] < vr[i])
-			{
-				break;
-			}
-		}
+	}
+	bool LargerThan(vector<int>& vc, vector<int>& vr)
+	{
+		return vc > vr;
 	}
 };
