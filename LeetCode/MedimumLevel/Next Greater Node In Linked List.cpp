@@ -42,6 +42,9 @@ The given list has length in the range [0, 10000].
  */
 
 #include<vector>
+#include<unordered_map>
+#include<stack>
+using namespace std;
 
 
 class Solution 
@@ -49,6 +52,52 @@ class Solution
 public:
     vector<int> nextLargerNodes(ListNode* head) 
     {
+        vector<int> vnextlarger;
+        unordered_map<ListNode*, ListNode*> mapNode2NextLarger;
+        stack<ListNode*> ls;
+        ListNode* h = head;
         
+        while(h)
+        {
+            ls.push(h);
+            h = h->next;
+        }
+
+        ListNode* pre = ls.top();
+        mapNode2NextLarger[pre] = nullptr;
+        ls.pop();
+        while(!ls.empty())
+        {
+            ListNode* cur = ls.top();
+            ls.pop();
+            if(pre->val > cur->val)
+            {
+                mapNode2NextLarger[cur] = pre;
+            }
+            else
+            {
+                while(pre && pre->val <= cur->val)
+                {
+                    pre = mapNode2NextLarger[pre];
+                }
+                mapNode2NextLarger[cur] = pre;
+            }    
+            pre = cur;
+        }
+        
+        h = head;
+        while(h)
+        {
+            if(mapNode2NextLarger[h])
+            {
+              vnextlarger.push_back(mapNode2NextLarger[h]->val);
+            }
+            else
+            {
+                vnextlarger.push_back(0);
+            }      
+            h = h->next;
+        }
+        return vnextlarger;
     }
 };

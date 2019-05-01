@@ -24,7 +24,8 @@ Note:
 
 class Solution {
 public:
-    int sumSubarrayMins(vector<int>& A) {
+    int sumSubarrayMins(vector<int>& A) 
+    {
         
     }
 };
