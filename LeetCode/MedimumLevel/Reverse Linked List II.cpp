@@ -23,48 +23,59 @@ Output: 1->4->3->2->5->NULL
 
 //https://leetcode-cn.com/problems/baseball-game/
 
-
-class Solution 
+class Solution
 {
 public:
-    ListNode* reverseBetween(ListNode* head, int m, int n) 
+    ListNode *reverseBetween(ListNode *head, int m, int n)
     {
         int s = 1;
-        ListNode* nh  = head;
-        ListNode* pre = nullptr;
-        ListNode* pstart = nullptr;
-        ListNode* pend = nullptr;
+        ListNode *nh = head;
+        ListNode *pstart = nullptr;
+        ListNode *pend = nullptr;
+        ListNode* segHead = nullptr;
+        ListNode* segTail = nullptr;
 
-        while(head)
+        while (head)
         {
-            ListNode* pn = head->next;
-            if(s+1 == m)
+            ListNode *pn = head->next;
+            if (s + 1 == m)
             {
                 pstart = head;
             }
-            
-            if(s>=m && s<=n)
+
+            if (s >= m && s <= n)
             {
-                if( pre )
+                if (segTail)
                 {
-                    head->next = pre;
-                    pre = head;
+                    head->next = segTail;
+                    segTail = head;
                 }
                 else
                 {
-                  pre = head;
-                  pstart = head;
+                    segHead = segTail = head;
                 }
             }
             ++s;
             head = pn;
-            if(s>n)
+            if (s > n)
             {
                 pend = head;
                 break;
             }
         }
+
+    // pay attention here, I forget the pstart = nullptr case at first time.
+        if(pstart)
+        {
+            pstart->next = segTail;
+        }
+        else
+        {
+            nh = segTail;
+        }
         
+        segHead->next = pend;
+
         return nh;
     }
 };
