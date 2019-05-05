@@ -93,17 +93,25 @@ public:
 				}
 				else if ('*' == p[i - 1])
 				{
+					//match nothing case
+					dp[i][j] = dp[i - 1][j];
+					
+					//repeat at least one time case
 
-					if ((j >= 2 && s[j - 1] == s[j - 2]) || (i >= 2 && p[i - 2] == '.') )
-					{
-						dp[i][j] = (dp[i][j - 1]&  (p[i - 2] == '.'? true:dp[i-1][j-1]  ) ) | dp[i - 1][j]/* '*' match nothing case */;
-		
-					}
-					else
-					{
-						dp[i][j] = dp[i - 1][j];				
-					}
+					//if ((j >= 2 && s[j - 1] == s[j - 2]) || (i >= 2 && p[i - 2] == '.'))
+					//{
+					//	dp[i][j] = dp[i][j] | (dp[i][j - 1] & (p[i - 2] == '.' ? true : dp[i - 1][j - 1]));
+					//}
+					//if( )
 
+					if (i >= 2)
+					{
+						if ('.' == p[i - 2] || p[i-2] == s[j-1] )
+						{
+							dp[i][j] = (dp[i][j] | dp[i][j - 1]);
+						}
+					}
+					
 					if (i >= 3)// for the repeat the 'zero' time case.
 					{
 						dp[i][j] = dp[i][j] | dp[i - 2][j];
@@ -130,7 +138,7 @@ int main()
 	Solution sol;
 	string p = "c*a*b";
 	string s = "aab";
-	
+
 
 
 	//cout << sol.isMatch(s, p) << endl;
@@ -142,7 +150,7 @@ int main()
 
 	p = "ab*a";
 	s = "aaa";
-    //(p[i - 2] == '.'? true:dp[i-1][j-1]  )
+	//(p[i - 2] == '.'? true:dp[i-1][j-1]  )
 	//cout << sol.isMatch(s, p) << endl;
 
 	p = ".*";
