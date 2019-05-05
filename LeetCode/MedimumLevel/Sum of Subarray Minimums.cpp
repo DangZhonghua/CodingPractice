@@ -22,6 +22,11 @@ Note:
 1 <= A[i] <= 30000
 */
 
+
+#include<vector>
+using namespace std;
+
+
 class Solution {
 public:
     int sumSubarrayMins(vector<int>& A) 
