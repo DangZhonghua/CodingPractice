@@ -1,6 +1,7 @@
 /*
 Sum of Subarray Minimums
 https://leetcode-cn.com/problems/sum-of-subarray-minimums/
+https://leetcode.com/articles/sum-of-subarray-minimums/
 
 Given an array of integers A, find the sum of min(B), where B ranges over every (contiguous) subarray of A.
 
@@ -25,8 +26,47 @@ Note:
 
 #include<vector>
 #include<deque>
+#include<climits>
 using namespace std;
 
+
+// class Solution 
+// {
+// public:
+//     int sumSubarrayMins(vector<int>& A) 
+//     {
+//         int N = A.size();
+//         int sum = 0;
+//         vector<int>  mq;
+
+//         for(int i = 0; i<N; ++i)
+//         {
+//             mq.clear();
+//             for(int j = i; j<N; ++j)
+//             {
+//                 if(!mq.empty())
+//                 {
+//                     if(mq.back()<A[j])
+//                     {
+//                         mq.push_back(mq.back());
+//                     }
+//                     else
+//                     {
+//                         mq.push_back(A[j]);
+//                     }
+//                 }
+//                 else
+//                 {
+//                     mq.push_back(A[j]);
+//                 }
+//                 sum += mq.back();
+//                 sum %= 1000000007;
+//             }
+//         }
+
+//         return sum;
+//     }
+// };
 
 class Solution 
 {
@@ -34,17 +74,23 @@ public:
     int sumSubarrayMins(vector<int>& A) 
     {
         int N = A.size();
-
         int sum = 0;
-        deque<int>  mq;
+        vector<int>  mq;
 
         for(int i = 0; i<N; ++i)
         {
+            int minv = INT_MAX;
             for(int j = i; j<N; ++j)
             {
-                if()
+                if(minv>A[j])
+                {
+                    minv = A[j];
+                }
+                sum += minv;
+                sum %= 1000000007;
             }
         }
-        
+
+        return sum;
     }
 };
