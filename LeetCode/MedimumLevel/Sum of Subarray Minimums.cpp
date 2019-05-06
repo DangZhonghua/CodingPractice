@@ -24,13 +24,27 @@ Note:
 
 
 #include<vector>
+#include<deque>
 using namespace std;
 
 
-class Solution {
+class Solution 
+{
 public:
     int sumSubarrayMins(vector<int>& A) 
     {
-          
+        int N = A.size();
+
+        int sum = 0;
+        deque<int>  mq;
+
+        for(int i = 0; i<N; ++i)
+        {
+            for(int j = i; j<N; ++j)
+            {
+                if()
+            }
+        }
+        
     }
 };

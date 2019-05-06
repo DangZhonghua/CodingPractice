@@ -112,7 +112,7 @@ public:
 						}
 					}
 					
-					if (i >= 3)// for the repeat the 'zero' time case.
+					if (i >= 3)// for the repeat the 'zero' time case:like earse the current char s[j-1]
 					{
 						dp[i][j] = dp[i][j] | dp[i - 2][j];
 					}

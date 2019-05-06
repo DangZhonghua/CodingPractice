@@ -21,6 +21,13 @@ The median is (2 + 3)/2 = 2.5
 
 */
 
+/*
+
+the basic idea: binary segment the median K = (ArrLen1+ArrLen2)/2. Not the array itself.
+
+
+*/
+
 #include<vector>
 #include<algorithm>
 using namespace std;
