@@ -70,27 +70,38 @@ using namespace std;
 
 class Solution 
 {
-public:
-    int sumSubarrayMins(vector<int>& A) 
+    public int sumSubarrayMins(int[] A) 
     {
-        int N = A.size();
-        int sum = 0;
-        vector<int>  mq;
+        int MOD = 1_000_000_007;
 
-        for(int i = 0; i<N; ++i)
+        Stack<RepInteger> stack = new Stack();
+        int ans = 0, dot = 0;
+        for (int j = 0; j < A.length; ++j) 
         {
-            int minv = INT_MAX;
-            for(int j = i; j<N; ++j)
+            // Add all answers for subarrays [i, j], i <= j
+            int count = 1;
+            while (!stack.isEmpty() && stack.peek().val >= A[j]) 
             {
-                if(minv>A[j])
-                {
-                    minv = A[j];
-                }
-                sum += minv;
-                sum %= 1000000007;
+                RepInteger node = stack.pop();
+                count += node.count;
+                dot -= node.val * node.count;
             }
+            stack.push(new RepInteger(A[j], count));
+            dot += A[j] * count;
+            ans += dot;
+            ans %= MOD;
         }
 
-        return sum;
+        return ans;
     }
-};
+}
+
+class RepInteger 
+{
+    int val, count;
+    RepInteger(int v, int c) 
+    {
+        val = v;
+        count = c;
+    }
+}
