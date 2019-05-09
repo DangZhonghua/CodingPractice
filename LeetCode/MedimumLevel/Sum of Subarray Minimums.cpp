@@ -26,8 +26,53 @@ Note:
 
 #include<vector>
 #include<deque>
+#include<stack>
 #include<climits>
 using namespace std;
+
+
+
+class Solution 
+{
+    struct  stDc
+    {
+        int v{0};
+        int c{0};
+    };
+    
+
+public:
+    int sumSubarrayMins(vector<int>& A) 
+    {
+        int N           = A.size();
+        int mode        = 1e9+7;
+        int sum         = 0;
+        int dotProduct  = 0;
+        int segMincount = 0;
+        deque<stDc>  mq;
+        
+        for(int i = 0; i<N; ++i)
+        {
+            segMincount = 1; // For subarray only contain the current elements.
+            while(!mq.empty() && mq.back().v>A[i])
+            {
+                stDc h = mq.back();
+                mq.pop_back();
+                segMincount += h.c;
+                dotProduct -=  ( h.c* h.v ); //since current is smaller, so subtract previous 
+            }
+            stDc cdc;
+            cdc.c = segMincount;
+            cdc.v = A[i]; 
+            mq.push_back(cdc);  
+            dotProduct += segMincount*A[i];
+            sum +=dotProduct;
+            sum %= mode;
+        }
+        return sum;
+    }
+};
+
 
 
 // class Solution 
@@ -105,3 +150,6 @@ using namespace std;
 //         count = c;
 //     }
 // }
+
+
+
