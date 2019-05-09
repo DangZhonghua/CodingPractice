@@ -2,7 +2,8 @@
 https://leetcode-cn.com/problems/split-array-into-consecutive-subsequences/
 Split Array into Consecutive Subsequences
 
-You are given an integer array sorted in ascending order (may contain duplicates), you need to split them into several subsequences, 
+You are given an integer array sorted in ascending order (may contain duplicates), 
+you need to split them into several subsequences, 
 where each subsequences consist of at least 3 consecutive integers. Return whether you can make such a split.
 Example 1:
 Input: [1,2,3,3,4,5]
