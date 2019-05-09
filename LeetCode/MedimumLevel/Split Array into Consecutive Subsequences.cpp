@@ -36,7 +36,11 @@ using namespace std;
 
 /*
 
-This actuall: find the longest subarray of duplicated elements
+We iterate through the array once to get the frequency of all the elements in the array
+
+We iterate through the array once more and for each element we either see if it can be appended to 
+a previously constructed consecutive sequence or if it can be the start of 
+a new consecutive sequence. If neither are true, then we return false.
 
 */
 
