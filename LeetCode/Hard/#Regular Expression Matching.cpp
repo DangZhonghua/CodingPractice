@@ -66,13 +66,13 @@ public:
 
 
 		///Initialize the variable
-		dp[0][0] = true;
-		// for source is empty case.
+		dp[0][0] = true; //for both string are empty
+		// for source is empty case. of course, this need consider the repeat capacity of '*'
 		for (int i = 1; i <= p.size(); ++i)
 		{
 			if ('*' == p[i - 1])
 			{
-				if (i >= 2)
+				if (i >= 2) // for the case: repeat zero time for previous char.
 				{
 					dp[i][0] = dp[i - 2][0];
 				}
@@ -93,7 +93,7 @@ public:
 				}
 				else if ('*' == p[i - 1])
 				{
-					//match nothing case
+					//##1: match nothing case
 					dp[i][j] = dp[i - 1][j];
 					
 					//repeat at least one time case
@@ -104,6 +104,8 @@ public:
 					//}
 					//if( )
 
+
+					//##2: repeat at least one time of previous char.
 					if (i >= 2)
 					{
 						if ('.' == p[i - 2] || p[i-2] == s[j-1] )
@@ -112,7 +114,8 @@ public:
 						}
 					}
 					
-					if (i >= 3)// for the repeat the 'zero' time case:like earse the current char s[j-1]
+					//##3:for the repeat the 'zero' time case:like earse the current char s[j-1]
+					if (i >= 3)
 					{
 						dp[i][j] = dp[i][j] | dp[i - 2][j];
 					}

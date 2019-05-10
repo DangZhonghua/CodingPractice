@@ -118,13 +118,14 @@ private:
 
 	void CombineMaximumNumber(vector<int> & vselect1, vector<int> & vselect2, vector<int> & vc)
 	{
-		int i = 0;
-		int j = 0;
-		int si = 0;
-		int sj = 0;
+		int i 	= 0;
+		int j 	= 0;
+		int si 	= 0;
+		int sj 	= 0;
 
 		while (i < vselect1.size() && j < vselect2.size())
 		{
+			//The Purpose is use the one and only one digital from the larger sequence.
 			if (LargerThan(vselect1, i, vselect2, j))
 			{
 				vc.push_back(vselect1[i++]);
