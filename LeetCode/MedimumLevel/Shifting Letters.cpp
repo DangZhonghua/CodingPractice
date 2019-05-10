@@ -33,9 +33,12 @@ based on 26
 
 */
 
-class Solution {
+
+class Solution 
+{
 public:
-    string shiftingLetters(string S, vector<int>& shifts) {
+    string shiftingLetters(string S, vector<int>& shifts) 
+    {
         
     }
 };
