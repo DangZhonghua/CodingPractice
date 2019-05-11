@@ -36,14 +36,54 @@ The length of the given list will be in the range of [2, 50].
 所有给定的字符串长度不会超过 10 。
 给定字符串列表的长度将在 [2, 50 ] 之间。
 
-
 */
+
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
 
 class Solution 
 {
 public:
     int findLUSlength(vector<string>& strs) 
     {
-        
+        int LUS = -1;
+        for(int i = 0; i<strs.size(); ++i)
+        {
+            bool bSeq = false;
+            for(int j = 0; j<strs.size(); ++j)
+            {
+                if(i == j) continue;
+                if(IsSubSeq(strs[i], strs[j]))
+                {
+                    bSeq = true;
+                    break;
+                }
+            }
+            if(!bSeq)
+            {
+                LUS = max(LUS,(int)strs[i].size());
+            }
+        }
+        return LUS;
+    }
+private:
+    bool IsSubSeq(string& strSub, string& strSource) // check whether strSub is one sub-sequence of strSource
+    {
+       int i = 0;
+
+       for(auto c:strSource)
+       {
+           if(c == strSub[i])
+           {
+               ++i;
+           }
+           if(strSub.size() == i)
+           {
+               break;
+           }
+       } 
+       return i == strSub.size();
     }
 };
