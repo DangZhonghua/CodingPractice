@@ -26,7 +26,7 @@ filter_none
 
 edit
 
-play_arrow
+play_arrow 
 
 brightness_4
 // C++ program to find maximum rectangular area in 

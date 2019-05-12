@@ -1,8 +1,10 @@
 /*
 https://leetcode-cn.com/problems/valid-parenthesis-string/
+http://www.cnblogs.com/grandyang/p/7617017.html
 678. Valid Parenthesis String
 
-Given a string containing only three types of characters: '(', ')' and '*', write a function to check whether this string is valid. We define the validity of a string by these rules: 
+Given a string containing only three types of characters: '(', ')' and '*', 
+write a function to check whether this string is valid. We define the validity of a string by these rules: 
 Any left parenthesis '(' must have a corresponding right parenthesis ')'.
 Any right parenthesis ')' must have a corresponding left parenthesis '('.
 Left parenthesis '(' must go before the corresponding right parenthesis ')'.
@@ -26,9 +28,37 @@ The string size will be in the range [1, 100].
 
 */
 
+#include<iostream>
+#include<string>
+#include<stack>
+using namespace std;
+
+class Solution 
+{
+public:
+    bool checkValidString(string s) 
+    {
+        
+    }
+};
+
 class Solution {
 public:
     bool checkValidString(string s) {
-        
+        stack<int> left, star;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '*') star.push(i);
+            else if (s[i] == '(') left.push(i);
+            else {
+                if (left.empty() && star.empty()) return false;
+                if (!left.empty()) left.pop();
+                else star.pop();
+            }
+        }
+        while (!left.empty() && !star.empty()) {
+            if (left.top() > star.top()) return false;
+            left.pop(); star.pop();
+        }
+        return left.empty();
     }
 };
