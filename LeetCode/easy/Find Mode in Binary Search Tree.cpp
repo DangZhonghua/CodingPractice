@@ -96,7 +96,7 @@ private:
            }
            else
            {
-                if(m < vc.size())
+                if(m < vc.size()) //find the larger mode
                 {
                     vm.clear();
                     vm.push_back(vc.back());
@@ -104,12 +104,18 @@ private:
                     vc.clear();
                     vc.push_back(root->val);
                 }
-                else if( m == vc.size())
+                else if( m == vc.size()) // multi mode
                 {
                     vm.push_back(vc.back());
                     vc.clear();
                     vc.push_back(root->val);
                 }
+                else // erase the previous effect
+                {
+                    vc.clear();
+                    vc.push_back(root->val);
+                }
+                
            }
        }
        else

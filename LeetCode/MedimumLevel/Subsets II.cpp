@@ -1,5 +1,8 @@
 /*
 https://leetcode-cn.com/problems/subsets-ii/
+http://www.cnblogs.com/TenosDoIt/p/3451902.html
+http://www.cnblogs.com/grandyang/p/4310964.html
+
 90. Subsets II
 
 Given a collection of integers that might contain duplicates, nums, return all possible subsets (the power set).
