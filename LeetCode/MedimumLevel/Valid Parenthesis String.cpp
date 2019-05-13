@@ -28,9 +28,22 @@ The string size will be in the range [1, 100].
 
 */
 
+
+
 #include<iostream>
 #include<string>
 #include<stack>
+using namespace std;
+
+/*
+
+Dang Zhonghua Please Oversee the problem!!!!
+
+*/
+
+#include<stack>
+#include<string>
+#include<iostream>
 using namespace std;
 
 class Solution 
@@ -38,9 +51,59 @@ class Solution
 public:
     bool checkValidString(string s) 
     {
-        
+         bool bVaild = true;
+         stack<int> leftS;
+         stack<int> starS;
+         int N = s.length();
+         int i = 0;
+         while(i<N && bVaild)
+         {
+             if('(' == s[i])
+             {
+                 leftS.push(i);
+             }
+             else if( '*' == s[i])
+             {
+                 starS.push(i);
+             }
+             else // ')' case
+             {
+                 if(!leftS.empty())
+                 {
+                     leftS.pop();
+                 }
+                 else if(!starS.empty())
+                 {
+                    starS.pop();
+                 }
+                 else
+                 {
+                     bVaild = false;
+                     break;
+                 }
+             }
+             ++i;
+         }
+         // Now, check the left '(' and '*'
+         
+         while(!starS.empty() && !leftS.empty())
+         {
+            if(leftS.top() > starS.top()) // "*(" case
+            {
+                bVaild = false;
+                break;
+            }
+            leftS.pop();
+            starS.pop();
+         }
+         if( !leftS.empty())
+         {
+             bVaild = false;
+         }
+        return bVaild;
     }
 };
+
 
 class Solution {
 public:

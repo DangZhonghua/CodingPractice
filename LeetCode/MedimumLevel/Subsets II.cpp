@@ -15,7 +15,7 @@ Output:
   [1,2],
   []
 ]
-
+ 
 */
 
 #include<iostream>
