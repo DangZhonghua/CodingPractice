@@ -41,11 +41,45 @@ Explanation: The root node's value is 5 but its right child's value is 4.
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
 class Solution 
 {
 public:
     bool isValidBST(TreeNode* root) 
     {
-        
+        if(nullptr == root)
+        {
+            return true;
+        }
+        TreeNode* pre = NULL;
+        return CheckBST(root,&pre);
+    }
+
+    bool CheckBST(TreeNode* root, TreeNode** pre)
+    {
+        bool bleft = true;
+        if(nullptr != root->left)
+        {
+            bleft = CheckBST(root->left, pre);
+        }
+        if(!bleft) return false;
+        bool bcur = true;
+        if(*pre)
+        {
+            if( (*pre)->val >= root->val )
+            {
+                bcur = false;
+            }
+        }
+
+        if(!bcur) return false;
+
+        *pre = root;
+        bool bright = true;
+        if(nullptr != root->right)
+        {
+            bright = CheckBST(root->right, pre);
+        }
+        return bright;
     }
 };

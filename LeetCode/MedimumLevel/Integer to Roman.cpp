@@ -37,6 +37,10 @@ Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 
 */
 
+#include<iostream>
+#include<string>
+using namespace std;
+
 class Solution {
 public:
     string intToRoman(int num) {
