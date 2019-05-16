@@ -22,9 +22,11 @@ How would you handle overflow for very large input integers?
 
 */
 
+#include<string>
+using namespace std;
+
 class Solution 
-{
-    
+{  
 public:
     bool isAdditiveNumber(string num) 
     {
