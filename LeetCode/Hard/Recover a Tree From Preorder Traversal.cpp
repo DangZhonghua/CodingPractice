@@ -12,7 +12,11 @@ If a node has only one child, that child is guaranteed to be the left child.
 
 Given the output S of this traversal, recover the tree and return its root.
 
- 
+*/
+
+/*
+
+hits:Do an iterative depth first search, parsing dashes from the string to inform you how to link the nodes together.
 
 */
 
