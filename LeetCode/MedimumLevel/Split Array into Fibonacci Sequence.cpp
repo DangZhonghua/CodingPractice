@@ -57,17 +57,26 @@ Note:
 #include<iostream>
 using namespace std;
 
+
 class Solution 
 {
     /*
-     Still need figure out the first three elements.
+     Still need figure out the first three elements. But PLEASE, PAY ATTENTION TO leading zero
     */
 
 public:
-    vector<int> splitIntoFibonacci(string S) 
+    vector<int> splitIntoFibonacci(string s) 
     {
+		int N = s.length();
         vector<int> vr;
         vector<int> vindex;
+		vindex.push_back(0);
+		
+		for(int len = 1; len<=N; ++len)
+		{
+			string strop1 =  s.substr(0,len);
+		}
+		
         
     }
 
