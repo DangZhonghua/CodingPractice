@@ -49,5 +49,73 @@ Note:
     S contains only digits.
 
 
-
 */
+
+#include<string>
+#include<vector>
+#include<deque>
+#include<iostream>
+using namespace std;
+
+class Solution 
+{
+    /*
+     Still need figure out the first three elements.
+    */
+
+public:
+    vector<int> splitIntoFibonacci(string S) 
+    {
+        vector<int> vr;
+        vector<int> vindex;
+        
+    }
+
+private:
+	string addStrings(const string & num1, const string & num2)
+	{
+		deque<char> SQ;
+		int i = num1.length() - 1;
+		int j = num2.length() - 1;
+		int sum = 0;
+		int s = 0;
+
+		while (i >= 0 && j >= 0)
+		{
+			sum = (s + num1[i] - '0' + num2[j] - '0');
+			s = sum / 10;
+			sum %= 10;
+			SQ.push_front('0' + sum);
+			--i;
+			--j;
+		}
+		while (i >= 0)
+		{
+			sum = s + num1[i] - '0';
+			s = sum / 10;
+			sum %= 10;
+			SQ.push_front('0' + sum);
+			--i;
+		}
+		while (j >= 0)
+		{
+			sum = s + num2[j] - '0';
+			s = sum / 10;
+			sum %= 10;
+			SQ.push_front('0' + sum);
+			--j;
+		}
+		if (s > 0)
+		{
+			SQ.push_front('0' + s);
+		}
+		string sr;
+
+		while (!SQ.empty())
+		{
+			sr.push_back(SQ.front());
+			SQ.pop_front();
+		}
+		return sr;
+	}
+};
