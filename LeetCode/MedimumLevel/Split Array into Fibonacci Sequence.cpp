@@ -67,18 +67,77 @@ class Solution
 public:
     vector<int> splitIntoFibonacci(string s) 
     {
+		bool bFibonacci = false;
 		int N = s.length();
         vector<int> vr;
         vector<int> vindex;
-		vindex.push_back(0);
+	
 		
-		for(int len = 1; len<=N; ++len)
+		for(int len = 1; len<=10 && !bFibonacci; ++len)
 		{
 			string strop1 =  s.substr(0,len);
-		}
-		
+			vindex.push_back(atoi(strop1.c_str()) );
+			for(int len2 = 1; len2<=N-len&&len2<=10; ++len2)
+			{
+				string strop2 = s.substr(len, len2);
+				if( '0' == strop2.at(0) && strop2.length() > 1)
+				{
+					break;
+				}
+				vindex.push_back(atoi(strop2.c_str()));	
+				if( btCheckFibonacciSeq(s,strop1,strop2,vindex, len+len2) )
+				{
+					bFibonacci = true;
+					break;
+				}
+				vindex.pop_back();
+			}
+			if(bFibonacci)
+			{
+				break;
+			}
+			vindex.pop_back();
+        }
         
+        return vindex;
     }
+
+private:
+	bool btCheckFibonacciSeq(const string& s, const string& op1, const string& op2, vector<int>& vindex, int nIndexSum) //nIndexSum means sum start index
+	{
+		string strsum = addStrings(op1,op2);
+        if(strsum.length() == 10 && strsum.compare("2147483647")>0) // pay attention to: the element scope.
+        {
+            return false;
+        }
+		if( ( nIndexSum+strsum.length() ) <= s.length())
+		{
+			string subsum = s.substr(nIndexSum, strsum.length());
+			if(subsum.compare(strsum))
+			{
+				return false;
+			}
+			else
+			{
+				vindex.push_back(atoi(strsum.c_str()));
+				if( ( nIndexSum+strsum.length() ) == s.length() )
+				{
+					return true;
+				}
+				else
+				{
+					if( !btCheckFibonacciSeq(s, op2,subsum,vindex, nIndexSum+subsum.length()) )
+					{
+						vindex.pop_back();
+						return false;
+					}
+					return true;
+				}
+			}
+		}
+		//since there is no enough letter.
+		return false;
+	}
 
 private:
 	string addStrings(const string & num1, const string & num2)

@@ -37,6 +37,7 @@ hits:Do an iterative depth first search, parsing dashes from the string to infor
 #include <iostream>
 #include <stack>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -51,15 +52,72 @@ struct TreeNode
 
 /*
 
-dfs search the string as
+dfs search the string as pre-order but keep the previous nodes to maintain the ancesdents
 
 */
 
+
 class Solution 
 {
-public:
-    TreeNode* recoverFromPreorder(string S) 
+    struct  TreeInfo
     {
-        
+        TreeNode* node{nullptr};
+        int level{0};
+    };
+    
+public:
+    TreeNode* recoverFromPreorder(string s) 
+    {
+        stack< TreeInfo > dfsStack;
+        int     nLevel = 0;
+        int     N = s.length();
+        int     i      = 0;
+        bool    bStart = false;
+        int     nStart = -1;
+        TreeNode* root = nullptr;
+
+        while(i<N)
+        {
+            if('-' != s[i] && -1 == nStart)
+            {
+                nStart = i;      
+            }
+            if( '-' == s[i] || (i+1) == N /*for handle the last digital*/ )
+            {
+                if(-1 != nStart ) // the number has been reached the end
+                {
+                    string strd = s.substr(nStart,i-nStart+1);
+                    TreeInfo nodeinfo;
+                    nodeinfo.level = nLevel;
+                    nodeinfo.node = new TreeNode(atoi(strd.c_str()));
+                    if(root == nullptr) root = nodeinfo.node;
+                    
+                    //Find the parent node.
+                    while( !dfsStack.empty() && dfsStack.top().level>=nodeinfo.level )
+                    {
+                        dfsStack.pop();
+                    }
+
+                    if(!dfsStack.empty())
+                    {
+                        if( nullptr == dfsStack.top().node->left)
+                        {
+                            dfsStack.top().node->left = nodeinfo.node;
+                        }
+                        else
+                        {
+                            dfsStack.top().node->right = nodeinfo.node;
+                        }
+                    }
+                    dfsStack.push(nodeinfo);
+                    //For process the next c
+                    nLevel = 0;
+                    nStart = -1;
+                }
+                ++nLevel;
+            }
+            ++i;
+        }
+        return root;
     }
 };
