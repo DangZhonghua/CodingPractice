@@ -29,9 +29,16 @@ Note: You may assume the sum of values in any subtree is in the range of 32-bit 
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-class Solution {
+
+#include<vector>
+using namespace std;
+
+
+class Solution 
+{
 public:
-    vector<int> findFrequentTreeSum(TreeNode* root) {
+    vector<int> findFrequentTreeSum(TreeNode* root) 
+    {
         
     }
 };
