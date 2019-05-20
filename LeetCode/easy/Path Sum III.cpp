@@ -38,8 +38,9 @@ Return 3. The paths that sum to 8 are:
  */
 
 
-
  #include<vector>
+ #include<unordered_map>
+ #include<stack>
  using namespace std;
 
 
@@ -52,11 +53,25 @@ Return 3. The paths that sum to 8 are:
  };
 
 
+/*
+
+use preOrder to traverse the tree.
+
+*/
+
+
 class Solution 
 {
 public:
     int pathSum(TreeNode* root, int sum) 
     {
+        stack<TreeNode*> ps;
         
     }
+private:
+    void preOrderTraversal(TreeNode* root )
+    {
+
+    }
+
 };
