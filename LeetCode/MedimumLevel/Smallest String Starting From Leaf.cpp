@@ -41,6 +41,7 @@ Each node in the tree will have a value between 0 and 25.
 
 
 #include<string>
+#include<vector>
 #include<iostream>
 using namespace std;
 
@@ -53,9 +54,29 @@ using namespace std;
      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  };
 
-class Solution {
+/*
+ use post-order traverse to do this:
+
+ compare the string formed from left and righr child
+ 1) chose less length
+ 2) chose lexicographically  smaller.
+
+*/
+
+class Solution 
+{
 public:
-    string smallestFromLeaf(TreeNode* root) {
+    string smallestFromLeaf(TreeNode* root) 
+    {
         
+    }
+private:
+    void postOrderString(TreeNode* node, vector<int>& vmin, vector<int>& vChild)
+    {
+        vector<int> vleft;
+        if(node->left)
+        {
+            postOrderString(node->left, vmin, vleft)    
+        }
     }
 };
