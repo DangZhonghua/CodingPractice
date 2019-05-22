@@ -68,15 +68,31 @@ class Solution
 public:
     string smallestFromLeaf(TreeNode* root) 
     {
-        
+        string strmin;
+        postOrderString(root,strmin);
     }
 private:
-    void postOrderString(TreeNode* node, vector<int>& vmin, vector<int>& vChild)
+    void postOrderString(TreeNode* node, string& strmin)
     {
-        vector<int> vleft;
+        string strleft;
         if(node->left)
         {
-            postOrderString(node->left, vmin, vleft)    
+            postOrderString(node->left, strleft);
         }
+        string strright;
+        if(node->right)
+        {
+            postOrderString(node->right,strright);
+        }
+
+        if(strleft.size() != strright.size())
+        {
+            strmin = strleft.size()<strright.size()? strleft:strright; 
+        }
+        else
+        {
+            strmin = strleft<strright? strleft:strright;
+        }
+        strmin.push_back(node->val+'a'); 
     }
 };
