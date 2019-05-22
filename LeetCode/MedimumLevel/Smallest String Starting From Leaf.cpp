@@ -70,6 +70,7 @@ public:
     {
         string strmin;
         postOrderString(root,strmin);
+        return strmin;
     }
 private:
     void postOrderString(TreeNode* node, string& strmin)
@@ -83,16 +84,19 @@ private:
         if(node->right)
         {
             postOrderString(node->right,strright);
+        }  
+        
+        if(!strleft.empty()) strleft.push_back(node->val+'a');
+        if(!strright.empty()) strright.push_back(node->val+'a');
+        
+        if(strleft.empty() && strright.empty())
+        {
+            strmin.push_back(node->val+'a');
         }
+        else if(strleft.empty()) {strmin =strright;}
+        else if(strright.empty()) {strmin = strleft;}
+        else{strmin = strleft<strright? strleft:strright; }
 
-        if(strleft.size() != strright.size())
-        {
-            strmin = strleft.size()<strright.size()? strleft:strright; 
-        }
-        else
-        {
-            strmin = strleft<strright? strleft:strright;
-        }
-        strmin.push_back(node->val+'a'); 
+        cout<<strmin<<endl;
     }
 };
