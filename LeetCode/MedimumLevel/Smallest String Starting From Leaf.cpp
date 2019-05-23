@@ -69,10 +69,78 @@ public:
     string smallestFromLeaf(TreeNode* root) 
     {
         string strmin;
-        postOrderString(root,strmin);
+        string strpath;
+        preOrderString(root,strmin,strpath);
+        reverseString(strmin);
         return strmin;
     }
 private:
+    void preOrderString(TreeNode* node, string& strmin, string& strpath)
+    {
+         strpath.push_back(node->val+'a');
+        if(nullptr == node->left && nullptr == node->right)
+        {
+           
+            if(strmin.empty())  strmin = strpath;
+            else
+            {
+                if(!reverseCompare(strmin,strpath)) strmin = strpath;
+            }
+               
+        }
+      
+        if(nullptr != node->left)
+        {
+            preOrderString(node->left,strmin,strpath);
+        }
+        if( nullptr != node->right)
+        {
+            preOrderString(node->right,strmin,strpath);
+        } 
+        strpath.pop_back();       
+    }
+
+    bool reverseCompare(const string& strOri, const string& strTarget)
+    {
+        bool bSmaller = true;
+        int i = strOri.length()-1;
+        int j = strTarget.length()-1;
+
+        while(i >= 0 && j >= 0)
+        {
+            if(strOri[i]>strTarget[j])
+            {
+                bSmaller = false;
+                break;
+            }
+            else if(strOri[i]<strTarget[j])
+            {
+                break;
+            }
+            --i;
+            --j;
+        }
+        if(i>=0 && j<0)
+        {
+            bSmaller  = false;
+        }
+        return bSmaller;
+    }
+
+    void reverseString( string& s)
+    {
+        int i = 0;
+        int j = s.length()-1;
+        
+        while(i<j)
+        {
+            char c = s[i];
+            s[i] = s[j];
+            s[j] = c;
+            ++i;
+            --j;
+        }
+    }
     void postOrderString(TreeNode* node, string& strmin)
     {
         string strleft;
