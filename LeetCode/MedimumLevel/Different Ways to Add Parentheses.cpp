@@ -1,5 +1,7 @@
 /*
 https://leetcode-cn.com/problems/different-ways-to-add-parentheses/
+https://www.cnblogs.com/grandyang/p/4682458.html
+
 Different Ways to Add Parentheses
 Given a string of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. The valid operators are +, - and *.
 
@@ -24,7 +26,12 @@ Explanation:
 
 */
 
-class Solution {
+#include<vector>
+#include<string>
+using namespace std;
+
+class Solution 
+{
 public:
     vector<int> diffWaysToCompute(string input) 
     {
