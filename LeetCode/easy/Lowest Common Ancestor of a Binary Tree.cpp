@@ -53,6 +53,7 @@ use pre-order to find the target element path.
 
 */
 
+
 class Solution 
 {
 public:
@@ -60,16 +61,42 @@ public:
     {
         vector<TreeNode*> vpathp;
         vector<TreeNode*> vpathq;
-        
+        TreeNode* pCA = nullptr;
+
         if(root)
         {
             preOrderPath(root, p, vpathp);
             preOrderPath(root, q, vpathq);
         }
+        
+        for(auto p:vpathp)
+        {
+            cout<<p->val<<" ";
+        }
+        cout<<endl;
+        
+        for(auto p:vpathq)
+        {
+            cout<<p->val<<" ";
+        }
+        cout<<endl;
+
         if( vpathp.size() && vpathq.size())
         {
-            
+            int i = 0;
+            while(i<vpathp.size() && i< vpathq.size())
+            {
+                if(vpathp[i] != vpathq[i])
+                {
+                    break;
+                }
+               // cout<<vpathp[i]<<"  "<<vpathq[i]<<endl;
+                ++i;
+            }
+            if(i>0) pCA = vpathp[i-1];    
+           // cout<<i<<endl;
         }
+        return pCA;
     }
 
 private:
@@ -95,6 +122,7 @@ private:
                 return true;
             }
         }
+        vp.pop_back();
         return false;
     }
 };

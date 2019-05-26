@@ -17,12 +17,52 @@ A solution set is:
 */
 
 #include<vector>
+#include<unordered_map>
+#include<algorithm>
 using namespace std;
 
-class Solution {
+class Solution 
+{
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) 
     {
+        vector<vector<int> > res;
+        int N = nums.size();
+        std::sort(nums.begin(),nums.end());
         
+        for(int i =0; i<N-3; ++i)
+        {
+          if(i>0 && nums[i] == nums[i-1]) continue; //handle duplicate case. 
+          for(int j = i+1; j<N-2; ++j)
+          {
+            if( j>i+1 && nums[j] == nums[j-1]) continue; // handle duplicate case
+            int left = j+1;
+            int right = N-1;
+            // two sum technique
+            int sum = target - nums[i]-nums[j];
+            while(left<right)
+            {
+              if( (nums[left] + nums[right]) == sum)
+              {
+                  vector<int> c{nums[i], nums[j],nums[left],nums[right]};
+                  res.push_back(c);
+                
+                  while(left < right && nums[left] == nums[left+1]) ++left;
+                  while(left < right && nums[right-1] == nums[right]) --right;
+                  ++left;
+                  --right;
+              }
+              else if((nums[left] + nums[right]) < sum)
+              {
+                ++left;
+              }
+              else
+              {
+                --right;
+              }           
+            }
+          }
+        }
+     return res;
     }
 };

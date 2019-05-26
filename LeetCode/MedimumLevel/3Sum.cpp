@@ -106,6 +106,54 @@ private:
 
 };
 
+
+
+
+class Solution {
+public:
+	vector<vector<int>> threeSum(vector<int>& nums)
+    {
+        vector< vector<int> > res;
+        int N = nums.size();
+        std::sort(nums.begin(), nums.end());
+        
+        for(int i = 0; i< N-2; ++i )
+        {
+            //For handle duplicate combination case
+            if( i>0 && nums[i-1] == nums[i] ) continue;
+            
+            int left = i+1;
+            int right = N-1;
+            
+            while( left<right )
+            {
+                if( (nums[left] + nums[right]) == -nums[i])
+                {
+                    vector<int> c{nums[i], nums[left], nums[right]};
+                    res.push_back(c);
+                    
+                    while( left <right && nums[left] == nums[left+1] ) ++left;
+                    while( left < right && nums[right-1] == nums[right]) --right;
+                    ++left;
+                    --right;
+                }
+                else if ( (nums[left]+nums[right]) < -nums[i])
+                {
+                    ++left;
+                }
+                else
+                {
+                    --right;
+                }
+            }   
+        }
+        return res;
+    }
+
+};
+
+
+
 int main()
 {
 	vector<int> nums{ -1, 0, 1, 2, -1, -4 };
