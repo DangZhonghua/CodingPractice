@@ -24,3 +24,30 @@ Note:
 1 <= A[i] <= 10^6
 
 */
+
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+class Solution 
+{
+public:
+    int largestPerimeter(vector<int>& A) 
+    {
+        int p = 0;
+        int N = A.size();
+
+        std::sort(A.begin(),A.end());
+
+        for(int i = N-1; i>1; --i)
+        {
+            if(A[i]< (A[i-1] + A[i-2]))
+            {
+                p = (A[i-1]+A[i-2])+A[i];
+                break;
+            }
+        }
+        return p;
+    }
+};

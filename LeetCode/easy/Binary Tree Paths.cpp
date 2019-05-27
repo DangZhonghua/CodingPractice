@@ -36,45 +36,56 @@ https://leetcode-cn.com/problems/binary-tree-paths/
 #include<vector>
 using namespace std;
 
+
 class Solution 
 {
 public:
     vector<string> binaryTreePaths(TreeNode* root) 
     {
         vector<string> vpath;
-        string path;
+
+        vector< vector<int> > vnpaths;
+        vector<int> vnpath;
+        
         if( root)
         {
-            preOrderPath(root,vpath,path);
+            preOrderPath(root,vnpaths,vnpath);
         }
+        
+        for(int i = 0; i<vnpaths.size(); ++i)
+        {
+            string path;
+            for(int j = 0; j<vnpaths[i].size(); ++j)
+            {
+                path += std::to_string(vnpaths[i][j]);
+                if(j < vnpaths[i].size() - 1 )
+                {
+                    path += "->";
+                }
+            }
+            vpath.push_back(path);
+        }
+
         return vpath;
     }
 private:
-    void preOrderPath(TreeNode* node, vector<string>& vpath, string& path)
+    void preOrderPath(TreeNode* node, vector< vector<int> >& vnpaths,  vector<int>& vnpath)
     {
-        if(!path.empty())
-        {
-            path += "->";
-        }
-        path.push_back(node->val+'0');
+
+        vnpath.push_back(node->val);
         if(nullptr == node->left && nullptr == node->right) //reach the leaf
         {
-            vpath.push_back(path);
+            vnpaths.push_back(vnpath);
         }
 
         if(nullptr != node->left)
         {
-            preOrderPath(node->left,vpath, path);
+            preOrderPath(node->left,vnpaths, vnpath);
         }
         if(nullptr != node->right)
         {
-            preOrderPath(node->right,vpath,path);
+            preOrderPath(node->right,vnpaths,vnpath);
         }
-        path.pop_back();
-        if(!path.empty())
-        {
-            path.pop_back();
-            path.pop_back();
-        }
+        vnpath.pop_back();
     }
 };
