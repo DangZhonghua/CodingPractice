@@ -30,9 +30,11 @@ https://leetcode-cn.com/articles/minimum-number-of-k-consecutive-bit-flips/#
 
 */
 
-class Solution {
+class Solution 
+{
 public:
-    int minKBitFlips(vector<int>& A, int K) {
+    int minKBitFlips(vector<int>& A, int K) 
+    {
         
     }
 };

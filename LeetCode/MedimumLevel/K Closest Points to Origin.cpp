@@ -33,9 +33,22 @@ Note:
 -10000 < points[i][1] < 10000
 */
 
-class Solution {
+/*
+
+order statistic
+
+*/
+
+#include<vector>
+#include<iostream>
+using namespace std;
+
+
+class Solution 
+{
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int K) {
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int K) 
+    {
         
     }
 };
