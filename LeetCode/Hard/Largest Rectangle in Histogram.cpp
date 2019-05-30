@@ -30,8 +30,8 @@ public:
 		int i = 0;
 		while (i < len)
 		{
-			if (s.empty() || heights[s.top()] <= heights[i]) //  this is the condition of pushing stack
-			{												 // which the stack is increasing.
+			if (s.empty() || heights[s.top()] <= heights[i]) //  this is the condition of pushing stack which the stack is increasing.
+			{												 
 				s.push(i);
 				++i;
 			}
@@ -51,7 +51,7 @@ public:
 			}
 		}
 
-		while (!s.empty()) // the remaining are increasing elements on the stack.
+		while (!s.empty()) // the remaining are increasing elements on the stack. the left on this stack should be smaller
 		{
 			int tp = s.top();
 			s.pop();

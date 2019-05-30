@@ -24,12 +24,91 @@ Explanation: We flipped at nodes with values 1, 3, and 5.
  * };
  */
 
+#include<iostream>
+using namespace std;
+
+ struct TreeNode 
+ {
+   int val;
+   TreeNode *left;
+   TreeNode *right;
+   TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
+ 
 
 class Solution 
 {
 public:
     bool flipEquiv(TreeNode* root1, TreeNode* root2) 
     {
-        
+        if( root1 && root2)
+        {
+            return preorderCheck(root1, root2);
+        }
+        else if( nullptr == root1 && nullptr == root2)
+        {
+            return false;
+        }
+        return false;
+    }
+public:
+    bool preorderCheck(TreeNode* node1, TreeNode* node2)
+    {
+        if(node1->val != node2->val)
+        {
+            return false;
+        }
+        if(node1->left)
+        {
+            if(nullptr == node2->left && nullptr == node2->right)
+            {
+                return false;
+            }
+            if(node2->left && node1->left->val == node2->left->val)
+            {
+                if(!preorderCheck(node1->left,node2->left))
+                {
+                    return false;
+                }
+            }
+            else if (node2->right && node1->left->val == node2->right->val)
+            {
+                if(!preorderCheck(node1->left,node2->right))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        if(node1->right)
+        {
+            if(nullptr == node2->left && nullptr == node2->right)
+            {
+                return false;
+            }
+            if(node2->left && node1->right->val == node2->left->val)
+            {
+                if(!preorderCheck(node1->right,node2->left))
+                {
+                    return false;
+                }
+            }
+            else if (node2->right && node1->right->val == node2->right->val)
+            {
+                if(!preorderCheck(node1->right,node2->right))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 };

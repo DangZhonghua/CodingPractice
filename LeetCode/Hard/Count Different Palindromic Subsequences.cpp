@@ -1,5 +1,6 @@
 /*
 https://leetcode-cn.com/problems/count-different-palindromic-subsequences/
+https://www.cnblogs.com/grandyang/p/7942040.html
 Count Different Palindromic Subsequences
 
  Given a string S, find the number of different non-empty palindromic subsequences in S, and return that number modulo 10^9 + 7.

@@ -47,7 +47,7 @@ This problem is an extension of Largest Sum Subarray Problem.
 Keep track of sum of current k elements. To compute sum of current window, 
 remove first element of previous window and add current element. After getting the sum of current window, 
 we add the maxSum of the previous window, 
-if it is greater than current max, then update it else not.
+if it is greater than current max, then update it else not. 
 */
 
 #include<iostream>
@@ -93,9 +93,7 @@ public:
 			{
 				maxsum = kSum;
 			}
-
-			
-
+		
 			if (maxsum < (kSum + largestsumAtIndex[i - K]))
 			{
 				maxsum = (kSum + largestsumAtIndex[i - K]);

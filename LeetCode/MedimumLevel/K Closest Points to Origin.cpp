@@ -44,11 +44,96 @@ order statistic
 using namespace std;
 
 
-class Solution 
+#include<vector>
+#include<iostream>
+using namespace std;
+
+
+class Solution
 {
+	struct sd
+	{
+		int d{ 0 };
+		int index{ 0 };
+	};
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int K) 
-    {
-        
-    }
+	vector<vector<int>> kClosest(vector<vector<int>>& points, int K)
+	{
+
+		vector<sd> vd(points.size(), sd());
+		for (int i = 0; i < points.size(); ++i)
+		{
+			vd[i].index = i;
+			vd[i].d = points[i][0] * points[i][0] + points[i][1] * points[i][1];
+		}
+
+		vector<vector<int>> vr;
+		//int p = -1;
+		int p = SelectSmallestK(vd, 0, points.size() - 1, K);
+
+		for (int i = 0; i <= p; ++i)
+		{
+			vr.push_back(points[vd[i].index]);
+		}
+
+		return vr;
+
+	}
+
+	int SelectSmallestK(vector<sd>& vd, int s, int e, int K)
+	{
+		int p = 0;
+		while (K)
+		{
+			p = OS_Select(vd, s, e);
+			if ((p - s + 1) < K)
+			{
+				K -= (p - s + 1);
+				s = (p + 1);
+			}
+			else if (p - s + 1 == K)
+			{
+				break;
+			}
+			else
+			{
+				e = p - 1;
+			}
+		}
+		return p;
+	}
+
+	int OS_Select(vector<sd>& vd, int s, int e)
+	{
+		int i = s - 1;
+		sd pivot = vd[e];
+
+		for (int j = s; j < e; ++j)
+		{
+			if (vd[j].d < pivot.d)
+			{
+				++i;
+				sd t = vd[j];
+				vd[j] = vd[i];
+				vd[i] = t;
+			}
+		}
+		++i;
+		sd t = vd[i];
+		vd[i] = pivot;
+		vd[e] = t;
+
+		return i;
+	}
 };
+
+int main()
+{
+	Solution sol;
+	int K = 1;
+	vector< vector<int> > a{ {1,3},{-2,2} };
+	sol.kClosest(a, K);
+
+	return 0;
+
+}

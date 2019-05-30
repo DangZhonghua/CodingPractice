@@ -15,7 +15,7 @@ Input:
 Output: 6
 
 */
-
+ 
 #include<iostream>
 #include<vector>
 #include<stack>
