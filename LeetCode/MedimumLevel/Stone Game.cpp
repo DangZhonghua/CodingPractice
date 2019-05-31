@@ -12,7 +12,7 @@ from either the beginning or the end of the row.  This continues until there are
 at which point the person with the most stones wins.
 
 Assuming Alex and Lee play optimally, return True if and only if Alex wins the game.
-
+ 
 
 Example 1:
 
@@ -54,7 +54,7 @@ public:
 	{
 		int N = piles.size();
 		vector< vector< vector<int> > > mc(2, vector< vector<int> >(N, vector<int>(N, 0)));
-		//vector<vector<int> > mc(2, vector<int>(N, 0));
+
 		int sum = piles[N - 1];
 		for (int i = 0; i <= N - 2; ++i)
 		{
@@ -69,24 +69,24 @@ public:
 			for (int i = 0; i <= N - L; ++i)
 			{
 				int j = i + L - 1;
-				//Alex select i
-				int ai = piles[i] + mc[0][i + 2][j]; //Lee select i+1
+				
+				int ai = piles[i] + mc[0][i + 2][j]; // when Alex select i and Lee select i+1
 				mc[1][i + 1][j] = mc[1][i + 2][j] + piles[i + 1];
-				if (mc[1][i + 1][j] < mc[1][i + 1][j - 1] + piles[j])
+				if (mc[1][i + 1][j] < mc[1][i + 1][j - 1] + piles[j]) // Lee can select j of course, so it need judge to select the most
 				{
 					mc[1][i + 1][j] = mc[1][i + 1][j - 1] + piles[j];
 					ai = piles[i] + mc[0][i + 1][j - 1];
 				}
-				//Alex select j
-				int aj = piles[j] + mc[0][i][j - 2];
+				
+				int aj = piles[j] + mc[0][i][j - 2]; // Alex select j and lee select j-1
 				mc[1][i][j - 1] = mc[1][i][j - 2] + piles[j - 1];
-				if (mc[1][i][j - 1] < mc[1][i + 1][j - 1] + piles[i])
+				if (mc[1][i][j - 1] < mc[1][i + 1][j - 1] + piles[i]) // of course, lee can check i.
 				{
 					mc[1][i][j - 1] = mc[1][i + 1][j - 1] + piles[i];
 					aj = piles[j] + mc[0][i + 1][j - 1];
 				}
 
-				if (mc[1][i + 1][j] < mc[1][i][j - 1]) //Alex select i
+				if (mc[1][i + 1][j] < mc[1][i][j - 1]) //Alex select i to make Lee select less.
 				{
 					mc[0][i][j] = ai;
 					mc[1][i][j] = mc[1][i + 1][j];
