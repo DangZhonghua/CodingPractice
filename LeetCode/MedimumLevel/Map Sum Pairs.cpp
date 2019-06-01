@@ -17,21 +17,46 @@ Input: sum("ap"), Output: 5
 
 */
 
+
+#include<vector>
+#include<map>
+using namespace std;
+
+
+
+
 class MapSum {
 public:
     /** Initialize your data structure here. */
-    MapSum() {
+    MapSum() 
+    {
         
     }
     
     void insert(string key, int val) 
     {
-        
+        m_mapKV[key] = val;
     }
     
-    int sum(string prefix) {
-        
+    int sum(string prefix) 
+    {
+        int sum  = 0;
+        int n = prefix.size();
+        auto it = m_mapKV.lower_bound(prefix);
+        while(it != m_mapKV.end())
+        {
+            if(it->first.substr(0,n) != prefix)
+            {
+                break;
+            }
+            sum += it->second;
+            ++it;
+        }
+        return sum;
     }
+
+private:
+    map<string, int> m_mapKV;
 };
 
 /**
