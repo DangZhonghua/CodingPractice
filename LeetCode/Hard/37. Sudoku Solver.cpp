@@ -13,7 +13,8 @@ Empty cells are indicated by the character '.'.
 #include<vector>
 using namespace std;
 
-class Solution {
+class Solution 
+{
 public:
     void solveSudoku(vector<vector<char>>& board) 
     {
