@@ -33,6 +33,105 @@ enum RecordType {
   kRecyclableLastType = 8,
 };
 
+///////////////////////////////////////
+
+Memory Table Options:
+
+memtable_factory: The factory object of memtable. 
+                  By specifying factory object user can change the underlying implementation of memtable, 
+                  and provide implementation specific options.
+
+write_buffer_size: Size of a single memtable.
+
+db_write_buffer_size: Total size of memtables across column families. 
+                      This can be used to manage the total memory used by memtables.
+
+write_buffer_manager: Instead of specifying a total size of memtables, 
+                    user can provide their own write buffer manager to control the overall memtable memory usage. 
+                    Overrides db_write_buffer_size.
+
+max_write_buffer_number: The maximum number of memtables build up in memory, before they flush to SST files.
+
+allow_concurrent_memtable_write option: although only skiplist-based memtable supports the feature.
+
+/////////////////////////////////////
+
+
+
+
+/////////////////////////////////////
+WAL options:
+DBOptions::wal_dir:
+             sets the directory where RocksDB stores write-ahead log files, 
+            which allows WALs to be stored in a separate directory from the actual data.
+
+DBOptions::WAL_ttl_seconds, DBOptions::WAL_size_limit_MB:
+              these two fields affect how quickly archived WALs will be deleted. 
+              Nonzero values indicate the time and disk space threshold to trigger archived WAL deletion. 
+              See options.h for detailed explanation.
+
+DBOptions::max_total_wal_size:
+            In order to limit the size of WALs, RocksDB uses DBOptions::max_total_wal_size as the trigger of column family flush. 
+            Once WALs exceed this size, RocksDB will start forcing the flush of column families to allow deletion of some oldest WALs. 
+            This config can be useful when column families are updated at non-uniform frequencies. If there's no size limit, 
+            users may need to keep really old WALs when the infrequently-updated column families hasn't flushed for a while.
+
+DBOptions::avoid_flush_during_recovery
+
+DBOptions::manual_wal_flush:
+              DBOptions::manual_wal_flush determines whether WAL 
+              flush will be automatic after every write or purely manual (user must invoke FlushWAL to trigger a WAL flush).
+
+
+DBOptions::wal_filter:
+          Through DBOptions::wal_filter, users can provide a filter object to be invoked while processing WALs during recovery. 
+          Note: Not supported in ROCKSDB_LITE mode
+
+WriteOptions::disableWAL:
+        WriteOptions::disableWAL is useful when users rely on other logging or don't care about data loss.(myrocks)
+
+
+WAL Manager: log sequence number. log Writer/reader
+
+/////////////////////////////////////
+
+
+/////////////////////////////////////
+WAL log format:
+Log file consists of a sequence of variable length records. Records are grouped by kBlockSize. 
+If a certain record cannot fit into the leftover space, 
+then the leftover space is padded with empty (null) data. 
+The writer writes and the reader reads in chunks of kBlockSize.
+
+       +-----+-------------+--+----+----------+------+-- ... ----+
+ File  | r0  |        r1   |P | r2 |    r3    |  r4  |           |
+       +-----+-------------+--+----+----------+------+-- ... ----+
+       <--- kBlockSize ------>|<-- kBlockSize ------>|
+
+  rn = variable size records
+  P = Padding
+The log file contents are a sequence of 32KB blocks. The only exception is that the tail of the file may contain a partial block.
+
+
+Record Format:
+The record layout format is as shown below.
+
++---------+-----------+-----------+--- ... ---+
+|CRC (4B) | Size (2B) | Type (1B) | Payload   |
++---------+-----------+-----------+--- ... ---+
+
+CRC = 32bit hash computed over the payload using CRC
+Size = Length of the payload data
+Type = Type of record
+       (kZeroType, kFullType, kFirstType, kLastType, kMiddleType )
+       The type is used to group a bunch of records together to represent
+       blocks that are larger than kBlockSize
+Payload = Byte stream as long as specified by the payload size
+
+
+
+
+/////////////////////////////////////
 
 
 # This is a RocksDB option file.
