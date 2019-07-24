@@ -1,3 +1,6 @@
+
+
+
 enum FileType {
   kLogFile,
   kDBLockFile,
@@ -11,6 +14,26 @@ enum FileType {
   kOptionsFile,
   kBlobFile
 };
+
+
+enum RecordType {
+  // Zero is reserved for preallocated files
+  kZeroType = 0,
+  kFullType = 1,
+
+  // For fragments
+  kFirstType = 2,
+  kMiddleType = 3,
+  kLastType = 4,
+
+  // For recycled log files
+  kRecyclableFullType = 5,
+  kRecyclableFirstType = 6,
+  kRecyclableMiddleType = 7,
+  kRecyclableLastType = 8,
+};
+
+
 
 # This is a RocksDB option file.
 #
