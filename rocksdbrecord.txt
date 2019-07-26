@@ -81,6 +81,7 @@ DBOptions::avoid_flush_during_recovery
 DBOptions::manual_wal_flush:
               DBOptions::manual_wal_flush determines whether WAL 
               flush will be automatic after every write or purely manual (user must invoke FlushWAL to trigger a WAL flush).
+              the writes are keep in rocksdb buffer until FlushWAL
 
 
 DBOptions::wal_filter:
@@ -90,8 +91,27 @@ DBOptions::wal_filter:
 WriteOptions::disableWAL:
         WriteOptions::disableWAL is useful when users rely on other logging or don't care about data loss.(myrocks)
 
+WriteOptions.sync = true, the WAL file is fsync'ed before returning to the user.
+
+
+If Options.recycle_log_file_num = false (the default). RocksDB always create new files for new WAL segments. 
+                              Each WAL write will change both of data and size of the file, 
+                              so every fsync will generate at least two I/Os, 
+                              one for data and one for metadata. 
+                              Note that RocksDB calls fallocate() to reserve enough space for the file, 
+                              but it doesn't prevent the metadata I/O in fsync.
+
+Options.recycle_log_file_num = true will keep a pool of WAL files and try to reuse them. 
+                When writing to an existing log file, random writes are used from size 0. 
+                Before writes hit the end of the file, the file size doesn't change, 
+                so the I/O for metadata might be avoided (also depends on file system mount options). 
+                Assuming most WAL files will have similar sizes, I/O needed for metadata will be minimal.
+
+
 
 WAL Manager: log sequence number. log Writer/reader
+
+
 
 /////////////////////////////////////
 
@@ -132,7 +152,32 @@ Payload = Byte stream as long as specified by the payload size
 /////////////////////////////////////
 
 
+================================================================
+
+Pipelined Write: WAL writes and memtable writes are sequential, and by making them run in parallel we can increase throughput. 
+                 For one single writer WAL writes and memtable writes have to run sequentially. 
+                 With concurrent writers, once the previous writer finishes its WAL write, 
+                 the next writer waiting in the write queue can start writing to the WAL 
+                 while the previous writer still has its memtable write ongoing. This is what pipelined writes do.
+
+                 This increase concurrent by parallel writing WAL and writing memory table.
+
 ======================================================================
+
+
+WriteBatch holds a collection of updates to apply atomically to a DB.
+The updates are applied in the order in which they are added
+to the WriteBatch.  For example, the value of "key" will be "v3"
+after the following batch is written:
+   batch.Put("key", "v1");
+   batch.Delete("key");
+   batch.Put("key", "v2");
+   batch.Put("key", "v3");
+Multiple threads can invoke const methods on a WriteBatch without
+external synchronization, but if any of the threads may call a
+non-const method, all threads accessing the same WriteBatch must use
+external synchronization.
+
 
 
 
@@ -164,6 +209,54 @@ varstring :=
 
 
 =====================================================================
+Writer State:
+
+enum State : uint8_t {
+    // The initial state of a writer.  This is a Writer that is
+    // waiting in JoinBatchGroup.  This state can be left when another
+    // thread informs the waiter that it has become a group leader
+    // (-> STATE_GROUP_LEADER), when a leader that has chosen to be
+    // non-parallel informs a follower that its writes have been committed
+    // (-> STATE_COMPLETED), or when a leader that has chosen to perform
+    // updates in parallel and needs this Writer to apply its batch (->
+    // STATE_PARALLEL_FOLLOWER).
+    STATE_INIT = 1,
+
+    // The state used to inform a waiting Writer that it has become the
+    // leader, and it should now build a write batch group.  Tricky:
+    // this state is not used if newest_writer_ is empty when a writer
+    // enqueues itself, because there is no need to wait (or even to
+    // create the mutex and condvar used to wait) in that case.  This is
+    // a terminal state unless the leader chooses to make this a parallel
+    // batch, in which case the last parallel worker to finish will move
+    // the leader to STATE_COMPLETED.
+    STATE_GROUP_LEADER = 2,
+
+    // The state used to inform a waiting writer that it has become the
+    // leader of memtable writer group. The leader will either write
+    // memtable for the whole group, or launch a parallel group write
+    // to memtable by calling LaunchParallelMemTableWrite.
+    STATE_MEMTABLE_WRITER_LEADER = 4,
+
+    // The state used to inform a waiting writer that it has become a
+    // parallel memtable writer. It can be the group leader who launch the
+    // parallel writer group, or one of the followers. The writer should then
+    // apply its batch to the memtable concurrently and call
+    // CompleteParallelMemTableWriter.
+    STATE_PARALLEL_MEMTABLE_WRITER = 8,
+
+    // A follower whose writes have been applied, or a parallel leader
+    // whose followers have all finished their work.  This is a terminal
+    // state.
+    STATE_COMPLETED = 16,
+
+    // A state indicating that the thread may be waiting using StateMutex()
+    // and StateCondVar()
+    STATE_LOCKED_WAITING = 32,
+  };
+
+
+=======================================================================
 
 
 # This is a RocksDB option file.
