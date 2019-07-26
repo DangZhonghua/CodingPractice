@@ -209,7 +209,7 @@ varstring :=
 
 
 =====================================================================
-Writer State:
+Writer State: 
 
 enum State : uint8_t {
     // The initial state of a writer.  This is a Writer that is
