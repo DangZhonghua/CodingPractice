@@ -1,4 +1,5 @@
-
+Fast Bloom Filters and Their Generalization
+https://www.jianshu.com/p/8fb8f2458253
 
 
 enum FileType {
@@ -448,3 +449,8 @@ enum Tag : uint32_t {
   hash_index_allow_collision=true
   flush_block_policy_factory=FlushBlockBySizePolicyFactory
   
+
+
+  MaybeScheduleFlushOrCompaction
+
+  RunManualCompaction
