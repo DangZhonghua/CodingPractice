@@ -1,4 +1,4 @@
-
+Fast Bloom Filters and Their Generalization
 
 
 enum FileType {
@@ -420,3 +420,8 @@ enum State : uint8_t {
   hash_index_allow_collision=true
   flush_block_policy_factory=FlushBlockBySizePolicyFactory
   
+
+
+  MaybeScheduleFlushOrCompaction
+
+  RunManualCompaction
